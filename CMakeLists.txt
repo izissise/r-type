@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 2.8.8)
 
 project(Project)
 
-set(NAME_DLL "keylogger")
 set(NAME_LIB "common")
 set(NAME_CLIENT "client")
 set(NAME_SERVER "server")
 set(TEST_EXEC "UnitTester")
-set(KEY_DIR "certs")
 
 set(INCLUDE_DIRECTORY "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc/"
 					  "${PROJECT_SOURCE_DIR}/${NAME_DLL}/inc/"
@@ -21,16 +19,10 @@ set(DOC_PATH "${PROJECT_SOURCE_DIR}/doc")
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
-set (Boost_USE_STATIC_LIBS ON)
-set (Boost_MULTITHREADED ON)
-set (Boost_USE_STATIC_RUNTIME OFF)
-
 # cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 find_package(Threads)
 find_package(Boost 1.55.0 COMPONENTS filesystem system program_options REQUIRED)
-find_package(OpenSSL REQUIRED)
-find_package(Sqlite3 REQUIRED)
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CheckIncludeFile)
@@ -107,18 +99,6 @@ file(
 
 file(
   GLOB_RECURSE
-  dll_source_files
-  ${NAME_DLL}/src/*
-)
-
-file(
-  GLOB_RECURSE
-  dll_include_files
-  ${NAME_DLL}/inc/*
-)
-
-file(
-  GLOB_RECURSE
   server_source_files
   ${NAME_SERVER}/src/*
 )
@@ -127,14 +107,6 @@ file(
   GLOB_RECURSE
   server_include_files
   ${NAME_SERVER}/inc/*
-)
-
-# Copy keys to build dir
-file(
-  COPY
-  ${KEY_DIR}
-  DESTINATION
-  ${CMAKE_BINARY_DIR}
 )
 
 # configure a header file to pass some of the CMake settings
@@ -156,21 +128,6 @@ add_library(
 )
 
 if(BUILD_CLIENT)
-  add_library(
-  # executable name
-    ${NAME_DLL} SHARED
-  # source files
-    ${dll_source_files}
-    ${dll_include_files}
-  )
-
-  GENERATE_EXPORT_HEADER( ${NAME_DLL}
-               BASE_NAME ${NAME_DLL}
-               EXPORT_MACRO_NAME ${NAME_DLL}_EXPORT
-               EXPORT_FILE_NAME 
-               STATIC_DEFINE ${NAME_DLL}_BUILT_AS_STATIC
-  )
-
     add_executable(
   # executable name
     ${NAME_CLIENT}
@@ -178,8 +135,7 @@ if(BUILD_CLIENT)
     ${client_source_files}
     ${client_include_files}
   )
-  
-  target_link_libraries(${NAME_DLL} ${NAME_LIB})
+
   target_link_libraries(${NAME_CLIENT} ${NAME_LIB})
 endif()
 
@@ -202,21 +158,6 @@ file(
 
 if (THREADS_FOUND)
   target_link_libraries (${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
-endif()
-
-if (SQLITE3_FOUND)
-  include_directories(${SQLITE3_INCLUDE_DIR})
-  target_link_libraries (${NAME_LIB} ${SQLITE3_LIBRARIES})
-endif()
-
-if (Boost_FOUND)
-   include_directories(${Boost_INCLUDE_DIRS})
-   target_link_libraries (${NAME_LIB} ${Boost_LIBRARIES})
-endif()
-
-if (OPENSSL_FOUND)
-    include_directories(${OPENSSL_INCLUDE_DIR})
-    target_link_libraries (${NAME_LIB} ${OPENSSL_LIBRARIES})
 endif()
 
 # --- enable unit tests if desired ---
