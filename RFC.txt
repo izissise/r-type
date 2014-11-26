@@ -68,6 +68,7 @@ Table of Contents
    3. Data Format .....................................................3
       3.1 Header ......................................................3
       3.2 Data ........................................................3
+      
    4. Game Group ......................................................2
       4.1 GetGame .....................................................2
       4.2 GetLvl ......................................................2
@@ -88,8 +89,7 @@ Table of Contents
       6.4 UpdateBullet ................................................2
       6.5 NewBullet ...................................................2
    7. Message Exchange ................................................2
-      8.1 TCP .........................................................2
-      8.2 UDP .........................................................2
+      7.1 UDP .........................................................2
    8. References ......................................................*
 
 1.  Introduction
@@ -127,10 +127,10 @@ RFC 42                    Network Game Protocol            Novembre 2014
    The Data MUST be format like:
 
                     +---------+-------------------+
-                    | header  |        data	      |
+                    | header  |        data       |
                     +---------+-------------------+
-                    | 6 bytes |  size determined  |
-                    | 	      |     in header     |
+                    | 4 bytes |  size determined  |
+                    |         |     in header     |
                     +---------+-------------------+
 
    The Data SHOULD have two component, a header  to recognize
@@ -139,38 +139,39 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 3.1.  Header
 
-           0       1       2       3       4       5       6
-           +-------+-------+-------+-------+-------+-------+
-           |     magic     |  instruction  |     data      |
-           |     number    |     type      |     size      |
-           +-------+-------+-------+-------+-------+-------+
+           0       1       2       3       4
+           +-------+-------+-------+-------+
+           |  instruction  |     packet    |
+           |     type      |      size     |
+           +-------+-------+-------+-------+
 
     The header MUST have three component :
-
-    - Magic Number (2 Bytes):
-      The Magic number is used to check if the packet is comformed to
-      R-Type RFC. If the magic number is not good the packet MUST
-      be ignored. The Magic Number MUST be 12345.
 
     - Instruction Type (2 Bytes):
       This is the an enum who give the action we need to provide.
 
-    - Data Size (2 Bytes):
-      The size of the data in the data section.
+    - Packet Size (2 Bytes):
+      The size of the packet in the data section, not including the size of the headers.
 
 3.2.  Data
 
-   The Data is OPTIONAL but if the Data exist it MUST begin
-   by a size on 2 Bytes and follow by the string content with no '\0'.
+   The Data is OPTIONAL
    The Data is an array of Bytes.
    The Data look like:
 
               0     1     2     3     4     5     6     7
               +-----+-----+-----+-----+-----+-----+-----+
-              |  size =   |         raw text =          |
-              |-----------|-----------------------------|
-              |     6     | 'S' | 'A' | 'L' | 'U' | 'T' |
+              |               raw byte =                |
+              |-----------------------------------------|
+              | 0x00| 0x06| 'S' | 'A' | 'L' | 'U' | 'T' |
               +-----+-----+-----+-----+-----+-----+-----+
+              
+              
+              
+              
+              
+              
+              
 
 
 R-type-2015-moriss_h        Informational                       [Page 4]
