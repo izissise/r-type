@@ -66,8 +66,8 @@ Table of Contents
       1.1 Conventions Used in This Document ...........................2
    2. Transfert Description ...........................................3
    3. Data Format .....................................................3
-      3.1 Header ......................................................2
-      3.2 Data ........................................................2
+      3.1 Header ......................................................3
+      3.2 Data ........................................................3
    4. Game Group ......................................................2
       4.1 GetGame .....................................................2
       4.2 GetLvl ......................................................2
@@ -87,12 +87,10 @@ Table of Contents
       6.3 UpdateEnemy .................................................2
       6.4 UpdateBullet ................................................2
       6.5 NewBullet ...................................................2
-   7. Lobby Group .....................................................*
-      7.1 Chat ..... ..................................................2
-   8. Message Exchange ................................................2
+   7. Message Exchange ................................................2
       8.1 TCP .........................................................2
       8.2 UDP .........................................................2
-   9. References ......................................................*
+   8. References ......................................................*
 
 1.  Introduction
 
@@ -114,7 +112,9 @@ Table of Contents
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 2]
+
+
+R-type-2015-moriss_h        Informational                       [Page 3]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -154,3 +154,25 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
     - Instruction Type (2 Bytes):
       This is the an enum who give the action we need to provide.
+
+    - Data Size (2 Bytes):
+      The size of the data in the data section.
+
+3.2.  Data
+
+   The Data is OPTIONAL but if the Data exist it MUST begin
+   by a size on 2 Bytes and follow by the string content with no '\0'.
+   The Data is an array of Bytes.
+   The Data look like:
+
+              0     1     2     3     4     5     6     7
+              +-----+-----+-----+-----+-----+-----+-----+
+              |  size =   |         raw text =          |
+              |-----------|-----------------------------|
+              |     6     | 'S' | 'A' | 'L' | 'U' | 'T' |
+              +-----+-----+-----+-----+-----+-----+-----+
+
+
+R-type-2015-moriss_h        Informational                       [Page 4]
+
+RFC 42                    Network Game Protocol            Novembre 2014
