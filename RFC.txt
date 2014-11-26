@@ -1,0 +1,156 @@
+
+
+
+
+
+
+
+
+
+Network Working Group                               H Morisset
+Request for Comments:                               R-type-2015-moriss_h
+Category: Standards Track                           Novembre 2014
+
+
+                  Network Game Protocol (NGP) For R-Type
+
+Status of This Memo
+
+  This document specifies an Internet standards track protocol for
+   the Internet community, and requests discussion and suggestions
+   for improvements.  Please refer to the current edition of the
+   "Internet Official Protocol Standards" (STD 1) for the
+   standardization state and status of this protocol.  Distribution
+   of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) Hugues Morisset.  All Rights Reserved.
+
+Contact
+
+   To contact the RFC Editor send an email message to:
+
+              « moriss_h@epitech.eu ».
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+R-type-2015-moriss_h        Informational                       [Page 2]
+
+RFC 42                   Network Game Protocol             Novembre 2014
+
+Table of Contents
+
+   1. Introduction ....................................................2
+      1.1 Conventions Used in This Document ...........................2
+   2. Transfert Description ...........................................3
+   3. Data Format .....................................................3
+      3.1 Header ......................................................2
+      3.2 Data ........................................................2
+   4. Game Group ......................................................2
+      4.1 GetGame .....................................................2
+      4.2 GetLvl ......................................................2
+      4.3 Create ......................................................2
+      4.4 Join ........................................................2
+      4.5 Quit ........................................................2
+      4.6 EndGame .....................................................2
+      4.7 Start .......................................................2
+   5. GameDetails Group ...............................................2
+      5.1 PlayerLogin .................................................2
+      5.2 Score .......................................................2
+      5.3 GetMap ......................................................2
+      5.4 PlayerLife ..................................................2
+   6. Movement Group ..................................................2
+      6.1 Move ........................................................2
+      6.2 UpdatePlayer ................................................2
+      6.3 UpdateEnemy .................................................2
+      6.4 UpdateBullet ................................................2
+      6.5 NewBullet ...................................................2
+   7. Lobby Group .....................................................*
+      7.1 Chat ..... ..................................................2
+   8. Message Exchange ................................................2
+      8.1 TCP .........................................................2
+      8.2 UDP .........................................................2
+   9. References ......................................................*
+
+1.  Introduction
+
+   This protocol is intended to provide the game service,
+   and be used between clients and servers on host computers.
+   Typically the clients are on workstation hosts and the
+   servers on mainframe hosts.
+
+1.1.  Conventions Used in This Document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+
+
+
+
+
+
+
+R-type-2015-moriss_h        Informational                       [Page 2]
+
+RFC 42                    Network Game Protocol            Novembre 2014
+
+2.  Transfert Description
+
+   All the Data in this protocol MUST be provide by UDP socket.
+
+3.  Data Format
+
+   The Data MUST be format like:
+
+                    +---------+-------------------+
+                    | header  |        data	      |
+                    +---------+-------------------+
+                    | 6 bytes |  size determined  |
+                    | 	      |     in header     |
+                    +---------+-------------------+
+
+   The Data SHOULD have two component, a header  to recognize
+   the command and the data of the command but the data who can
+   be OPTIONAL.
+
+3.1.  Header
+
+           0       1       2       3       4       5       6
+           +-------+-------+-------+-------+-------+-------+
+           |     magic     |  instruction  |     data      |
+           |     number    |     type      |     size      |
+           +-------+-------+-------+-------+-------+-------+
+
+    The header MUST have three component :
+
+    - Magic Number (2 Bytes):
+      The Magic number is used to check if the packet is comformed to
+      R-Type RFC. If the magic number is not good the packet MUST
+      be ignored. The Magic Number MUST be 12345.
+
+    - Instruction Type (2 Bytes):
+      This is the an enum who give the action we need to provide.
