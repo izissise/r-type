@@ -69,24 +69,24 @@ Table of Contents
       3.1 Header ......................................................3
       3.2 Data ........................................................3
    4. Basics Command ..................................................4
-      4.1 GetGame .....................................................4
-      4.2 GetLvl ......................................................4
-      4.3 Create ......................................................4
-      4.4 Join ........................................................4
-      4.5 Quit ........................................................4
-      4.6 EndGame .....................................................4
-      4.7 Start .......................................................4
-   5. InGame Command ..................................................2
-      5.1 PlayerLogin .................................................2
-      5.2 Score .......................................................2
-      5.3 GetMap ......................................................2
-      5.4 PlayerLife ..................................................2
-   6. Movement Command ................................................2
-      6.1 Move ........................................................2
-      6.2 UpdatePlayer ................................................2
-      6.3 UpdateEnemy .................................................2
-      6.4 UpdateBullet ................................................2
-      6.5 NewBullet ...................................................2
+      4.1 GetListGame..................................................4
+      4.2 GetLvl ......................................................5
+      4.3 Create ......................................................5
+      4.4 Join ........................................................6
+      4.5 Quit ........................................................7
+      4.6 EndGame .....................................................7
+      4.7 Start .......................................................7
+   5. InGame Command ..................................................8
+      5.1 PlayerLogin .................................................8
+      5.2 Score .......................................................9
+      5.3 GetMap ......................................................9
+      5.4 PlayerLife ..................................................9
+   6. Movement Command ...............................................10
+      6.1 Move .......................................................10
+      6.2 UpdatePlayer ...............................................10
+      6.3 UpdateEnemy ................................................11
+      6.4 UpdateBullet ...............................................11
+      6.5 NewBullet ..................................................11
 
 1.  Introduction
 
@@ -150,7 +150,8 @@ RFC 42                    Network Game Protocol            Novembre 2014
       This is the an enum who give the action we need to provide.
 
     - Packet Size (2 Bytes):
-      The size of the packet in the data section, not including the size of the headers.
+      The size of the packet in the data section, not including the
+      size of the headers.
 
 3.2.  Data
 
@@ -233,7 +234,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
    nb_player	     1 byte		Number of player that already joined the
                             game
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                       [Page 5]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -292,7 +293,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                       [Page 6]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -351,7 +352,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                       [Page 7]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -410,7 +411,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                       [Page 8]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -469,7 +470,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                       [Page 9]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -528,7 +529,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
     on the direction vector.
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                      [Page 10]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
@@ -587,7 +588,7 @@ RFC 42                    Network Game Protocol            Novembre 2014
 
 
 
-R-type-2015-moriss_h        Informational                       [Page 4]
+R-type-2015-moriss_h        Informational                      [Page 11]
 
 RFC 42                    Network Game Protocol            Novembre 2014
 
