@@ -14,7 +14,11 @@ private:
     std::queue<std::function<void(void)> > _tasks;
     std::condition_variable _condition;
     std::mutex _mutex;
+
     int _minThreadNumber;
+    int _stop;
+
+    void ThreadLoop();
 public:
     ThreadPool(int nbThread);
     ~ThreadPool();
