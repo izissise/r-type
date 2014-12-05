@@ -22,11 +22,9 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 # cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 find_package(Threads)
-find_package(Boost 1.55.0 COMPONENTS filesystem system program_options REQUIRED)
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CheckIncludeFile)
-INCLUDE(CheckIncludeFileCXX)
 INCLUDE(InstallFilesRecursive)
 INCLUDE(EnableCoverageReport)
 INCLUDE(EnableSlocCount)
@@ -65,14 +63,20 @@ OPTION(BUILD_TESTS "Decide if the test suite shall be built or not." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TESTS_COVERAGE "Decide if a coverage report should be generated." ON "BUILD_TESTS" OFF)
 CMAKE_DEPENDENT_OPTION(VALGRIND_CHECK "Decide if valgrind should be executed with the test binary to check for memory leaks." ON "BUILD_TESTS" OFF)
 OPTION(CODE_METRICS "Decide if code's metrics should be generated." OFF)
-OPTION(CODE_CHECK "Decide if code should be checked for common errors." OFF)
+OPTION(CODE_CHECK 	"Decide if code should be checked for common errors." OFF)
 OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 
 # --- global definitions ---
-DEFINE_PROJECT_VERSION(PROJECT 0 0 1 "snapshot")
-CURRENT_DATE(PROJECT_BUILD_DATE)
+#DEFINE_PROJECT_VERSION(PROJECT 0 0 1 "snapshot")
+#CURRENT_DATE(PROJECT_BUILD_DATE)
+
+#Dependencies
+set(networklib "network")
+add_subdirectory(${networklib})
+include_directories("${networklib}/inc")
+
 
 # All source files using globs
 file(
@@ -119,7 +123,7 @@ file(
 #)
 
 include_directories("${INCLUDE_DIRECTORY}")
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/${NAME_LIB}/inc/")
+# include_directories("${CMAKE_CURRENT_BINARY_DIR}/${NAME_LIB}/inc/")
 
 add_library(
 # executable name
@@ -128,6 +132,8 @@ add_library(
   ${lib_source_files}
   ${lib_include_files}
 )
+
+target_link_libraries(${NAME_LIB} ${networklib})
 
 if(BUILD_CLIENT)
     add_executable(
@@ -148,7 +154,7 @@ if (BUILD_SERVER)
     ${server_source_files}
     ${server_include_files}
   )
-  
+
   target_link_libraries(${NAME_SERVER} ${NAME_LIB})
 endif()
 
