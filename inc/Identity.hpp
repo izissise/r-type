@@ -1,31 +1,13 @@
-#ifndef INETWORKSOCKET_H
-# define INETWORKSOCKET_H
+#ifndef IDENTITY_HPP_INCLUDED
+# define IDENTITY_HPP_INCLUDED
 
 # include <string>
 # include <cstring>
+# include <functional>
 
-# include "Error.hpp"
+# include "ASocket.hpp"
 
 namespace Network {
-
-typedef std::string Buffer;
-
-class ISocket
-{
-public:
-  enum class SockType
-  {
-    TCP,
-    UDP,
-    RAW
-  };
-
-public:
-  virtual ~ISocket() = default;
-
-  virtual void closeSocket() = 0;
-
-};
 
 struct Identity
 {
@@ -39,12 +21,16 @@ struct Identity
 
   ~Identity() = default;
 
-  bool operator==(const Identity&);
+  bool operator==(const Identity& id)
+  {
+    return (ip == id.ip && port == id.port);
+  }
 
   std::string ip;
   uint16_t    port;
+
+  std::function<void(const Network::Buffer& data)> onRead;
+};
 };
 
-};
-
-#endif // INETWORKSOCKET_H
+#endif // IDENTITY_HPP_INCLUDED
