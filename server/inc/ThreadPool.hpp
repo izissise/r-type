@@ -22,7 +22,17 @@ private:
 public:
     ThreadPool(int nbThread);
     ~ThreadPool();
-    void addTask(std::function<void(void) >);
+
+    template <class R1, typename ... Args>
+    void addTask(R1 function, Args&& ... args) {
+        addTask(std::bind(function, std::forward<Args>(args) ...));
+    }
+
+    template <class R1>
+    void addTask(R1 function) {
+        _tasks.emplace(function);
+        _condition.notify_one();
+    }
 };
 
 #endif /* _THREAD_POOL_HPP_ */

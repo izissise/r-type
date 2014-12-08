@@ -1,11 +1,7 @@
 #include <iostream>
 #include <bits/stl_list.h>
+#include <algorithm>
 #include "ThreadPool.hpp"
-
-void test()
-{
-    std::cout << "test" << std::endl;
-}
 
 void ThreadPool::ThreadLoop() {
     do {
@@ -13,8 +9,8 @@ void ThreadPool::ThreadLoop() {
 
         {
             std::unique_lock<std::mutex> lock(_mutex);
-            _condition.wait(lock, [this]() { return _stop || _tasks.empty() == false; });
-            if (_stop) {
+            _condition.wait(lock, [this]() { return _stop || !_tasks.empty(); });
+            if (_stop && _tasks.empty()) {
                 return;
             }
             task = std::move(_tasks.front());
@@ -36,14 +32,5 @@ ThreadPool::~ThreadPool()
 {
     _stop = true;
     _condition.notify_all();
-
-    std::vector<std::thread>::iterator it = _threads.begin();
-    for ( ;it != _threads.end(); it++) {
-        it->join();
-    }
-}
-
-void ThreadPool::addTask(std::function<void(void) > function)
-{
-
+    std::for_each(_threads.begin(), _threads.end(), [](std::thread &t) {t.join(); });
 }
