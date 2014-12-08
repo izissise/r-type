@@ -1,9 +1,11 @@
 #include <iostream>
 
-int main(int ac, char *av[])
+#include "ClientGame.hpp"
+
+int main(int, char **)
 {
-
-  std::cout << "Hello from client" << std::endl;
-
-  return 0;
+  ClientGame  game;
+  
+  game.run();
+  return (0);
 }
