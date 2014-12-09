@@ -54,11 +54,20 @@ void  Button::update(const sf::Event &event)
 void  Button::draw(sf::RenderWindow &win)
 {
   if (isClicked())
+  {
+    _clickedTexture->setPosition(_pos);
     win.draw(*_clickedTexture);
+  }
   else if (isHover())
+  {
+    _hoverTexture->setPosition(_pos);
     win.draw(*_hoverTexture);
+  }
   else
+  {
+    _displayTexture->setPosition(_pos);
     win.draw(*_displayTexture);
+  }
 }
 
 bool  Button::isHidden() const
