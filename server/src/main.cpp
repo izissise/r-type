@@ -7,7 +7,8 @@
 int main(int ac, char *av[])
 {
   try {
-      Server serv();
+      Server serv("::1", "9632");
+      serv.run();
     }
   catch (std::exception& e)
     {

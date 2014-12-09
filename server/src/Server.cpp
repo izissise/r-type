@@ -2,11 +2,12 @@
 
 Server::Server(const std::string& addr, const std::string& port)
   : _net(Network::NetworkFactory::createNetwork()),
-    _listener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::UDP, true))
+    _lobbyListener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true))
 {
-  _net->registerListener(_listener);
-  std::cout << "Server listening on: " << _listener->getListeningIpAddr() << ":"
-            << _listener->getListeningPort() << std::endl;
+  _lobbyListener->setAcceptorCallback(std::bind(&Server::acceptNewClient, this, std::placeholders::_1));
+  _net->registerListener(_lobbyListener);
+  std::cout << "Server listening on " << _lobbyListener->getListeningIpAddr() << ":"
+            << _lobbyListener->getListeningPort() << std::endl;
 }
 
 Server::~Server()
@@ -15,3 +16,19 @@ Server::~Server()
 }
 
 
+void Server::run()
+{
+  while (1)
+    {
+      _net->poll();
+    }
+}
+
+void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
+{
+  std::shared_ptr<Network::AListenSocket> listener = that.lock();
+  std::shared_ptr<Network::ABasicSocket> nClient = listener->acceptClient();
+
+  _clients.push_back(nClient);
+  _net->registerClient(nClient);
+}
