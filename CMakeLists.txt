@@ -21,7 +21,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 # cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
-find_package(Threads)
+find_package(Threads REQUIRED)
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CheckIncludeFile)
@@ -41,7 +41,7 @@ INCLUDE(GenerateExportHeader)
 # --- global compiler flags ---
 if (UNIX)
   COMPILER_FLAGS(FLAGS "-pipe" "-Wall" "-Wextra"
-			   "--std=c++1y"
+			   "--std=c++11"
 			   "-Wchar-subscripts" "-Winit-self" "-Wswitch-enum"
 			   "-Wstrict-aliasing=3"
 			   "-Wundef" "-Wno-endif-labels"
@@ -68,15 +68,14 @@ OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 
-# --- global definitions ---
-#DEFINE_PROJECT_VERSION(PROJECT 0 0 1 "snapshot")
-#CURRENT_DATE(PROJECT_BUILD_DATE)
 
-#Dependencies
-set(networklib "network")
-add_subdirectory(${networklib})
-include_directories("${networklib}/inc")
-
+# NetworkLib
+# Build it here in ${CMAKE_CURRENT_BINARY_DIR}/network
+set(NetworkLib_DIR "${CMAKE_CURRENT_BINARY_DIR}/network")
+file(MAKE_DIRECTORY ${NetworkLib_DIR})
+execute_process(COMMAND ${CMAKE_COMMAND} "${PROJECT_SOURCE_DIR}/network" "-DCMAKE_BUILD_TYPE=${CONFIG}" WORKING_DIRECTORY "${NetworkLib_DIR}")
+execute_process(COMMAND ${CMAKE_COMMAND} "--build" "${NetworkLib_DIR}" WORKING_DIRECTORY "${NetworkLib_DIR}")
+find_package(NetworkLib REQUIRED)
 
 # All source files using globs
 file(
@@ -115,15 +114,8 @@ file(
   ${NAME_SERVER}/inc/*
 )
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file (
-#  "${NAME_LIB}/inc/Config.h.in"
-#  "${NAME_LIB}/inc/Config.h"
-#)
-
 include_directories("${INCLUDE_DIRECTORY}")
-# include_directories("${CMAKE_CURRENT_BINARY_DIR}/${NAME_LIB}/inc/")
+include_directories("${NETWORKLIB_INCLUDE_DIRS}")
 
 add_library(
 # executable name
@@ -133,7 +125,8 @@ add_library(
   ${lib_include_files}
 )
 
-target_link_libraries(${NAME_LIB} ${networklib})
+target_link_libraries(${NAME_LIB} NETWORKLIB_network)
+target_link_libraries(${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
 
 if(BUILD_CLIENT)
     add_executable(
@@ -163,10 +156,6 @@ file(
   test_files
   test/*
 )
-
-if (THREADS_FOUND)
-  target_link_libraries (${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
-endif()
 
 # --- enable unit tests if desired ---
 if(BUILD_TESTS)
