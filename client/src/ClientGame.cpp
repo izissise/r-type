@@ -1,7 +1,7 @@
 #include "ClientGame.hpp"
 
 ClientGame::ClientGame()
-: _win({800, 600}, "R-Type"), _done(false)
+: _win({1920, 1080}, "R-Type"), _done(false)
 {
   _panel.push_back(std::shared_ptr<APanel>(new MenuPanel(false)));
 }

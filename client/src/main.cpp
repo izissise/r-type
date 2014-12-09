@@ -4,8 +4,15 @@
 
 int main(int, char **)
 {
-  ClientGame  game;
-  
-  game.run();
-  return (0);
+  try
+  {
+    ClientGame  game;
+    
+    game.run();
+    return (0);
+  }
+  catch (std::exception &e)
+  {
+    std::cerr << e.what() << std::endl;
+  }
 }
