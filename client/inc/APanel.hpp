@@ -13,7 +13,8 @@ public:
   virtual bool update(const sf::Event &) = 0;
   virtual void draw(sf::RenderWindow &) = 0;
 
-  bool isHidden() { return _hide; };
+  void  setHide(bool hide) { _hide = hide; };
+  bool  isHidden() const { return _hide; };
 
 private:
   bool  _hide;

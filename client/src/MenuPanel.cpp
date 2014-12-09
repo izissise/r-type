@@ -3,30 +3,28 @@
 MenuPanel::MenuPanel(bool hide)
 : APanel(hide), _background()
 {
-  std::shared_ptr<sf::Texture> text(new sf::Texture());
+  auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
+  auto font = RessourceManager::instance().getFont("../assets/font.ttf");
   
-  if (!text->loadFromFile("../assets/menu.png"))
-    throw std::runtime_error("Cannot load the Texture file.");
-
-  sf::Sprite  *button = new sf::Sprite(*text);
-  sf::Sprite  *hover = new sf::Sprite(*text);
-  sf::Sprite  *click = new sf::Sprite(*text);
+  std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
+  std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
+  std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
 
   button->setTextureRect(sf::IntRect(0, 0, 100, 50));
   hover->setTextureRect(sf::IntRect(0, 50, 100, 50));
   click->setTextureRect(sf::IntRect(0, 100, 100, 50));
-  _connect = std::shared_ptr<Button>(new Button({ 100, 100 }, std::shared_ptr<sf::Sprite>(button),
-                                                std::shared_ptr<sf::Sprite>(hover), std::shared_ptr<sf::Sprite>(click)));
+
+  _loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0}, click));
+  _loginEntry->setFont(*font);
+  _loginEntry->setTextColor(sf::Color::Black);
+  _loginEntry->setCharacterSize(30);
+  _connect = std::shared_ptr<Button>(new Button({ 100, 100 }, button, hover, click));
 //  _setting = std::shared_ptr(new Button({ 100, 200 }, ));
 //  _exit = std::shared_ptr(new Button({ 100, 300 }, ));
-  _text.push_back(text);
 
-  std::shared_ptr<sf::Texture> t(new sf::Texture());
+  auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
 
-  if (!t->loadFromFile("../assets/menuBackground.png"))
-    throw std::runtime_error("Cannot load the Texture file.");
-  _background.setTexture(*t);
-  _text.push_back(t);
+  _background.setTexture(*backgroundTexture);
 }
 
 MenuPanel::~MenuPanel()
@@ -36,6 +34,7 @@ MenuPanel::~MenuPanel()
 
 bool MenuPanel::update(const sf::Event &event)
 {
+  _loginEntry->update(event);
   _connect->update(event);
   if (_connect->isClicked())
     std::cout << "Connect" << std::endl;
@@ -49,6 +48,7 @@ bool MenuPanel::update(const sf::Event &event)
 void MenuPanel::draw(sf::RenderWindow &win)
 {
   win.draw(_background);
+  _loginEntry->draw(win);
   _connect->draw(win);
 //  _setting->draw(win);
 //  _exit->draw(win);

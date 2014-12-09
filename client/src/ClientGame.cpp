@@ -4,6 +4,7 @@ ClientGame::ClientGame()
 : _win({1920, 1080}, "R-Type"), _done(false)
 {
   _panel.push_back(std::shared_ptr<APanel>(new MenuPanel(false)));
+//  _panel.push_back(std::shared_ptr<APanel>(new ConnectionPanel(true)));
 }
 
 ClientGame::~ClientGame()
