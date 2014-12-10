@@ -2,11 +2,12 @@
 # define _BUTTON_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <iostream>
 
 class Button
 {
 public:
-  Button(const sf::Vector2f &pos,
+  Button(const sf::FloatRect &pos,
          const std::shared_ptr<sf::Sprite> &displayTexture,
          const std::shared_ptr<sf::Sprite> &hoverTexture,
          const std::shared_ptr<sf::Sprite> &clickedTexture);
@@ -25,7 +26,7 @@ private:
   bool  _hover;
   bool  _isClicked;
 
-  sf::Vector2f                _pos;
+  sf::FloatRect               _pos;
   std::shared_ptr<sf::Sprite> _displayTexture;
   std::shared_ptr<sf::Sprite> _hoverTexture;
   std::shared_ptr<sf::Sprite> _clickedTexture;

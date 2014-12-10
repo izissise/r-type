@@ -1,15 +1,12 @@
 #include "Button.hpp"
 
-Button::Button(const sf::Vector2f &pos,
+Button::Button(const sf::FloatRect &pos,
                const std::shared_ptr<sf::Sprite> &displayTexture,
                const std::shared_ptr<sf::Sprite> &hoverTexture,
                const std::shared_ptr<sf::Sprite> &clickedTexture)
 : _hover(false), _isClicked(false),
 _pos(pos), _displayTexture(displayTexture), _hoverTexture(hoverTexture), _clickedTexture(clickedTexture)
 {
-  _displayTexture->setPosition(_pos);
-  _hoverTexture->setPosition(_pos);
-  _clickedTexture->setPosition(_pos);
 }
 
 Button::~Button()
@@ -31,18 +28,14 @@ void  Button::update(const sf::Event &event)
     case sf::Event::MouseMoved:
       if (!isHover())
       {
-        sf::FloatRect  rect = _displayTexture->getGlobalBounds();
-
-        if (event.mouseMove.x >= _pos.x && event.mouseMove.x <= _pos.x + rect.width
-            && event.mouseMove.y >= _pos.y && event.mouseMove.y <= _pos.y + rect.height)
+        if (event.mouseMove.x >= _pos.left && event.mouseMove.x <= _pos.left + _pos.width
+            && event.mouseMove.y >= _pos.top && event.mouseMove.y <= _pos.top + _pos.height)
           _hover = true;
       }
       else
       {
-        sf::FloatRect  rect = _displayTexture->getGlobalBounds();
-
-        if (!(event.mouseMove.x >= _pos.x && event.mouseMove.x <= _pos.x + rect.width
-            && event.mouseMove.y >= _pos.y && event.mouseMove.y <= _pos.y + rect.height))
+        if (!(event.mouseMove.x >= _pos.left && event.mouseMove.x <= _pos.left + _pos.width
+            && event.mouseMove.y >= _pos.top && event.mouseMove.y <= _pos.top + _pos.height))
           _hover = false;
       }
       break;
@@ -55,17 +48,23 @@ void  Button::draw(sf::RenderWindow &win)
 {
   if (isClicked())
   {
-    _clickedTexture->setPosition(_pos);
+    auto size = _clickedTexture->getTextureRect();
+    _clickedTexture->setScale(_pos.width / size.width, _pos.height / size.height);
+    _clickedTexture->setPosition({_pos.left, _pos.top});
     win.draw(*_clickedTexture);
   }
   else if (isHover())
   {
-    _hoverTexture->setPosition(_pos);
+    auto size = _hoverTexture->getTextureRect();
+    _hoverTexture->setScale(_pos.width / size.width, _pos.height / size.height);
+    _hoverTexture->setPosition({_pos.left, _pos.top});
     win.draw(*_hoverTexture);
   }
   else
   {
-    _displayTexture->setPosition(_pos);
+    auto size = _displayTexture->getTextureRect();
+    _displayTexture->setScale(_pos.width / size.width, _pos.height / size.height);
+    _displayTexture->setPosition({_pos.left, _pos.top});
     win.draw(*_displayTexture);
   }
 }
