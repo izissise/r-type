@@ -19,9 +19,7 @@ Server::~Server()
 void Server::run()
 {
   while (1)
-    {
-      _net->poll();
-    }
+    _net->poll(true);
 }
 
 void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
