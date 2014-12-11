@@ -22,6 +22,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 # cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 find_package(Threads REQUIRED)
+find_package(SFML 2 COMPONENTS system window graphics audio)
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CheckIncludeFile)
@@ -161,6 +162,15 @@ file(
   test_files
   test/*
 )
+
+if (THREADS_FOUND)
+  target_link_libraries (${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
+endif()
+
+if (SFML_FOUND)
+  include_directories("${SFML_INCLUDE_DIR}")
+  target_link_libraries (${NAME_CLIENT} ${SFML_LIBRARIES})
+endif()
 
 # --- enable unit tests if desired ---
 if(BUILD_TESTS)
