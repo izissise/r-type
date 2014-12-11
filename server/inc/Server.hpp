@@ -18,7 +18,7 @@ class Server
 {
 public:
   Server(const std::string& addr, const std::string& port);
-  ~Server();
+  ~Server() = default;
 
   void run();
 
