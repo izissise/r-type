@@ -6,8 +6,12 @@
 # include <thread>
 # include <memory>
 # include "Observer.hpp"
-# include "APanel.hpp"
-# include "MenuPanel.hpp"
+# include "Panel.hpp"
+# include "TextEntry.hpp"
+# include "Button.hpp"
+# include "Image.hpp"
+# include "RessourceManager.hpp"
+# include "NetworkFactory.hpp"
 
 class ClientGame: public IObserver
 {
@@ -21,9 +25,13 @@ public:
   virtual void	trigger(const t_event &event);
   
 private:
-  std::vector<std::shared_ptr<APanel>> _panel;
-  sf::RenderWindow    _win;
-  bool                _done;
+  void  createMenuPanel();
+  
+  std::vector<std::shared_ptr<Panel>> _panel;
+  sf::RenderWindow                    _win;
+  bool                                _done;
+  
+  std::unique_ptr<Network::ABasicSocket>  _socket;
 };
 
 #endif
