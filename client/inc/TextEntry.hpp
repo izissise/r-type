@@ -4,8 +4,10 @@
 # include <SFML/Graphics.hpp>
 # include <iostream>
 # include <memory>
+# include "ADrawable.hpp"
+# include "Image.hpp"
 
-class TextEntry
+class TextEntry: public ADrawable
 {
 public:
   TextEntry(const std::string &placeHolder, const sf::FloatRect &pos, const std::shared_ptr<sf::Sprite> &back);
@@ -28,7 +30,7 @@ private:
   std::string                 _text;
   bool                        _first;
   bool                        _isHover;
-  std::shared_ptr<sf::Sprite> _background;
+  std::shared_ptr<Image>      _background;
   sf::Text                    _displayText;
   std::string                 _placeHolder;
 };

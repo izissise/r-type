@@ -4,8 +4,10 @@
 # include <SFML/Graphics.hpp>
 # include <iostream>
 # include <memory>
+# include "ADrawable.hpp"
+# include "Image.hpp"
 
-class Button
+class Button: public ADrawable
 {
 public:
   Button(const sf::FloatRect &pos,
@@ -20,6 +22,7 @@ public:
   bool  isHidden() const;
   bool  isHover() const;
   bool  isClicked() const;
+  void  onClick(const std::function<void ()> &func);
 
 private:
 
@@ -28,9 +31,10 @@ private:
   bool  _isClicked;
 
   sf::FloatRect               _pos;
-  std::shared_ptr<sf::Sprite> _displayTexture;
-  std::shared_ptr<sf::Sprite> _hoverTexture;
-  std::shared_ptr<sf::Sprite> _clickedTexture;
+  std::function<void ()>      _onClick;
+  std::shared_ptr<Image>      _hoverTexture;
+  std::shared_ptr<Image>      _displayTexture;
+  std::shared_ptr<Image>      _clickedTexture;
 };
 
 #endif

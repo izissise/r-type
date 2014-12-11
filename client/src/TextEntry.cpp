@@ -1,7 +1,7 @@
 #include "TextEntry.hpp"
 
 TextEntry::TextEntry(const std::string &placeHolder, const sf::FloatRect &pos, const std::shared_ptr<sf::Sprite> &back)
-: _pos(pos), _use(false), _text(""), _first(true), _isHover(false), _background(back),
+: ADrawable(), _pos(pos), _use(false), _text(""), _first(true), _isHover(false), _background(new Image(back)),
   _displayText(), _placeHolder(placeHolder)
 {
 }
@@ -47,7 +47,7 @@ void  TextEntry::draw(sf::RenderWindow &win)
 {
   sf::View  text(_pos);
 
-  text.setViewport(sf::FloatRect(0.f, 0.f, _pos.width / win.getSize().x, _pos.height / win.getSize().y));
+  text.setViewport(sf::FloatRect(_pos.left / win.getSize().x, _pos.top / win.getSize().y, _pos.width / win.getSize().x, _pos.height / win.getSize().y));
   win.setView(text);
   auto size = _background->getTextureRect();
   _background->setScale(_pos.width / size.width, _pos.height / size.height);
@@ -59,7 +59,7 @@ void  TextEntry::draw(sf::RenderWindow &win)
     _displayText.setString(_text);
   if (_displayText.getLocalBounds().width > _pos.width)
     _displayText.move(_pos.width - _displayText.getLocalBounds().width, 0);
-  win.draw(*_background);
+  _background->draw(win);
   win.draw(_displayText);
   win.setView(win.getDefaultView());
 }
@@ -79,8 +79,12 @@ void  TextEntry::update(const sf::Event &event)
     _use = true;
     _first = false;
   }
-  else if (!_isHover && event.type == sf::Event::MouseButtonReleased && _text.empty())
-    _first = true;
+  else if (!_isHover && event.type == sf::Event::MouseButtonReleased)
+  {
+    _use = false;
+    if (_text.empty())
+      _first = true;
+  }
   if (_use && event.type == sf::Event::KeyPressed)
   {
     if (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z)
