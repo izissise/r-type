@@ -15,7 +15,6 @@ Server::~Server()
 
 }
 
-
 void Server::run()
 {
   while (1)
@@ -25,8 +24,8 @@ void Server::run()
 void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
   std::shared_ptr<Network::AListenSocket> listener = that.lock();
-  std::shared_ptr<Network::ABasicSocket> nClient = listener->acceptClient();
+  std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
 
-  _clients.push_back(nClient);
-  _net->registerClient(nClient);
+  _clients.push_back(std::shared_ptr<Client>(new Client(nClientSock)));
+  _net->registerClient(nClientSock);
 }

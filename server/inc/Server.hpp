@@ -12,6 +12,8 @@
 #include "AListenSocket.hpp"
 #include "ABasicSocket.hpp"
 
+#include "Client.hpp"
+
 class Server
 {
 public:
@@ -26,7 +28,7 @@ protected:
 protected:
 	std::unique_ptr<Network::ANetwork> _net;
 	std::shared_ptr<Network::AListenSocket> _lobbyListener;
-	std::deque<std::shared_ptr<Network::ABasicSocket>> _clients;
+	std::deque<std::shared_ptr<Client>> _clients;
 };
 
 #endif

@@ -114,7 +114,6 @@ file(
   ${NAME_SERVER}/inc/*
 )
 
-include_directories("${INCLUDE_DIRECTORY}")
 include_directories("${NETWORKLIB_INCLUDE_DIRS}")
 
 add_library(
@@ -124,6 +123,8 @@ add_library(
   ${lib_source_files}
   ${lib_include_files}
 )
+
+set_property(TARGET ${NAME_LIB} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
 
 target_link_libraries(${NAME_LIB} NETWORKLIB_network)
 target_link_libraries(${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
@@ -137,6 +138,8 @@ if(BUILD_CLIENT)
     ${client_include_files}
   )
 
+  set_property(TARGET ${NAME_CLIENT} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_CLIENT}/inc")
+  set_property(TARGET ${NAME_CLIENT} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
   target_link_libraries(${NAME_CLIENT} ${NAME_LIB})
 endif()
 
@@ -148,6 +151,8 @@ if (BUILD_SERVER)
     ${server_include_files}
   )
 
+  set_property(TARGET ${NAME_SERVER} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_SERVER}/inc")
+  set_property(TARGET ${NAME_SERVER} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
   target_link_libraries(${NAME_SERVER} ${NAME_LIB})
 endif()
 
