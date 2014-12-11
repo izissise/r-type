@@ -22,10 +22,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
   std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
   std::shared_ptr<Client> nclient(new Client(nClientSock));
 
-  nClientSock->setReadeableCallback(std::bind(&Client::onReadeable, nclient));
-  nClientSock->setWritableCallback(std::bind(&Client::onWritable, nclient));
-
   _clients.push_back(nclient);
   _net->registerClient(nClientSock);
-  std::cout << "Hello from: " << nClientSock->getRemoteIpAddr() << ":" << nClientSock->getRemotePort() << std::endl;
+  std::cout << "New client: " << nClientSock->getRemoteIpAddr() << ":" << nClientSock->getRemotePort() << std::endl;
 }

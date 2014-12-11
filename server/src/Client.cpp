@@ -3,30 +3,19 @@
 #include <iostream>
 
 Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock)
-  : ClientHelper(sock)
+  : SocketClientHelper(sock)
 {
 }
 
-void Client::onReadeable()
+void Client::onRead(size_t readSize)
 {
   Network::Buffer buff;
-  std::cout << "Begin read" << std::endl;
-  _socket->read(buff, 1);
-
-  std::cout << "Read: " << buff << std::endl;
+  std::cout << "Read = " << readSize << std::endl;
+  _readBuff.readBuffer(buff, _readBuff.getLeftRead());
   _writeBuff.writeBuffer(buff);
-  _socket->setEventRequest(Network::ASocket::Event::RDWR);
 }
 
-void Client::onWritable()
+void Client::onWrite(size_t writeSize)
 {
-  Network::Buffer buff;
-
-  _writeBuff.readBuffer(buff, 5);
-  size_t read = _socket->write(buff);
-  _writeBuff.rollbackReadBuffer(5 - read);
-  if (_writeBuff.getLeftRead())
-    _socket->setEventRequest(Network::ASocket::Event::RDWR);
-  else
-    _socket->setEventRequest(Network::ASocket::Event::READ);
+  std::cout << "Write = " << writeSize << std::endl;
 }
