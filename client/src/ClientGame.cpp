@@ -73,32 +73,59 @@ void  ClientGame::createMenuPanel()
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
   
-  button->setTextureRect(sf::IntRect(0, 0, 100, 50));
-  hover->setTextureRect(sf::IntRect(0, 50, 100, 50));
-  click->setTextureRect(sf::IntRect(0, 100, 100, 50));
+  button->setTextureRect(sf::IntRect(0, 0, 200, 20));
+  hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
+  click->setTextureRect(sf::IntRect(0, 40, 200, 20));
   
-  auto _ipEntry = std::shared_ptr<TextEntry>(new TextEntry("ip:port", {0, 50, 200, 50}, button));
-  _ipEntry->setFont(*font);
-  _ipEntry->setTextColor(sf::Color::White);
-  _ipEntry->setCharacterSize(30);
+  auto ipEntry = std::shared_ptr<TextEntry>(new TextEntry("ip:port", {0, 50, 200, 50}, button));
+  ipEntry->setFont(*font);
+  ipEntry->setTextColor(sf::Color::White);
+  ipEntry->setCharacterSize(30);
   
-  auto _loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0, 100, 50}, button));
-  _loginEntry->setFont(*font);
-  _loginEntry->setTextColor(sf::Color::White);
-  _loginEntry->setCharacterSize(30);
+  auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0, 100, 50}, button));
+  loginEntry->setFont(*font);
+  loginEntry->setTextColor(sf::Color::White);
+  loginEntry->setCharacterSize(30);
   
-  auto _connect = std::shared_ptr<Button>(new Button({ 100, 100 , 200, 50}, button, hover, click));
-  auto _setting = std::shared_ptr<Button>(new Button({ 100, 150 , 100, 50 }, button, hover, click));
-  auto _exit = std::shared_ptr<Button>(new Button({ 100, 200 , 50, 50 }, button, hover, click));
-  auto _background = std::shared_ptr<Image>(new Image(background));
+  std::shared_ptr<Text> connectText(new Text("Connect"));
+  std::shared_ptr<Text> settingsText(new Text("Settings"));
+  std::shared_ptr<Text> quitText(new Text("Quit"));
+  connectText->setFont(*font);
+  settingsText->setFont(*font);
+  quitText->setFont(*font);
+  connectText->setColor(sf::Color::White);
+  settingsText->setColor(sf::Color::White);
+  quitText->setColor(sf::Color::White);
+  connectText->setCharacterSize(30);
+  settingsText->setCharacterSize(30);
+  quitText->setCharacterSize(30);
   
-  _exit->onClick([this]() { _done = true; });
+  auto connect = std::shared_ptr<Button>(new Button({ 100, 100 , 200, 50}, button, hover, click, connectText));
+  auto setting = std::shared_ptr<Button>(new Button({ 100, 150 , 100, 50 }, button, hover, click, settingsText));
+  auto exit = std::shared_ptr<Button>(new Button({ 100, 200 , 50, 50 }, button, hover, click, quitText));
+  auto back = std::shared_ptr<Image>(new Image(background));
   
-  menuPanel->add(_background);
-  menuPanel->add(_ipEntry);
-  menuPanel->add(_loginEntry);
-  menuPanel->add(_connect);
-  menuPanel->add(_setting);
-  menuPanel->add(_exit);
+  exit->onClick([this]() { _done = true; });
+  connect->onClick([this, loginEntry, ipEntry](){
+    std::string login = loginEntry->getText();
+    std::string ip = ipEntry->getText();
+
+    if (!login.empty() && !ip.empty())
+    {
+      int nbColon = std::count(ip.begin(), ip.end(), ':');
+      _socket = Network::NetworkFactory::createConnectSocket((nbColon % 2 == 0 ? ip : ip.substr(0, ip.find_last_of(':'))),
+                                                             (nbColon % 2 == 1 ? ip.substr(ip.find_last_of(':') + 1) : DEFAULTPORT ));
+      _socket->write("Salut");
+    }
+    else
+      std::cerr << "The login or the ip is not fill" << std::endl;
+  });
+  
+  menuPanel->add(back);
+  menuPanel->add(ipEntry);
+  menuPanel->add(loginEntry);
+  menuPanel->add(connect);
+  menuPanel->add(setting);
+  menuPanel->add(exit);
   _panel.push_back(menuPanel);
 }

@@ -6,6 +6,7 @@
 # include <memory>
 # include "ADrawable.hpp"
 # include "Image.hpp"
+# include "Text.hpp"
 
 class TextEntry: public ADrawable
 {
@@ -31,7 +32,7 @@ private:
   bool                        _first;
   bool                        _isHover;
   std::shared_ptr<Image>      _background;
-  sf::Text                    _displayText;
+  Text                        _displayText;
   std::string                 _placeHolder;
 };
 

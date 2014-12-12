@@ -3,9 +3,11 @@
 Button::Button(const sf::FloatRect &pos,
                const std::shared_ptr<sf::Sprite> &displayTexture,
                const std::shared_ptr<sf::Sprite> &hoverTexture,
-               const std::shared_ptr<sf::Sprite> &clickedTexture)
+               const std::shared_ptr<sf::Sprite> &clickedTexture,
+               const std::shared_ptr<Text> &text)
 : ADrawable(), _hover(false), _isClicked(false),
-_pos(pos), _hoverTexture(new Image(hoverTexture)), _displayTexture(new Image(displayTexture)), _clickedTexture(new Image(clickedTexture))
+_pos(pos), _hoverTexture(new Image(hoverTexture)), _displayTexture(new Image(displayTexture)),
+_clickedTexture(new Image(clickedTexture)), _text(text)
 {
 }
 
@@ -25,7 +27,8 @@ void  Button::update(const sf::Event &event)
       if (isClicked())
       {
         if (event.mouseButton.x >= _pos.left && event.mouseButton.x <= _pos.left + _pos.width
-            && event.mouseButton.y >= _pos.top && event.mouseButton.y <= _pos.top + _pos.height)
+            && event.mouseButton.y >= _pos.top && event.mouseButton.y <= _pos.top + _pos.height
+            && _onClick)
           _onClick();
         _isClicked = false;
       }
@@ -72,11 +75,8 @@ void  Button::draw(sf::RenderWindow &win)
     _displayTexture->setPosition({_pos.left, _pos.top});
     _displayTexture->draw(win);
   }
-}
-
-bool  Button::isHidden() const
-{
-  return _hide;
+  _text->setPosition({_pos.left, _pos.top});
+  _text->draw(win);
 }
 
 bool  Button::isHover() const

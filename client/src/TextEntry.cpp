@@ -60,7 +60,7 @@ void  TextEntry::draw(sf::RenderWindow &win)
   if (_displayText.getLocalBounds().width > _pos.width)
     _displayText.move(_pos.width - _displayText.getLocalBounds().width, 0);
   _background->draw(win);
-  win.draw(_displayText);
+  _displayText.draw(win);
   win.setView(win.getDefaultView());
 }
 
@@ -89,10 +89,14 @@ void  TextEntry::update(const sf::Event &event)
   {
     if (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z)
       _text += static_cast<char>(event.key.code + (event.key.shift == true ? 65 : 97));
-    else if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9)
+    if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9)
       _text += static_cast<char>(event.key.code + 22);
-    else if (event.key.code == sf::Keyboard::BackSpace)
+    if (event.key.code == sf::Keyboard::BackSpace)
       _text.pop_back();
+    if (event.key.code == sf::Keyboard::Period)
+      _text += '.';
+    if (event.key.code == sf::Keyboard::SemiColon && event.key.shift)
+      _text += ':';
   }
 
 }
