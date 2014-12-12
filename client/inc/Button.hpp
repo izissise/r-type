@@ -6,6 +6,7 @@
 # include <memory>
 # include "ADrawable.hpp"
 # include "Image.hpp"
+# include "Text.hpp"
 
 class Button: public ADrawable
 {
@@ -13,13 +14,13 @@ public:
   Button(const sf::FloatRect &pos,
          const std::shared_ptr<sf::Sprite> &displayTexture,
          const std::shared_ptr<sf::Sprite> &hoverTexture,
-         const std::shared_ptr<sf::Sprite> &clickedTexture);
+         const std::shared_ptr<sf::Sprite> &clickedTexture,
+         const std::shared_ptr<Text> &text);
   ~Button();
   
   void  update(const sf::Event &event);
   void  draw(sf::RenderWindow &win);
   
-  bool  isHidden() const;
   bool  isHover() const;
   bool  isClicked() const;
   void  onClick(const std::function<void ()> &func);
@@ -35,6 +36,7 @@ private:
   std::shared_ptr<Image>      _hoverTexture;
   std::shared_ptr<Image>      _displayTexture;
   std::shared_ptr<Image>      _clickedTexture;
+  std::shared_ptr<Text>       _text;
 };
 
 #endif
