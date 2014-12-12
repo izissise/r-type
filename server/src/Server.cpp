@@ -10,11 +10,6 @@ Server::Server(const std::string& addr, const std::string& port)
             << _lobbyListener->getListeningPort() << std::endl;
 }
 
-Server::~Server()
-{
-
-}
-
 void Server::run()
 {
   while (1)
@@ -25,7 +20,9 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
   std::shared_ptr<Network::AListenSocket> listener = that.lock();
   std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
+  std::shared_ptr<Client> nclient(new Client(nClientSock));
 
-  _clients.push_back(std::shared_ptr<Client>(new Client(nClientSock)));
+  _clients.push_back(nclient);
   _net->registerClient(nClientSock);
+  std::cout << "New client: " << nClientSock->getRemoteIpAddr() << ":" << nClientSock->getRemotePort() << std::endl;
 }

@@ -64,17 +64,18 @@ CURRENT_DATE(PROJECT_BUILD_DATE)
 set(lib_source_files "src/Error.cpp"
 					 "src/ANetwork.cpp"
 					 "src/NetworkFactory.cpp"
-					 "src/RingBuffer.cpp")
+					 "src/RingBuffer.cpp"
+					 "src/ClientHelper.cpp")
 
 set(BUILDTARGET "Unknown")
 if (WIN32)
 set(BUILDTARGET "WIN32")
 set(lib_source_files ${lib_source_files}
-			 "src/Win/WinNetwork.cpp"
 		     "src/Win/WinNetworkBasicSocket.cpp"
 		     "src/Win/WinNetworkConnectSocket.cpp"
 		     "src/Win/WinNetworkListenSocket.cpp"
-		     "src/Win/WinSocket.cpp")
+		     "src/Win/WinSocket.cpp"
+		     "src/Win/WinNetwork.cpp")
 elseif(UNIX)
 set(BUILDTARGET "UNIX")
 set(lib_source_files ${lib_source_files}
