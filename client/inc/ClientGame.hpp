@@ -2,6 +2,7 @@
 # define _CLIENTGAME_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <algorithm>
 # include <iostream>
 # include <thread>
 # include <memory>
@@ -12,6 +13,8 @@
 # include "Image.hpp"
 # include "RessourceManager.hpp"
 # include "NetworkFactory.hpp"
+
+# define DEFAULTPORT "8000"
 
 class ClientGame: public IObserver
 {
