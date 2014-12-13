@@ -7,12 +7,6 @@ namespace Packet {
   {
   }
 
-/*  std::string APacket::operator<<(const APacket&)
-  {
-	return to_bytes_body();
-  }
-*/
-
   std::string APacket::to_bytes() const
   {
     std::string ret;
@@ -36,4 +30,20 @@ namespace Packet {
       throw std::invalid_argument("Error while parsing packet");
     from_bytes_body(bytes);
   }
+
+  std::string& operator<<(std::string& a, const APacket& p)
+  {
+	a = p.to_bytes();
+	return a;
+  }
+
+  APacket& operator>>(const std::string& a, APacket& p)
+  {
+	p.from_bytes(a);
+	return p;
+  }
+
+  std::string& operator>>(const APacket& p, std::string& a) {return (a << p);}
+  APacket& operator<<(APacket& p, const std::string& a) {return (a >> p);}
+
 }

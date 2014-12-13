@@ -24,9 +24,6 @@ namespace Packet {
     APacket(Packet::APacket::PacketType type);
     virtual ~APacket() = default;
 
-  //  std::string operator<<(const APacket&) const;
-  //  std::string operator>>(APacket&);
-
     std::string to_bytes() const;
     void from_bytes(const std::string &bytes);
 
@@ -62,6 +59,12 @@ namespace Packet {
 
     PacketType       _type;
   };
+
+  std::string& operator<<(std::string& a, const APacket& p);
+  APacket& operator>>(const std::string& a, APacket& p);
+  std::string& operator>>(const APacket& p, std::string& a);
+  APacket& operator<<(APacket& p, const std::string& a);
+
 };
 
 #endif
