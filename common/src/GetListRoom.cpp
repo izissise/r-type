@@ -4,24 +4,24 @@ namespace Packet {
   GetListRoom::GetListRoom()
   : APacket(PacketType::GETLISTROOM), _list()
   {
-    
+
   }
-  
+
   GetListRoom::GetListRoom(const std::vector<t_room> &list)
   : APacket(PacketType::GETLISTROOM), _list(list)
   {
-    
+
   }
-  
+
   const std::vector<t_room>  &GetListRoom::getListRoom() const
   {
     return (_list);
   }
-  
-  const std::string GetListRoom::to_bytes_body() const
+
+  std::string GetListRoom::to_bytes_body() const
   {
     std::string ret("");
-    
+
     fill_bytes(ret, static_cast<uint32_t>(_list.size()));
     for (auto it : _list)
     {
@@ -33,12 +33,12 @@ namespace Packet {
     }
     return (ret);
   }
-  
+
   void GetListRoom::from_bytes_body(const std::string &bytes)
   {
     std::size_t pos = 1;
     uint32_t    listSize;
-    
+
     get_bytes(bytes, pos, listSize);
     _list.clear();
     for (uint32_t i = 0;i < listSize && pos < bytes.length();++i)
@@ -55,7 +55,7 @@ namespace Packet {
       get_bytes(bytes, pos, tmp.id);
       get_bytes(bytes, pos, tmp.playerMax);
       get_bytes(bytes, pos, tmp.nbPlayer);
-      
+
       _list.push_back(tmp);
     }
     if (_list.size() != listSize)

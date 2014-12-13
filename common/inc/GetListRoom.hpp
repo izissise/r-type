@@ -3,7 +3,7 @@
 
 # include <string>
 # include <vector>
-# include "APAcket.hpp"
+# include "APacket.hpp"
 # include "Room.hpp"
 
 namespace Packet {
@@ -12,13 +12,13 @@ namespace Packet {
   public:
     GetListRoom();
     GetListRoom(const std::vector<t_room> &);
-    
+
     const std::vector<t_room>  &getListRoom() const;
-    
+
   private:
-    virtual const std::string to_bytes_body() const;
-    virtual void from_bytes_body(const std::string &bytes);
-    
+    std::string to_bytes_body() const override;
+    void from_bytes_body(const std::string &bytes) override;
+
     std::vector<t_room>       _list;
   };
 };
