@@ -13,6 +13,7 @@
 #include "ABasicSocket.hpp"
 
 #include "Client.hpp"
+#include "Lobby.hpp"
 
 class Server
 {
@@ -22,13 +23,16 @@ public:
 
   void run();
 
-protected:
-	void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
+  Lobby& getLobby() {return _lobby;};
 
 protected:
-	std::unique_ptr<Network::ANetwork> _net;
-	std::shared_ptr<Network::AListenSocket> _lobbyListener;
-	std::deque<std::shared_ptr<Client>> _clients;
+  void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
+
+protected:
+  Lobby 						          _lobby;
+  std::unique_ptr<Network::ANetwork>      _net;
+  std::shared_ptr<Network::AListenSocket> _lobbyListener;
+  std::deque<std::shared_ptr<Client>>     _clients;
 };
 
 #endif

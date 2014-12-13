@@ -20,7 +20,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
   std::shared_ptr<Network::AListenSocket> listener = that.lock();
   std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
-  std::shared_ptr<Client> nclient(new Client(nClientSock));
+  std::shared_ptr<Client> nclient(new Client(nClientSock, *this));
 
   _clients.push_back(nclient);
   _net->registerClient(nClientSock);

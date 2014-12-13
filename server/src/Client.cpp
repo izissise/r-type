@@ -1,9 +1,11 @@
 #include "Client.hpp"
 
+#include "Server.hpp"
+
 #include <iostream>
 
-Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock)
-  : SocketClientHelper(sock)
+Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
+  : SocketClientHelper(sock), _server(serv)
 {
 }
 
