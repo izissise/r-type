@@ -22,7 +22,6 @@ namespace Packet {
 
   public:
     APacket(Packet::APacket::PacketType type);
-    APacket(const std::string& bytes);
     virtual ~APacket() = default;
 
     operator std::string();
