@@ -7,6 +7,16 @@ namespace Packet {
   {
   }
 
+  APacket::APacket(const std::string& bytes)
+  {
+
+  };
+
+  APacket::operator std::string()
+  {
+    return to_bytes();
+  }
+
   std::string APacket::to_bytes() const
   {
     std::string ret;

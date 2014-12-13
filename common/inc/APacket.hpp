@@ -22,7 +22,10 @@ namespace Packet {
 
   public:
     APacket(Packet::APacket::PacketType type);
+    APacket(const std::string& bytes);
     virtual ~APacket() = default;
+
+    operator std::string();
 
     std::string to_bytes() const;
     void from_bytes(const std::string &bytes);
