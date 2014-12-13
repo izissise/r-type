@@ -2,6 +2,7 @@
 # define _TEXT_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <memory>
 # include "ADrawable.hpp"
 
 class Text: public ADrawable

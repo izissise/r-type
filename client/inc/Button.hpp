@@ -2,6 +2,7 @@
 # define _BUTTON_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <functional>
 # include <iostream>
 # include <memory>
 # include "ADrawable.hpp"

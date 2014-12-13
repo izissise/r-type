@@ -2,6 +2,7 @@
 # define _IMAGE_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <memory>
 # include "ADrawable.hpp"
 
 class Image : public ADrawable
