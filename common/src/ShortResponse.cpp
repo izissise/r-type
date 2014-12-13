@@ -1,6 +1,8 @@
 #include "ShortResponse.hpp"
 
 namespace Packet {
+  uint16_t ShortResponse::headerNumber = 0;
+
   ShortResponse::ShortResponse()
   : APacket(PacketType::SHORTRESPONSE), _response(0)
   {

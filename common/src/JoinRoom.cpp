@@ -1,6 +1,8 @@
 #include "JoinRoom.hpp"
 
 namespace Packet {
+  uint16_t JoinRoom::headerNumber = 4;
+
   JoinRoom::JoinRoom()
   : APacket(PacketType::JOINROOM), _idRoom(0)
   {

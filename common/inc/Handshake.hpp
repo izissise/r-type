@@ -8,6 +8,9 @@
 namespace Packet {
   class Handshake : public APacket
   {
+  private:
+  	static uint16_t headerNumber;
+
   public:
     Handshake();
     Handshake(const std::string &, uint32_t protocoleVersion);
@@ -19,6 +22,7 @@ namespace Packet {
   private:
     std::string to_bytes_body() const override;
     void from_bytes_body(const std::string &bytes) override;
+	uint16_t getHeaderNumber() const override {return headerNumber;};
 
     uint32_t      _protocolVersion;
     std::string   _login;

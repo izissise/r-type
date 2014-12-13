@@ -2,6 +2,8 @@
 #include "Handshake.hpp"
 
 namespace Packet {
+  uint16_t Handshake::headerNumber = 1;
+
   Handshake::Handshake()
   : APacket(PacketType::HANDSHAKE), _protocolVersion(0), _login("")
   {
