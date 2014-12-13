@@ -1,12 +1,19 @@
+#include <iostream>
 #include "Handshake.hpp"
 
 namespace Packet {
-  Handshake::Handshake(const std::string &login, uint16_t protocoleVersion)
+  Handshake::Handshake()
+  : APacket(PacketType::HANDSHAKE), _protocolVersion(0), _login("")
+  {
+
+  }
+
+  Handshake::Handshake(const std::string &login, uint32_t protocoleVersion)
   : APacket(PacketType::HANDSHAKE), _protocolVersion(protocoleVersion), _login(login)
   {
-    
+
   }
-  
+
   const std::string Handshake::to_bytes_body() const
   {
     std::string ret = "";
@@ -15,15 +22,15 @@ namespace Packet {
     ret += _login;
     return (ret);
   }
-  
+
   void Handshake::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 0;
+    std::size_t pos = 1;
     uint16_t    loginLength = 0;
-    
+
     get_bytes(bytes, pos, _protocolVersion);
     get_bytes(bytes, pos, loginLength);
-    for (;pos < loginLength && bytes[pos] != '0';++pos)
+    for (;pos < bytes.length();++pos)
       _login += bytes[pos];
     if (_login.length() != loginLength)
       throw (std::runtime_error("Parse Failed: the login size is false"));
@@ -33,7 +40,7 @@ namespace Packet {
   {
     return _protocolVersion;
   }
-  
+
   const std::string &Handshake::getLogin() const
   {
     return _login;

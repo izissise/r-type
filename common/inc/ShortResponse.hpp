@@ -7,13 +7,14 @@ namespace Packet {
   class ShortResponse: public APacket
   {
   public:
+    ShortResponse();
     ShortResponse(uint8_t response);
-    
-    virtual const std::string to_bytes_body() const;
-    virtual void from_bytes_body(const std::string &bytes);
     
     uint8_t getResponse() const;
   private:
+    virtual const std::string to_bytes_body() const;
+    virtual void from_bytes_body(const std::string &bytes);
+
     uint8_t   _response;
   };
 }

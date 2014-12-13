@@ -1,6 +1,12 @@
 #include "ShortResponse.hpp"
 
 namespace Packet {
+  ShortResponse::ShortResponse()
+  : APacket(PacketType::SHORTRESPONSE), _response(0)
+  {
+    
+  }
+
   ShortResponse::ShortResponse(uint8_t response)
   : APacket(PacketType::SHORTRESPONSE), _response(response)
   {
@@ -16,7 +22,7 @@ namespace Packet {
   
   void ShortResponse::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 0;
+    std::size_t pos = 1;
     get_bytes(bytes, pos, _response);
   }
   
