@@ -112,6 +112,8 @@ void  ClientGame::createMenuPanel()
   auto exit = std::shared_ptr<Button>(new Button({ 100, 200 , 50, 50 }, button, hover, click, quitText));
   auto back = std::shared_ptr<Image>(new Image(background));
   
+  back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
+                 static_cast<float>(_win.getSize().y) / background->getTextureRect().height);
   exit->onClick([this]() { _done = true; });
   connect->onClick([this, loginEntry, ipEntry](){
     std::string login = loginEntry->getText();
