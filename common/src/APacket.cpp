@@ -1,5 +1,20 @@
 #include "APacket.hpp"
 
+template<>
+struct enum_traits<Packet::APacket::PacketType>
+{
+  static const Packet::APacket::PacketType enumerators[];
+};
+
+const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enumerators[] = {
+	Packet::APacket::PacketType::SHORTRESPONSE,
+	Packet::APacket::PacketType::HANDSHAKE,
+  	Packet::APacket::PacketType::GETLISTROOM,
+  	Packet::APacket::PacketType::CREATEROOM,
+  	Packet::APacket::PacketType::JOINROOM,
+  	Packet::APacket::PacketType::UNKNOW
+};
+
 namespace Packet {
 
   APacket::APacket(PacketType type)
@@ -10,6 +25,27 @@ namespace Packet {
   APacket::operator std::string()
   {
     return to_bytes();
+  }
+
+  Packet::APacket::PacketType APacket::toPacketType(uint16_t p)
+  {
+  	try {
+    return checkEnum<PacketType>(p);
+  	} catch (std::runtime_error& e)
+  	{}
+    return PacketType::UNKNOW;
+  }
+
+  Packet::APacket::PacketType APacket::toPacketType(const std::string& buff)
+  {
+	size_t i;
+    uint16_t res;
+
+    for (i = 0; i < 2 && i != buff.size(); ++i)
+      res = ((res << 8) | buff[i]);
+    if (i < 2 + 1)
+      return PacketType::UNKNOW;
+	return toPacketType(res);
   }
 
   std::string APacket::to_bytes() const

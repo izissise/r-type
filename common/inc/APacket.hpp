@@ -6,6 +6,8 @@
 # include <stdexcept>
 # include <cstdint>
 
+# include "EnumChecker.hpp"
+
 namespace Packet {
 
   class APacket
@@ -18,6 +20,7 @@ namespace Packet {
       GETLISTROOM = 2, //2
       CREATEROOM = 3, //3
       JOINROOM = 4,	 //4
+      UNKNOW,
     };
 
   public:
@@ -29,6 +32,11 @@ namespace Packet {
     std::string to_bytes() const;
     void from_bytes(const std::string &bytes);
 
+    static Packet::APacket::PacketType toPacketType(uint16_t p);
+	static Packet::APacket::PacketType toPacketType(const std::string& buff);
+
+	static uint16_t fromPacketType(Packet::APacket::PacketType p) {return static_cast<uint16_t>(p);};
+
   protected:
     virtual std::string to_bytes_body() const = 0;
     virtual void from_bytes_body(const std::string &bytes) = 0;
@@ -39,8 +47,7 @@ namespace Packet {
     {
       auto it = bytes.end();
 
-
-      for (std::size_t i = 0; i < sizeof(T); ++i)
+      for (size_t i = 0; i < sizeof(T); ++i)
       {
         it = bytes.insert(it, (nb & 0xFF));
         nb = nb >> 8;
@@ -50,9 +57,9 @@ namespace Packet {
     template <typename T>
     void get_bytes(const std::string &bytes, size_t &pos, T &nb) const
     {
-      std::size_t i = 0;
+      size_t i;
 
-      for (; i < sizeof(T) && pos + i != bytes.size(); ++i)
+      for (i = 0; i < sizeof(T) && pos + i != bytes.size(); ++i)
         nb = ((nb << 8) | bytes[pos + i]);
       pos += i;
       if (pos < sizeof(T) + 1)
