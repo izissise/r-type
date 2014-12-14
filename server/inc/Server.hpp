@@ -25,6 +25,9 @@ public:
 
   Lobby& getLobby() {return _lobby;};
 
+
+  void unregisterClient(const std::shared_ptr<Client>& cli);
+
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
 
