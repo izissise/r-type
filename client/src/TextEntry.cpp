@@ -91,7 +91,7 @@ void  TextEntry::update(const sf::Event &event)
       _text += static_cast<char>(event.key.code + (event.key.shift == true ? 65 : 97));
     if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9)
       _text += static_cast<char>(event.key.code + 22);
-    if (event.key.code == sf::Keyboard::BackSpace)
+    if (event.key.code == sf::Keyboard::BackSpace && !_text.empty())
       _text.pop_back();
     if (event.key.code == sf::Keyboard::Period)
       _text += '.';
