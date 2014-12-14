@@ -21,7 +21,7 @@ namespace Packet {
 
   private:
     std::string to_bytes_body() const override;
-    void from_bytes_body(const std::string &bytes) override;
+    std::size_t from_bytes_body(const std::string &bytes) override;
 	uint16_t getHeaderNumber() const override {return headerNumber;};
 
     uint32_t      _protocolVersion;
