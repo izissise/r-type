@@ -19,7 +19,7 @@ namespace Packet {
 
 
 APacket::APacket(PacketType type)
-  : _type(type), _begin(sizeof(_type))
+  : _type(type), _begin(sizeof(uint16_t))
 {
 }
 
@@ -89,5 +89,6 @@ APacket& operator>>(const std::string& a, APacket& p)
 
 std::string& operator>>(const APacket& p, std::string& a) {return (a << p);}
 APacket& operator<<(APacket& p, const std::string& a) {return (a >> p);}
+
 
 }

@@ -38,7 +38,7 @@ void  ClientGame::onRead(size_t sizeRead)
 
 void  ClientGame::onWrite(size_t sizeWrite)
 {
-  
+  std::cout << "Write" << std::endl;
 }
 
 bool  ClientGame::update()
@@ -126,7 +126,7 @@ void  ClientGame::createMenuPanel()
         Packet::Handshake packet(login);
         _network->registerClient(socket);
         setSocket(socket);
-        _readBuff.writeBuffer(packet.to_bytes());
+        _writeBuff.writeBuffer(packet.to_bytes());
         socket->setEventRequest(Network::ASocket::Event::RDWR);
         _isLoading = true;
       } catch (Network::Error &e) {
