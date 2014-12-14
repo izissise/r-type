@@ -29,7 +29,7 @@ namespace Packet {
     return (ret);
   }
 
-  void CreateRoom::from_bytes_body(const std::string &bytes)
+  std::size_t CreateRoom::from_bytes_body(const std::string &bytes)
   {
     std::size_t pos = _begin;
     uint16_t length;
@@ -42,5 +42,6 @@ namespace Packet {
       throw std::runtime_error("The size of the room's name is not right");
     get_bytes(bytes, pos, _room->playerMax);
     _room->nbPlayer = 0;
+    return pos - _begin;
   }
 }

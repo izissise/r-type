@@ -30,7 +30,7 @@ namespace Packet {
     operator std::string();
 
     std::string to_bytes() const;
-    void from_bytes(const std::string &bytes);
+    std::size_t from_bytes(const std::string &bytes);
 
     static Packet::APacket::PacketType toPacketType(uint16_t p);
 	static Packet::APacket::PacketType toPacketType(const std::string& buff);
@@ -39,7 +39,7 @@ namespace Packet {
 
   protected:
     virtual std::string to_bytes_body() const = 0;
-    virtual void from_bytes_body(const std::string &bytes) = 0;
+    virtual std::size_t from_bytes_body(const std::string &bytes) = 0;
     virtual uint16_t getHeaderNumber() const = 0;
 
     template <typename T>
