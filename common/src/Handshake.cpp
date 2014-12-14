@@ -27,7 +27,7 @@ namespace Packet {
 
   void Handshake::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 1;
+    std::size_t pos = _begin;
     uint16_t    loginLength = 0;
 
     get_bytes(bytes, pos, _protocolVersion);

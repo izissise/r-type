@@ -38,7 +38,7 @@ namespace Packet {
 
   void GetListRoom::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 1;
+    std::size_t pos = _begin;
     uint32_t    listSize;
 
     get_bytes(bytes, pos, listSize);
