@@ -16,6 +16,14 @@ void Server::run()
     _net->poll(true);
 }
 
+void Server::unregisterClient(const std::shared_ptr<Client>& cli)
+{
+  _clients.erase(std::remove_if(_clients.begin(), _clients.end(),
+  [&cli](std::shared_ptr<Client>& cl) -> bool {
+    return (cli == cl);
+  }), _clients.end());
+}
+
 void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
   std::shared_ptr<Network::AListenSocket> listener = that.lock();
