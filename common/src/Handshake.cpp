@@ -25,7 +25,7 @@ namespace Packet {
     return (ret);
   }
 
-  void Handshake::from_bytes_body(const std::string &bytes)
+  std::size_t Handshake::from_bytes_body(const std::string &bytes)
   {
     std::size_t pos = _begin;
     uint16_t    loginLength = 0;
@@ -35,7 +35,8 @@ namespace Packet {
     for (;pos < bytes.length();++pos)
       _login += bytes[pos];
     if (_login.length() != loginLength)
-      throw (std::runtime_error("Parse Failed: the login size is false"));
+      throw (std::runtime_error("Parse Failed: the login size is wrong"));
+    return (pos - _begin);
   }
 
   uint32_t Handshake::getProtocolVersion() const
