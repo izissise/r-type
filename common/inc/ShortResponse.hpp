@@ -16,7 +16,7 @@ namespace Packet {
     uint8_t getResponse() const;
   private:
     std::string to_bytes_body() const override;
-    void from_bytes_body(const std::string &bytes) override;
+    std::size_t from_bytes_body(const std::string &bytes) override;
     uint16_t getHeaderNumber() const override {return headerNumber;};
 
     uint8_t   _response;

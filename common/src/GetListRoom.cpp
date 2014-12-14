@@ -36,9 +36,9 @@ namespace Packet {
     return (ret);
   }
 
-  void GetListRoom::from_bytes_body(const std::string &bytes)
+  std::size_t GetListRoom::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 1;
+    std::size_t pos = _begin;
     uint32_t    listSize;
 
     get_bytes(bytes, pos, listSize);
@@ -62,6 +62,7 @@ namespace Packet {
     }
     if (_list.size() != listSize)
       throw std::runtime_error("The size of the room's list is not correct");
+    return (pos - _begin);
   }
 
 }

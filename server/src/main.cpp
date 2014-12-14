@@ -4,10 +4,8 @@
 
 #include "Server.hpp"
 
-int main(int ac, char *av[])
+int main([[gnu::unused]] int ac, [[gnu::unused]] char *av[])
 {
-  (void)ac;
-  (void)av;
   try {
       Server serv("::1", "9632");
       serv.run();

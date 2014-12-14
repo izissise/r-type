@@ -7,13 +7,13 @@ Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
 {
 }
 
-void Client::onRead(size_t)
+void Client::onRead([[gnu::unused]] size_t read)
 {
   Network::Buffer buff;
   _readBuff.readBuffer(buff, _readBuff.getLeftRead());
   _writeBuff.writeBuffer(buff);
 }
 
-void Client::onWrite(size_t)
+void Client::onWrite([[gnu::unused]] size_t write)
 {
 }

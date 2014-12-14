@@ -22,10 +22,11 @@ namespace Packet {
     return ret;
   }
 
-  void ShortResponse::from_bytes_body(const std::string &bytes)
+  std::size_t ShortResponse::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 1;
+    std::size_t pos = _begin;
     get_bytes(bytes, pos, _response);
+    return (pos - _begin);
   }
 
   uint8_t ShortResponse::getResponse() const
