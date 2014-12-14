@@ -18,7 +18,7 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
 namespace Packet {
 
 APacket::APacket(PacketType type)
-  : _type(type), _begin(sizeof(_type))
+  : _type(type), _begin(sizeof(uint16_t))
 {
 }
 

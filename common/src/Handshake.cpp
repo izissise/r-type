@@ -10,8 +10,8 @@ namespace Packet {
 
   }
 
-  Handshake::Handshake(const std::string &login, uint32_t protocoleVersion)
-  : APacket(PacketType::HANDSHAKE), _protocolVersion(protocoleVersion), _login(login)
+  Handshake::Handshake(const std::string &login)
+  : APacket(PacketType::HANDSHAKE), _protocolVersion(PROTOCOLE_VERSION), _login(login)
   {
 
   }

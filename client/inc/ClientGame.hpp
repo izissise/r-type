@@ -13,10 +13,12 @@
 # include "Image.hpp"
 # include "RessourceManager.hpp"
 # include "NetworkFactory.hpp"
+# include "Handshake.hpp"
+# include "ClientHelper.hpp"
 
 # define DEFAULTPORT "8000"
 
-class ClientGame: public IObserver
+class ClientGame: public Network::SocketClientHelper
 {
 public:
   ClientGame();
@@ -25,16 +27,20 @@ public:
   void  run();
   bool  update();
   void  draw();
-  virtual void	trigger(const t_event &event);
-  
+
 private:
+  void  onRead(size_t sizeRead) override;
+  void  onWrite(size_t sizeWrite) override;
+  
   void  createMenuPanel();
-  
-  std::vector<std::shared_ptr<Panel>> _panel;
-  sf::RenderWindow                    _win;
-  bool                                _done;
-  
-  std::unique_ptr<Network::ABasicSocket>  _socket;
+  void  createLoadingPanel();
+    
+  sf::RenderWindow                                        _win;
+  bool                                                    _done;
+  bool                                                    _isLoading;
+  Panel::PanelId                                          _currentPanel;
+  std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
+  std::unique_ptr<Network::ANetwork>                      _network;  
 };
 
 #endif

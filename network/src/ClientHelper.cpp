@@ -21,6 +21,7 @@ void SocketClientHelper::setSocket(const std::shared_ptr<Network::ABasicSocket>&
   _socket = sock;
   _socket->setReadeableCallback(std::bind(&SocketClientHelper::onReadeable, this));
   _socket->setWritableCallback(std::bind(&SocketClientHelper::onWritable, this));
+  _connected = true;
 }
 
 void SocketClientHelper::onReadeable()
