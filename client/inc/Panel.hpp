@@ -9,8 +9,15 @@
 class Panel : public ADrawable
 {
 public:
-  Panel(bool hide = false
-        );
+  
+  enum class PanelId
+  {
+    LOADINGPANEL = 1,
+    MENUPANEL = 2,
+    LISTPANEL = 3,
+  };
+  
+  Panel(bool hide = false);
   virtual ~Panel() {};
 
   virtual void update(const sf::Event &);

@@ -3,7 +3,9 @@
 ClientGame::ClientGame()
 : SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _network(Network::NetworkFactory::createNetwork())
 {
+  _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
+  createLoadingPanel();
 //  _panel.push_back(std::shared_ptr<APanel>(new ConnectionPanel(true)));
 }
 
@@ -43,28 +45,26 @@ bool  ClientGame::update()
 {
   sf::Event event;
 
-  if (getConnected())
+  if (isConnected())
     _network->poll();
-  for (auto it : _panel)
-    if (!it->isHidden())
-      while (_win.pollEvent(event))
-      {
-        if (event.type == sf::Event::Closed)
-          return (false);
-        it->update(event);
-      }
+    while (_win.pollEvent(event))
+    {
+      if (event.type == sf::Event::Closed)
+        return (false);
+      if (!_isLoading)
+        _panel[_currentPanel]->update(event);
+      else
+        _panel[Panel::PanelId::LOADINGPANEL]->update(event);      
+    }
   return (true);
 }
 
 void  ClientGame::draw()
 {
   _win.clear();
-  for (auto it : _panel)
-    if (!it->isHidden())
-    {
-      it->draw(_win);
-      break;
-    }
+  _panel[_currentPanel]->draw(_win);
+  if (_isLoading)
+    _panel[Panel::PanelId::LOADINGPANEL]->draw(_win);
   _win.display();
 }
 
@@ -128,7 +128,7 @@ void  ClientGame::createMenuPanel()
         setSocket(socket);
         _readBuff.writeBuffer(packet.to_bytes());
         socket->setEventRequest(Network::ASocket::Event::RDWR);
-        
+        _isLoading = true;
       } catch (Network::Error &e) {
         std::cerr << e.what() << std::endl;
       }
@@ -143,5 +143,37 @@ void  ClientGame::createMenuPanel()
   menuPanel->add(connect);
   menuPanel->add(setting);
   menuPanel->add(exit);
-  _panel.push_back(menuPanel);
+  _panel[Panel::PanelId::MENUPANEL] = menuPanel;
+}
+
+void  ClientGame::createLoadingPanel()
+{
+  auto loadingPanel = std::shared_ptr<Panel>(new Panel());
+  auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
+  auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
+  auto font = RessourceManager::instance().getFont("../assets/font.ttf");
+  
+  std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
+  std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
+  std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
+  std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
+  
+  button->setTextureRect(sf::IntRect(0, 0, 200, 20));
+  hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
+  click->setTextureRect(sf::IntRect(0, 40, 200, 20));
+
+  std::shared_ptr<Text> cancelText(new Text("Cancel"));
+  cancelText->setFont(*font);
+  cancelText->setColor(sf::Color::White);
+  cancelText->setCharacterSize(30);
+
+  auto cancel = std::shared_ptr<Button>(new Button({ 100, 100 , 200, 50}, button, hover, click, cancelText));
+  cancel->onClick([this] {
+    std::cout << "Cancel" << std::endl;
+    _isLoading = false;
+  });
+  
+  loadingPanel->add(cancel);
+  
+  _panel[Panel::PanelId::LOADINGPANEL] = loadingPanel;
 }
