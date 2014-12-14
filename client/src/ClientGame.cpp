@@ -1,7 +1,7 @@
 #include "ClientGame.hpp"
 
 ClientGame::ClientGame()
-: _win({1920, 1080}, "R-Type"), _done(false)
+: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _network(Network::NetworkFactory::createNetwork())
 {
   createMenuPanel();
 //  _panel.push_back(std::shared_ptr<APanel>(new ConnectionPanel(true)));
@@ -29,10 +29,22 @@ void ClientGame::run()
   }
 }
 
+void  ClientGame::onRead(size_t sizeRead)
+{
+  
+}
+
+void  ClientGame::onWrite(size_t sizeWrite)
+{
+  
+}
+
 bool  ClientGame::update()
 {
   sf::Event event;
 
+  if (getConnected())
+    _network->poll();
   for (auto it : _panel)
     if (!it->isHidden())
       while (_win.pollEvent(event))
@@ -56,11 +68,6 @@ void  ClientGame::draw()
   _win.display();
 }
 
-void	ClientGame::trigger(const t_event &event)
-{
-  std::cout << "TRIGGER" << std::endl;
-}
-
 void  ClientGame::createMenuPanel()
 {
   auto menuPanel = std::shared_ptr<Panel>(new Panel());
@@ -82,7 +89,7 @@ void  ClientGame::createMenuPanel()
   ipEntry->setTextColor(sf::Color::White);
   ipEntry->setCharacterSize(30);
   
-  auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0, 100, 50}, button));
+  auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0, 200, 50}, button));
   loginEntry->setFont(*font);
   loginEntry->setTextColor(sf::Color::White);
   loginEntry->setCharacterSize(30);
@@ -113,9 +120,18 @@ void  ClientGame::createMenuPanel()
     if (!login.empty() && !ip.empty())
     {
       int nbColon = std::count(ip.begin(), ip.end(), ':');
-      _socket = Network::NetworkFactory::createConnectSocket((nbColon % 2 == 0 ? ip : ip.substr(0, ip.find_last_of(':'))),
-                                                             (nbColon % 2 == 1 ? ip.substr(ip.find_last_of(':') + 1) : DEFAULTPORT ));
-      _socket->write("Salut");
+      try {
+        std::shared_ptr<Network::ABasicSocket> socket = Network::NetworkFactory::createConnectSocket((nbColon % 2 == 0 ? ip : ip.substr(0, ip.find_last_of(':'))),
+                                                                                                     (nbColon % 2 == 1 ? ip.substr(ip.find_last_of(':') + 1) : DEFAULTPORT ));
+        Packet::Handshake packet(login);
+        _network->registerClient(socket);
+        setSocket(socket);
+        _readBuff.writeBuffer(packet.to_bytes());
+        socket->setEventRequest(Network::ASocket::Event::RDWR);
+        
+      } catch (Network::Error &e) {
+        std::cerr << e.what() << std::endl;
+      }
     }
     else
       std::cerr << "The login or the ip is not fill" << std::endl;

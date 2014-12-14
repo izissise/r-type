@@ -5,15 +5,17 @@
 # include <string>
 # include "APacket.hpp"
 
+# define PROTOCOLE_VERSION 0x01000000
+
 namespace Packet {
   class Handshake : public APacket
-  {
+  { 
   private:
   	static uint16_t headerNumber;
 
   public:
     Handshake();
-    Handshake(const std::string &, uint32_t protocoleVersion);
+    Handshake(const std::string &);
 
 
     uint32_t getProtocolVersion() const;
