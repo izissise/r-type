@@ -2,7 +2,7 @@
 #include "Handshake.hpp"
 
 namespace Packet {
-  uint16_t Handshake::headerNumber = 1;
+  uint16_t Handshake::headerNumber = static_cast<uint16_t>(APacket::PacketType::HANDSHAKE);
 
   Handshake::Handshake()
   : APacket(PacketType::HANDSHAKE), _protocolVersion(0), _login("")

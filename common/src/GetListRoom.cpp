@@ -1,7 +1,7 @@
 #include "GetListRoom.hpp"
 
 namespace Packet {
-  uint16_t GetListRoom::headerNumber = 2;
+  uint16_t GetListRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::GETLISTROOM);;
 
   GetListRoom::GetListRoom()
   : APacket(PacketType::GETLISTROOM), _list()

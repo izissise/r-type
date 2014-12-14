@@ -1,7 +1,7 @@
 #include "CreateRoom.hpp"
 
 namespace Packet {
-  uint16_t CreateRoom::headerNumber = 3;
+  uint16_t CreateRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::CREATEROOM);
 
   CreateRoom::CreateRoom()
   : APacket(PacketType::CREATEROOM), _room(nullptr)

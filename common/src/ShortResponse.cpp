@@ -1,7 +1,7 @@
 #include "ShortResponse.hpp"
 
 namespace Packet {
-  uint16_t ShortResponse::headerNumber = 0;
+  uint16_t ShortResponse::headerNumber = static_cast<uint16_t>(APacket::PacketType::SHORTRESPONSE);
 
   ShortResponse::ShortResponse()
   : APacket(PacketType::SHORTRESPONSE), _response(0)

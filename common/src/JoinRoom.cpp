@@ -1,7 +1,7 @@
 #include "JoinRoom.hpp"
 
 namespace Packet {
-  uint16_t JoinRoom::headerNumber = 4;
+  uint16_t JoinRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::JOINROOM);
 
   JoinRoom::JoinRoom()
   : APacket(PacketType::JOINROOM), _idRoom(0)

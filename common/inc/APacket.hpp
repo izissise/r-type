@@ -13,11 +13,11 @@ namespace Packet {
   public:
     enum class PacketType
     {
-      SHORTRESPONSE, //0
-      HANDSHAKE, 	//1
-      GETLISTROOM, //2
-      CREATEROOM, //3
-      JOINROOM,	 //4
+      SHORTRESPONSE = 0, //0
+      HANDSHAKE = 1, 	//1
+      GETLISTROOM = 2, //2
+      CREATEROOM = 3, //3
+      JOINROOM = 4,	 //4
     };
 
   public:
