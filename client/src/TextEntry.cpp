@@ -68,8 +68,8 @@ void  TextEntry::update(const sf::Event &event)
 {
   if (event.type == sf::Event::MouseMoved)
   {
-    if (event.mouseMove.x >= _pos.left && event.mouseMove.x <= _pos.left + _pos.width
-        && event.mouseMove.y >= _pos.top && event.mouseMove.y <= _pos.top + _pos.height)
+    if (event.mouseMove.x >= _pos.left && event.mouseMove.x < _pos.left + _pos.width
+        && event.mouseMove.y >= _pos.top && event.mouseMove.y < _pos.top + _pos.height)
       _isHover = true;
     else
       _isHover = false;

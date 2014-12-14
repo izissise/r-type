@@ -26,8 +26,8 @@ void  Button::update(const sf::Event &event)
     case sf::Event::MouseButtonReleased:
       if (isClicked())
       {
-        if (event.mouseButton.x >= _pos.left && event.mouseButton.x <= _pos.left + _pos.width
-            && event.mouseButton.y >= _pos.top && event.mouseButton.y <= _pos.top + _pos.height
+        if (event.mouseButton.x >= _pos.left && event.mouseButton.x < _pos.left + _pos.width
+            && event.mouseButton.y >= _pos.top && event.mouseButton.y < _pos.top + _pos.height
             && _onClick)
           _onClick();
         _isClicked = false;
@@ -36,14 +36,14 @@ void  Button::update(const sf::Event &event)
     case sf::Event::MouseMoved:
       if (!isHover())
       {
-        if (event.mouseMove.x >= _pos.left && event.mouseMove.x <= _pos.left + _pos.width
-            && event.mouseMove.y >= _pos.top && event.mouseMove.y <= _pos.top + _pos.height)
+        if (event.mouseMove.x >= _pos.left && event.mouseMove.x < _pos.left + _pos.width
+            && event.mouseMove.y >= _pos.top && event.mouseMove.y < _pos.top + _pos.height)
           _hover = true;
       }
       else
       {
-        if (!(event.mouseMove.x >= _pos.left && event.mouseMove.x <= _pos.left + _pos.width
-            && event.mouseMove.y >= _pos.top && event.mouseMove.y <= _pos.top + _pos.height))
+        if (!(event.mouseMove.x >= _pos.left && event.mouseMove.x < _pos.left + _pos.width
+            && event.mouseMove.y >= _pos.top && event.mouseMove.y < _pos.top + _pos.height))
           _hover = false;
       }
       break;
@@ -54,6 +54,10 @@ void  Button::update(const sf::Event &event)
 
 void  Button::draw(sf::RenderWindow &win)
 {
+  sf::View  text(_pos);
+  
+  text.setViewport(sf::FloatRect(_pos.left / win.getSize().x, _pos.top / win.getSize().y, _pos.width / win.getSize().x, _pos.height / win.getSize().y));
+  win.setView(text);
   if (isClicked())
   {
     auto size = _clickedTexture->getTextureRect();
@@ -77,6 +81,7 @@ void  Button::draw(sf::RenderWindow &win)
   }
   _text->setPosition({_pos.left, _pos.top});
   _text->draw(win);
+  win.setView(win.getDefaultView());
 }
 
 bool  Button::isHover() const
