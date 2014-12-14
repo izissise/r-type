@@ -28,10 +28,9 @@ void Client::onRead(size_t nbRead)
   Packet::APacket::PacketType pack;
   bool isPacket = false;
 
-  std::cout << "Onread" << std::endl;
   if (nbRead == 0)
     {
-      std::cout << "Unregister client" << std::endl;
+      std::cout << "Unregistered client" << std::endl;
       _server.unregisterClient(shared_from_this());
       return;
     }
@@ -50,7 +49,7 @@ void Client::onRead(size_t nbRead)
       else
         {
           _readBuff.rollbackReadBuffer(headerSize - 1);
-          std::cout << "Unknown Packet: " << std::hex << (int)(buff[0]) << (int)(buff[1]) << std::dec << std::endl;
+          std::cout << "Unknown Packet" << std::endl;
         }
     }
 }
@@ -69,7 +68,7 @@ bool Client::netHandshake(const Network::Buffer& data)
   size_t readSize = 200;
   Packet::Handshake hand;
   size_t  nbUsed;
-std::cout << "handshake" << std::endl;
+
   try {
       Network::Buffer buff;
       Network::Buffer tmpBuff(data);
@@ -84,7 +83,6 @@ std::cout << "handshake" << std::endl;
     }
   catch (std::exception& e)
     {
-    	std::cout << "fail shaking hands!" << std::endl;
       _readBuff.rollbackReadBuffer(readSize);
       return false;
     }
