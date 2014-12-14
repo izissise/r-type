@@ -67,6 +67,7 @@ namespace Packet {
     }
 
     PacketType       _type;
+    uint32_t         _begin;
   };
 
   std::string& operator<<(std::string& a, const APacket& p);

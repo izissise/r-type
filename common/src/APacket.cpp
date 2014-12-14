@@ -18,7 +18,7 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
 namespace Packet {
 
   APacket::APacket(PacketType type)
-  : _type(type)
+  : _type(type), _begin(sizeof(_type) + sizeof(uint32_t))
   {
   }
 
@@ -51,11 +51,14 @@ namespace Packet {
   std::string APacket::to_bytes() const
   {
     std::string ret;
+    std::string packet;
     uint8_t		type;
 
     type = getHeaderNumber();
     fill_bytes(ret, type);
-    ret += to_bytes_body();
+    packet = to_bytes_body();
+    fill_bytes(ret, static_cast<uint32_t>(packet.size()));
+    ret += packet;
     return (ret);
   }
 

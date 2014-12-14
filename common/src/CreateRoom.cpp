@@ -31,7 +31,7 @@ namespace Packet {
 
   void CreateRoom::from_bytes_body(const std::string &bytes)
   {
-    std::size_t pos = 1;
+    std::size_t pos = _begin;
     uint16_t length;
 
     _room.reset(new t_room());
