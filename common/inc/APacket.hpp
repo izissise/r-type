@@ -1,7 +1,6 @@
 #ifndef _APACKET_HPP_
 # define _APACKET_HPP_
 
-# include <iostream>
 # include <string>
 # include <stdexcept>
 # include <cstdint>
@@ -30,7 +29,7 @@ namespace Packet {
     operator std::string();
 
     std::string to_bytes() const;
-    std::size_t from_bytes(const std::string &bytes);
+    size_t from_bytes(const std::string &bytes);
 
     static Packet::APacket::PacketType toPacketType(uint16_t p);
 	static Packet::APacket::PacketType toPacketType(const std::string& buff);
@@ -62,7 +61,7 @@ namespace Packet {
       for (i = 0; i < sizeof(T) && pos + i != bytes.size(); ++i)
         nb = ((nb << 8) | bytes[pos + i]);
       pos += i;
-      if (pos < sizeof(T) + 1)
+      if (i < sizeof(T))
         throw std::invalid_argument("Error while parsing packet");
     }
 
