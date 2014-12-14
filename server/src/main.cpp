@@ -4,7 +4,7 @@
 
 #include "Server.hpp"
 
-int main([[gnu::unused]] int ac, [[gnu::unused]] char *av[])
+int main(int, char**)
 {
   try {
       Server serv("::1", "9632");
