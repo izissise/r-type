@@ -19,6 +19,7 @@ namespace Packet {
       GETLISTROOM = 2, //2
       CREATEROOM = 3, //3
       JOINROOM = 4,	 //4
+      ASKLISTROOM = 5, //5
       UNKNOW,
     };
 
