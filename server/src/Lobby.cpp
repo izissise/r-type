@@ -8,11 +8,12 @@ Lobby::Lobby()
 
 }
 
-void Lobby::newRoom(const t_room& r)
+size_t Lobby::newRoom(const t_room& r)
 {
   _rooms.insert(std::pair<size_t, ServerRoom>(_roomId, ServerRoom(r.name, _roomId, r.playerMax)));
   std::cout << "New room: " << r.name << std::endl;
   _roomId++;
+  return _roomId - 1;
 }
 
 std::vector<t_room> Lobby::roomLists() const
@@ -30,4 +31,17 @@ std::vector<t_room> Lobby::roomLists() const
       roomList.push_back(ro);
     }
   return roomList;
+}
+
+bool Lobby::joinRoom(const std::shared_ptr<Client>& cli, size_t roomId)
+{
+  try
+    {
+      (_rooms.at(roomId)).addPlayer(cli);
+      return true;
+    }
+  catch (std::exception& e)
+    {
+      return false;
+    }
 }

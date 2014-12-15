@@ -6,6 +6,7 @@
 #include "Server.hpp"
 
 #include "Handshake.hpp"
+#include "CreateRoom.hpp"
 
 std::map<Packet::APacket::PacketType, bool (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
@@ -95,12 +96,55 @@ bool Client::netHandshake(const Network::Buffer& data)
 
 bool Client::netGetListRoom(const Network::Buffer&)
 {
-  return false;
+  /* size_t readSize = 200;
+   Packet::GetListRoom listRoom;
+   size_t  nbUsed;
+
+   try {
+       Network::Buffer buff;
+       Network::Buffer tmpBuff(data);
+       _readBuff.readBuffer(buff, readSize);
+       readSize = buff.size();
+       tmpBuff += buff;
+       nbUsed = listRoom.from_bytes(tmpBuff);
+       _readBuff.rollbackReadBuffer(readSize - nbUsed);
+
+       _protoVersion = hand.getProtocolVersion();
+       std::cout << _login << " " << _protoVersion << std::endl;
+     }
+   catch (std::exception& e)
+     {
+       _readBuff.rollbackReadBuffer(readSize);
+       return false;
+     }*/
+  return true;
 }
 
-bool Client::netCreateRoom(const Network::Buffer&)
+bool Client::netCreateRoom(const Network::Buffer& data)
 {
-  return false;
+  size_t readSize = 200;
+  Packet::CreateRoom cr;
+  size_t  nbUsed;
+
+  try {
+      Network::Buffer buff;
+      Network::Buffer tmpBuff(data);
+      _readBuff.readBuffer(buff, readSize);
+      readSize = buff.size();
+      tmpBuff += buff;
+      nbUsed = cr.from_bytes(tmpBuff);
+      _readBuff.rollbackReadBuffer(readSize - nbUsed);
+      t_room roomName = *(cr.getRoom());
+      size_t rId = _server.getLobby().newRoom(roomName);
+      std::cout  << "New room: " << roomName.name << std::endl;
+      bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
+    }
+  catch (std::exception& e)
+    {
+      _readBuff.rollbackReadBuffer(readSize);
+      return false;
+    }
+  return true;
 }
 
 bool Client::netJoinRoom(const Network::Buffer&)

@@ -16,9 +16,10 @@ public:
   Lobby();
   virtual ~Lobby() = default;
 
-  void newRoom(const t_room& r);
+  size_t newRoom(const t_room& r);
   std::vector<t_room> roomLists() const;
   const std::map<size_t, ServerRoom>& getRoomMap() const {return _rooms;};
+  bool joinRoom(const std::shared_ptr<Client>& cli, size_t roomId);
 
 private:
   size_t					   _roomId;
