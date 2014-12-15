@@ -31,16 +31,17 @@ public:
 private:
   void  onRead(size_t sizeRead) override;
   void  onWrite(size_t sizeWrite) override;
-  
+  void  onDisconnet() override;
+
   void  createMenuPanel();
   void  createLoadingPanel();
-    
+
   sf::RenderWindow                                        _win;
   bool                                                    _done;
   bool                                                    _isLoading;
   Panel::PanelId                                          _currentPanel;
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
-  std::unique_ptr<Network::ANetwork>                      _network;  
+  std::unique_ptr<Network::ANetwork>                      _network;
 };
 
 #endif
