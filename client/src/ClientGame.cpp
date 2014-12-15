@@ -11,7 +11,7 @@ ClientGame::ClientGame()
 
 ClientGame::~ClientGame()
 {
-  
+
 }
 
 void ClientGame::run()
@@ -33,12 +33,16 @@ void ClientGame::run()
 
 void  ClientGame::onRead(size_t sizeRead)
 {
-  
+
 }
 
 void  ClientGame::onWrite(size_t sizeWrite)
 {
   std::cout << "Write" << std::endl;
+}
+
+void ClientGame::onDisconnet()
+{
 }
 
 bool  ClientGame::update()
@@ -54,7 +58,7 @@ bool  ClientGame::update()
       if (!_isLoading)
         _panel[_currentPanel]->update(event);
       else
-        _panel[Panel::PanelId::LOADINGPANEL]->update(event);      
+        _panel[Panel::PanelId::LOADINGPANEL]->update(event);
     }
   return (true);
 }
@@ -74,26 +78,26 @@ void  ClientGame::createMenuPanel()
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
-  
+
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
-  
+
   button->setTextureRect(sf::IntRect(0, 0, 200, 20));
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
-  
+
   auto ipEntry = std::shared_ptr<TextEntry>(new TextEntry("ip:port", {0, 50, 200, 50}, button));
   ipEntry->setFont(*font);
   ipEntry->setTextColor(sf::Color::White);
   ipEntry->setCharacterSize(30);
-  
+
   auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {0, 0, 200, 50}, button));
   loginEntry->setFont(*font);
   loginEntry->setTextColor(sf::Color::White);
   loginEntry->setCharacterSize(30);
-  
+
   std::shared_ptr<Text> connectText(new Text("Connect"));
   std::shared_ptr<Text> settingsText(new Text("Settings"));
   std::shared_ptr<Text> quitText(new Text("Quit"));
@@ -106,12 +110,12 @@ void  ClientGame::createMenuPanel()
   connectText->setCharacterSize(30);
   settingsText->setCharacterSize(30);
   quitText->setCharacterSize(30);
-  
+
   auto connect = std::shared_ptr<Button>(new Button({ 100, 100 , 200, 50}, button, hover, click, connectText));
   auto setting = std::shared_ptr<Button>(new Button({ 100, 150 , 100, 50 }, button, hover, click, settingsText));
   auto exit = std::shared_ptr<Button>(new Button({ 100, 200 , 50, 50 }, button, hover, click, quitText));
   auto back = std::shared_ptr<Image>(new Image(background));
-  
+
   exit->onClick([this]() { _done = true; });
   connect->onClick([this, loginEntry, ipEntry](){
     std::string login = loginEntry->getText();
@@ -136,7 +140,7 @@ void  ClientGame::createMenuPanel()
     else
       std::cerr << "The login or the ip is not fill" << std::endl;
   });
-  
+
   menuPanel->add(back);
   menuPanel->add(ipEntry);
   menuPanel->add(loginEntry);
@@ -152,12 +156,12 @@ void  ClientGame::createLoadingPanel()
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
-  
+
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
-  
+
   button->setTextureRect(sf::IntRect(0, 0, 200, 20));
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
@@ -172,8 +176,8 @@ void  ClientGame::createLoadingPanel()
     std::cout << "Cancel" << std::endl;
     _isLoading = false;
   });
-  
+
   loadingPanel->add(cancel);
-  
+
   _panel[Panel::PanelId::LOADINGPANEL] = loadingPanel;
 }

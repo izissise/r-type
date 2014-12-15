@@ -59,7 +59,7 @@ void Client::onDisconnet()
   std::shared_ptr<Client> tmp = shared_from_this();
 
   std::cout << "Unregistered client" << std::endl;
-  _server.unregisterClient(tm	p);
+  _server.unregisterClient(tmp);
 }
 
 bool Client::netShortResponse(const Network::Buffer&)
