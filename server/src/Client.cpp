@@ -29,11 +29,7 @@ void Client::onRead(size_t nbRead)
   bool isPacket = false;
 
   if (nbRead == 0)
-    {
-      std::cout << "Unregistered client" << std::endl;
-      _server.unregisterClient(shared_from_this());
-      return;
-    }
+    return;
 
   while (!isPacket && _readBuff.getLeftRead() >= headerSize)
     {
@@ -56,6 +52,14 @@ void Client::onRead(size_t nbRead)
 
 void Client::onWrite(size_t)
 {
+}
+
+void Client::onDisconnet()
+{
+  std::shared_ptr<Client> tmp = shared_from_this();
+
+  std::cout << "Unregistered client" << std::endl;
+  _server.unregisterClient(tm	p);
 }
 
 bool Client::netShortResponse(const Network::Buffer&)

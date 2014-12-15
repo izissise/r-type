@@ -24,6 +24,7 @@ public:
 protected:
   void onRead(size_t readSize) override;
   void onWrite(size_t writeSize) override;
+  void onDisconnet() override;
 
 private:
   bool netShortResponse(const Network::Buffer& data);
