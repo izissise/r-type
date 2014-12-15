@@ -18,6 +18,11 @@
 # include "ListPanel.hpp"
 # include "Room.hpp"
 
+# include "ShortResponse.hpp"
+# include "GetListRoom.hpp"
+# include "CreateRoom.hpp"
+# include "JoinRoom.hpp"
+
 # define DEFAULTPORT "8000"
 
 class ClientGame: public Network::SocketClientHelper
@@ -40,8 +45,6 @@ private:
 
   bool netShortResponse(const Network::Buffer& data);
   bool netGetListRoom(const Network::Buffer& data);
-  bool netCreateRoom(const Network::Buffer& data);
-  bool netJoinRoom(const Network::Buffer& data);
   
   void  createMenuPanel();
   void  createListPanel();

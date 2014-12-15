@@ -4,8 +4,6 @@ std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
   {Packet::APacket::PacketType::GETLISTROOM, &ClientGame::netGetListRoom},
-  {Packet::APacket::PacketType::CREATEROOM, &ClientGame::netCreateRoom},
-  {Packet::APacket::PacketType::JOINROOM, &ClientGame::netJoinRoom}
 };
 
 ClientGame::ClientGame()
@@ -100,22 +98,51 @@ void  ClientGame::draw()
 
 bool ClientGame::netShortResponse(const Network::Buffer& data)
 {
-  std::cout << "ShortResponse"<< std::endl;
+  size_t readSize = 200;
+  Packet::ShortResponse cr;
+  size_t  nbUsed;
+  
+  try {
+    Network::Buffer buff;
+    Network::Buffer tmpBuff(data);
+    _readBuff.readBuffer(buff, readSize);
+    readSize = buff.size();
+    tmpBuff += buff;
+    nbUsed = cr.from_bytes(tmpBuff);
+    _readBuff.rollbackReadBuffer(readSize - nbUsed);
+    std::cout << "Get Response = " << static_cast<int>(cr.getResponse()) << std::endl;
+    return true;
+  }
+  catch (std::exception& e)
+  {
+    _readBuff.rollbackReadBuffer(readSize);
+    return false;
+  }
 }
 
 bool ClientGame::netGetListRoom(const Network::Buffer& data)
 {
-  std::cout << "GetListRoom"<< std::endl;
-}
-
-bool ClientGame::netCreateRoom(const Network::Buffer& data)
-{
-  std::cout << "CreateRoom"<< std::endl;
-}
-
-bool ClientGame::netJoinRoom(const Network::Buffer& data)
-{
-  std::cout << "JoinRoom"<< std::endl;
+  size_t readSize = 200;
+  Packet::GetListRoom cr;
+  size_t  nbUsed;
+  
+  try {
+    Network::Buffer buff;
+    Network::Buffer tmpBuff(data);
+    _readBuff.readBuffer(buff, readSize);
+    readSize = buff.size();
+    tmpBuff += buff;
+    nbUsed = cr.from_bytes(tmpBuff);
+    _readBuff.rollbackReadBuffer(readSize - nbUsed);
+    for (auto it : cr.getListRoom())
+      std::cout << "Get Room = [" << it.name << "]" << std::endl;
+    return true;
+  }
+  catch (std::exception& e)
+  {
+    _readBuff.rollbackReadBuffer(readSize);
+    return false;
+  }
 }
 
 void  ClientGame::createMenuPanel()
