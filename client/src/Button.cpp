@@ -79,7 +79,7 @@ void  Button::draw(sf::RenderWindow &win)
     _displayTexture->setPosition({_pos.left, _pos.top});
     _displayTexture->draw(win);
   }
-  _text->setPosition({_pos.left, _pos.top});
+  _text->setPosition({_pos.left + (_pos.width / 2) - (_text->getLocalBounds().width / 2), _pos.top + (_pos.height / 2) - (_text->getLocalBounds().height / 2)});
   _text->draw(win);
   win.setView(win.getDefaultView());
 }

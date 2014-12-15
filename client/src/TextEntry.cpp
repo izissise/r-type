@@ -52,13 +52,16 @@ void  TextEntry::draw(sf::RenderWindow &win)
   auto size = _background->getTextureRect();
   _background->setScale(_pos.width / size.width, _pos.height / size.height);
   _background->setPosition({_pos.left, _pos.top});
-  _displayText.setPosition({_pos.left, _pos.top});
   if (_first)
     _displayText.setString(_placeHolder);
   else
     _displayText.setString(_text);
   if (_displayText.getLocalBounds().width > _pos.width)
-    _displayText.move(_pos.width - _displayText.getLocalBounds().width, 0);
+    _displayText.setPosition({_pos.left + (_pos.width - _displayText.getLocalBounds().width),
+                              _pos.top + (_pos.height / 2) - (_displayText.getLocalBounds().height / 2)});
+  else
+    _displayText.setPosition({_pos.left + (_pos.width / 2) - (_displayText.getLocalBounds().width / 2),
+                              _pos.top + (_pos.height / 2) - (_displayText.getLocalBounds().height / 2)});
   _background->draw(win);
   _displayText.draw(win);
   win.setView(win.getDefaultView());
