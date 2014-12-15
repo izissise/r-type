@@ -15,6 +15,8 @@
 # include "NetworkFactory.hpp"
 # include "Handshake.hpp"
 # include "ClientHelper.hpp"
+# include "ListPanel.hpp"
+# include "Room.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -28,20 +30,28 @@ public:
   bool  update();
   void  draw();
 
+
 private:
   void  onRead(size_t sizeRead) override;
   void  onWrite(size_t sizeWrite) override;
   void  onDisconnet() override;
 
+  static std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer&)> _netWorkBinds;
+
+  bool netShortResponse(const Network::Buffer& data);
+  bool netGetListRoom(const Network::Buffer& data);
+  bool netCreateRoom(const Network::Buffer& data);
+  bool netJoinRoom(const Network::Buffer& data);
+  
   void  createMenuPanel();
-  void  createLoadingPanel();
+  void  createListPanel();
 
   sf::RenderWindow                                        _win;
   bool                                                    _done;
-  bool                                                    _isLoading;
   Panel::PanelId                                          _currentPanel;
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
   std::unique_ptr<Network::ANetwork>                      _network;
+  std::vector<t_room>                                     _list;
 };
 
 #endif
