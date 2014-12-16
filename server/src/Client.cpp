@@ -10,6 +10,7 @@
 #include "AskListRoom.hpp"
 #include "GetListRoom.hpp"
 #include "ShortResponse.hpp"
+#include "JoinRoom.hpp"
 
 std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
@@ -21,7 +22,7 @@ std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)
 };
 
 Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
-  : SocketClientHelper(sock), _server(serv)
+  : SocketClientHelper(sock), _server(serv), _currentRoom(-1)
 {
 }
 
@@ -40,12 +41,19 @@ void Client::onRead(size_t nbRead)
       pack = Packet::APacket::toPacketType(buff);
       if (pack != Packet::APacket::PacketType::UNKNOW)
         {
+//      std::cout << std::hex << "0x" << static_cast<int>(buff[0]) << " " << std::dec;
+//      std::cout << std::hex << "0x" << static_cast<int>(buff[1]) << " " << std::dec;
           buff.clear();
           _readBuff.readBuffer(buff, _readBuff.getLeftRead());
           isPacket = true;
           try {
               size_t (Client::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
               try {
+//                  for (auto& i : buff)
+//                    {
+//                      std::cout << std::hex << "0x" << static_cast<int>(i) << " " << std::dec;
+//                    }
+//                  std::cout << std::endl;
                   size_t nbUsed = (this->*meth)(buff);
                   _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
                 }
@@ -82,7 +90,7 @@ void Client::onDisconnet()
 
 void Client::sendPacket(const Packet::APacket& pack)
 {
-  _writeBuff.writeBuffer(pack.to_bytes());
+  _writeBuff.writeBuffer(pack);
 }
 
 
@@ -108,7 +116,7 @@ size_t Client::netHandshake(const Network::Buffer& data)
   Packet::ShortResponse rep(0);
   if (_protoVersion == PROTOCOLE_VERSION)
     rep = {1};
-  _writeBuff.writeBuffer(rep.to_bytes());
+  _writeBuff.writeBuffer(rep);
   return nbUsed;
 }
 
@@ -120,7 +128,7 @@ size_t Client::netAskListRoom(const Network::Buffer& data)
   nbUsed = ask.from_bytes(data);
   std::cout << "Ask for Room" << std::endl;
   Packet::GetListRoom room(_server.getLobby().roomLists());
-  _writeBuff.writeBuffer(room.to_bytes());
+  _writeBuff.writeBuffer(room);
   return nbUsed;
 }
 
@@ -137,14 +145,26 @@ size_t Client::netCreateRoom(const Network::Buffer& data)
   Packet::ShortResponse rep(0);
   if (joined)
     rep = {1};
-  _writeBuff.writeBuffer(rep.to_bytes());
+  _writeBuff.writeBuffer(rep);
 
   Packet::GetListRoom glr(_server.getLobby().roomLists());
   _server.broadcastAPacket(glr);
+  _currentRoom = rId;
   return nbUsed;
 }
 
-size_t Client::netJoinRoom(const Network::Buffer&)
+size_t Client::netJoinRoom(const Network::Buffer& data)
 {
-  return 0;
+  Packet::JoinRoom jr;
+  size_t  nbUsed;
+
+  nbUsed = jr.from_bytes(data);
+  size_t rId = jr.getRoomId();
+  bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
+  Packet::ShortResponse rep(0);
+  if (joined)
+    rep = {1};
+  _writeBuff.writeBuffer(rep);
+  _currentRoom = rId;
+  return nbUsed;
 }

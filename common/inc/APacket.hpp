@@ -27,7 +27,7 @@ namespace Packet {
     APacket(Packet::APacket::PacketType type);
     virtual ~APacket() = default;
 
-    operator std::string();
+    operator std::string() const;
 
     Packet::APacket::PacketType getType() const {return _type;};
 

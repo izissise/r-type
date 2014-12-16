@@ -23,7 +23,7 @@ APacket::APacket(PacketType type)
 {
 }
 
-APacket::operator std::string()
+APacket::operator std::string() const
 {
   return to_bytes();
 }
