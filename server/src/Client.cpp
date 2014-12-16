@@ -7,12 +7,15 @@
 
 #include "Handshake.hpp"
 #include "CreateRoom.hpp"
+#include "AskListRoom.hpp"
+#include "GetListRoom.hpp"
+#include "ShortResponse.hpp"
 
 std::map<Packet::APacket::PacketType, bool (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &Client::netShortResponse},
   {Packet::APacket::PacketType::HANDSHAKE, &Client::netHandshake},
-  {Packet::APacket::PacketType::GETLISTROOM, &Client::netGetListRoom},
+  {Packet::APacket::PacketType::ASKLISTROOM, &Client::netAskListRoom},
   {Packet::APacket::PacketType::CREATEROOM, &Client::netCreateRoom},
   {Packet::APacket::PacketType::JOINROOM, &Client::netJoinRoom}
 };
@@ -85,6 +88,16 @@ bool Client::netHandshake(const Network::Buffer& data)
       _login = hand.getLogin();
       _protoVersion = hand.getProtocolVersion();
       std::cout << _login << " " << _protoVersion << std::endl;
+      if (_protoVersion == PROTOCOLE_VERSION)
+      {
+        Packet::ShortResponse rep(1);
+        _writeBuff.writeBuffer(rep.to_bytes());
+      }
+      else
+      {
+        Packet::ShortResponse rep(0);
+        _writeBuff.writeBuffer(rep.to_bytes());
+      }
     }
   catch (std::exception& e)
     {
@@ -94,10 +107,10 @@ bool Client::netHandshake(const Network::Buffer& data)
   return true;
 }
 
-bool Client::netGetListRoom(const Network::Buffer&)
+bool Client::netAskListRoom(const Network::Buffer& data)
 {
-  /* size_t readSize = 200;
-   Packet::GetListRoom listRoom;
+   size_t readSize = 200;
+   Packet::AskListRoom ask;
    size_t  nbUsed;
 
    try {
@@ -106,17 +119,18 @@ bool Client::netGetListRoom(const Network::Buffer&)
        _readBuff.readBuffer(buff, readSize);
        readSize = buff.size();
        tmpBuff += buff;
-       nbUsed = listRoom.from_bytes(tmpBuff);
+       nbUsed = ask.from_bytes(tmpBuff);
        _readBuff.rollbackReadBuffer(readSize - nbUsed);
 
-       _protoVersion = hand.getProtocolVersion();
-       std::cout << _login << " " << _protoVersion << std::endl;
-     }
+       std::cout << "Ask for Room" << std::endl;
+       Packet::GetListRoom room(_server.getLobby().roomLists());
+     _writeBuff.writeBuffer(room.to_bytes());
+    }
    catch (std::exception& e)
      {
        _readBuff.rollbackReadBuffer(readSize);
        return false;
-     }*/
+     }
   return true;
 }
 

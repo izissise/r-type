@@ -12,16 +12,15 @@ public:
   
   enum class PanelId
   {
-    LOADINGPANEL = 1,
-    MENUPANEL = 2,
-    LISTPANEL = 3,
+    MENUPANEL = 1,
+    LISTPANEL = 2,
   };
   
   Panel(bool hide = false);
   virtual ~Panel() {};
 
-  virtual void update(const sf::Event &);
-  virtual void draw(sf::RenderWindow &);
+  virtual void  update(const sf::Event &);
+  virtual void  draw(sf::RenderWindow &);
   
   virtual void  add(const std::shared_ptr<ADrawable> &ptr);
 

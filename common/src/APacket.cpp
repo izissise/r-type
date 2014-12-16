@@ -12,6 +12,7 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
   Packet::APacket::PacketType::GETLISTROOM,
   Packet::APacket::PacketType::CREATEROOM,
   Packet::APacket::PacketType::JOINROOM,
+  Packet::APacket::PacketType::ASKLISTROOM,
   Packet::APacket::PacketType::UNKNOW
 };
 
@@ -89,4 +90,4 @@ APacket& operator>>(const std::string& a, APacket& p)
 std::string& operator>>(const APacket& p, std::string& a) {return (a << p);}
 APacket& operator<<(APacket& p, const std::string& a) {return (a >> p);}
 
-}
+};

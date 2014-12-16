@@ -1,12 +1,17 @@
 #include "ClientGame.hpp"
 
+std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer&)> ClientGame::_netWorkBinds =
+{
+  {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
+  {Packet::APacket::PacketType::GETLISTROOM, &ClientGame::netGetListRoom},
+};
+
 ClientGame::ClientGame()
-: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _network(Network::NetworkFactory::createNetwork())
+: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
 {
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
-  createLoadingPanel();
-//  _panel.push_back(std::shared_ptr<APanel>(new ConnectionPanel(true)));
+  createListPanel();
 }
 
 ClientGame::~ClientGame()
@@ -33,7 +38,31 @@ void ClientGame::run()
 
 void  ClientGame::onRead(size_t sizeRead)
 {
-
+  const size_t headerSize = sizeof(uint16_t);
+  Network::Buffer buff;
+  Packet::APacket::PacketType pack;
+  bool isPacket = false;
+  
+  if (sizeRead == 0)
+    return;
+  
+  while (!isPacket && _readBuff.getLeftRead() >= headerSize)
+  {
+    _readBuff.readBuffer(buff, headerSize);
+    pack = Packet::APacket::toPacketType(buff);
+    if (pack != Packet::APacket::PacketType::UNKNOW)
+    {
+      isPacket = true;
+      bool ret = (this->*_netWorkBinds.at(pack))(buff);
+      if (!ret)
+        _readBuff.rollbackReadBuffer(headerSize);
+    }
+    else
+    {
+      _readBuff.rollbackReadBuffer(headerSize - 1);
+      std::cout << "Unknown Packet" << std::endl;
+    }
+  }
 }
 
 void  ClientGame::onWrite(size_t sizeWrite)
@@ -55,10 +84,7 @@ bool  ClientGame::update()
     {
       if (event.type == sf::Event::Closed)
         return (false);
-      if (!_isLoading)
-        _panel[_currentPanel]->update(event);
-      else
-        _panel[Panel::PanelId::LOADINGPANEL]->update(event);
+      _panel[_currentPanel]->update(event);
     }
   return (true);
 }
@@ -67,16 +93,76 @@ void  ClientGame::draw()
 {
   _win.clear();
   _panel[_currentPanel]->draw(_win);
-  if (_isLoading)
-    _panel[Panel::PanelId::LOADINGPANEL]->draw(_win);
   _win.display();
+}
+
+void  ClientGame::checkReponse(uint8_t rep)
+{
+  if (_isLoading && rep == 1)
+  {
+    Packet::AskListRoom ask;
+
+    _currentPanel = Panel::PanelId::LISTPANEL;
+    _writeBuff.writeBuffer(ask.to_bytes());
+  }
+}
+
+bool  ClientGame::netShortResponse(const Network::Buffer& data)
+{
+  size_t readSize = 200;
+  Packet::ShortResponse rep;
+  size_t  nbUsed;
+  
+  try {
+    Network::Buffer buff;
+    Network::Buffer tmpBuff(data);
+    _readBuff.readBuffer(buff, readSize);
+    readSize = buff.size();
+    tmpBuff += buff;
+    nbUsed = rep.from_bytes(tmpBuff);
+    _readBuff.rollbackReadBuffer(readSize - nbUsed);
+    std::cout << "Get Response = " << static_cast<int>(rep.getResponse()) << std::endl;
+    checkReponse(rep.getResponse());
+  }
+  catch (std::exception& e)
+  {
+    _readBuff.rollbackReadBuffer(readSize);
+    return false;
+  }
+  return true;
+}
+
+bool  ClientGame::netGetListRoom(const Network::Buffer& data)
+{
+  size_t readSize = 200;
+  Packet::GetListRoom cr;
+  size_t  nbUsed;
+  
+  try {
+    Network::Buffer buff;
+    Network::Buffer tmpBuff(data);
+    _readBuff.readBuffer(buff, readSize);
+    readSize = buff.size();
+    tmpBuff += buff;
+    nbUsed = cr.from_bytes(tmpBuff);
+    _readBuff.rollbackReadBuffer(readSize - nbUsed);
+    std::cout << "GetListRoom" << std::endl;
+    for (auto it : cr.getListRoom())
+      std::cout << "Get Room = [" << it.name << "]" << std::endl;
+  }
+  catch (std::exception& e)
+  {
+    _readBuff.rollbackReadBuffer(readSize);
+    return false;
+  }
+  return true;
 }
 
 void  ClientGame::createMenuPanel()
 {
   auto menuPanel = std::shared_ptr<Panel>(new Panel());
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
-  auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
+  auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
 
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
@@ -114,9 +200,9 @@ void  ClientGame::createMenuPanel()
   quitText->setCharacterSize(30);
 
   
-  auto connect = std::shared_ptr<Button>(new Button({ 1670, 800 , 250, 75 }, button, hover, click, connectText));
-  auto setting = std::shared_ptr<Button>(new Button({ 1670, 880 , 250, 75 }, button, hover, click, settingsText));
-  auto exit = std::shared_ptr<Button>(new Button({ 1670, 960 , 250, 75 }, button, hover, click, quitText));
+  auto connect = std::shared_ptr<Button>(new Button({ 1670, 845 , 250, 75 }, button, hover, click, connectText));
+  auto setting = std::shared_ptr<Button>(new Button({ 1670, 925 , 250, 75 }, button, hover, click, settingsText));
+  auto exit = std::shared_ptr<Button>(new Button({ 1670, 1005 , 250, 75 }, button, hover, click, quitText));
   auto back = std::shared_ptr<Image>(new Image(background));
   
   back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
@@ -156,34 +242,58 @@ void  ClientGame::createMenuPanel()
   _panel[Panel::PanelId::MENUPANEL] = menuPanel;
 }
 
-void  ClientGame::createLoadingPanel()
+void  ClientGame::createListPanel()
 {
-  auto loadingPanel = std::shared_ptr<Panel>(new Panel());
+  auto listpanel = std::shared_ptr<Panel>(new Panel);
+  
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
-  auto texture = RessourceManager::instance().getTexture("../assets/menu.png");
+  auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
-
+  
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
-
+  
   button->setTextureRect(sf::IntRect(0, 0, 200, 20));
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
 
-  std::shared_ptr<Text> cancelText(new Text("Cancel"));
-  cancelText->setFont(*font);
-  cancelText->setColor(sf::Color::White);
-  cancelText->setCharacterSize(30);
+  std::shared_ptr<Text> cr(new Text("Create Room"));
+  std::shared_ptr<Text> d(new Text("Disconnect"));
+  
+  cr->setFont(*font);
+  cr->setColor(sf::Color::White);
+  cr->setCharacterSize(30);
 
-  auto cancel = std::shared_ptr<Button>(new Button({ 100, 100 , 200, 50}, button, hover, click, cancelText));
-  cancel->onClick([this] {
-    std::cout << "Cancel" << std::endl;
-    _isLoading = false;
+  d->setFont(*font);
+  d->setColor(sf::Color::White);
+  d->setCharacterSize(30);
+
+  auto create = std::shared_ptr<Button>(new Button({ 1670, 925 , 250, 75 }, button, hover, click, cr));
+  auto disconnect = std::shared_ptr<Button>(new Button({ 1670, 1005 , 250, 75 }, button, hover, click, d));
+  auto back = std::shared_ptr<Image>(new Image(background));
+  
+  back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
+                 static_cast<float>(_win.getSize().y) / background->getTextureRect().height);
+  
+  create->onClick([this]() {
+    Packet::CreateRoom room({"toto", 0, 4, 0});
+    
+    std::cout << "Create Room" << std::endl;
+    _socket->setEventRequest(Network::ASocket::Event::RDWR);
+    _writeBuff.writeBuffer(room.to_bytes());
+  });
+  disconnect->onClick([this]() {
+    _socket.reset();
+    _currentPanel = Panel::PanelId::MENUPANEL;
   });
 
-  loadingPanel->add(cancel);
+  listpanel->add(back);
+  listpanel->add(create);
+  listpanel->add(disconnect);
 
-  _panel[Panel::PanelId::LOADINGPANEL] = loadingPanel;
+  listpanel->add(std::shared_ptr<ADrawable>(new ListBox({0, 0, 1500, 500}, _list)));
+  _panel[Panel::PanelId::LISTPANEL] = listpanel;
+
 }

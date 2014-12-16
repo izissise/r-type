@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#define PROTOCOLEVERSION 0x01000000
+
 #include "APacket.hpp"
 #include "ClientHelper.hpp"
 #include "ABasicSocket.hpp"
@@ -29,7 +31,7 @@ protected:
 private:
   bool netShortResponse(const Network::Buffer& data);
   bool netHandshake(const Network::Buffer& data);
-  bool netGetListRoom(const Network::Buffer& data);
+  bool netAskListRoom(const Network::Buffer& data);
   bool netCreateRoom(const Network::Buffer& data);
   bool netJoinRoom(const Network::Buffer& data);
 
