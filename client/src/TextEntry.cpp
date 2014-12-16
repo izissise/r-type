@@ -8,7 +8,7 @@ TextEntry::TextEntry(const std::string &placeHolder, const sf::FloatRect &pos, c
 
 TextEntry::~TextEntry()
 {
-  
+
 }
 
 void  TextEntry::setFont(const sf::Font &font)

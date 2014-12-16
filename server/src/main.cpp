@@ -7,7 +7,7 @@
 int main(int, char**)
 {
   try {
-      Server serv("0.0.0.0", "9632");
+      Server serv("0.0.0.0", "8000");
       serv.run();
     }
   catch (std::exception& e)
