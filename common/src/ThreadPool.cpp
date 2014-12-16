@@ -19,7 +19,7 @@ void ThreadPool::ThreadLoop() {
     } while (1);
 }
 
-ThreadPool::ThreadPool(int nb_thread) : _minThreadNumber(nb_thread), _stop(false)
+ThreadPool::ThreadPool(int nb_thread) : _stop(false)
 {
     for (int i = 0; i < nb_thread; i++)
     {
