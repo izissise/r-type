@@ -20,8 +20,7 @@
 
 # include "ShortResponse.hpp"
 # include "GetListRoom.hpp"
-# include "CreateRoom.hpp"
-# include "JoinRoom.hpp"
+# include "AskListRoom.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -45,12 +44,16 @@ private:
 
   bool netShortResponse(const Network::Buffer& data);
   bool netGetListRoom(const Network::Buffer& data);
+
+  
+  void  checkReponse(uint8_t rep);
   
   void  createMenuPanel();
   void  createListPanel();
 
   sf::RenderWindow                                        _win;
   bool                                                    _done;
+  bool                                                    _isLoading;
   Panel::PanelId                                          _currentPanel;
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
   std::unique_ptr<Network::ANetwork>                      _network;

@@ -7,7 +7,7 @@ std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer
 };
 
 ClientGame::ClientGame()
-: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _network(Network::NetworkFactory::createNetwork())
+: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
 {
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
@@ -96,10 +96,21 @@ void  ClientGame::draw()
   _win.display();
 }
 
-bool ClientGame::netShortResponse(const Network::Buffer& data)
+void  ClientGame::checkReponse(uint8_t rep)
+{
+  if (_isLoading && rep == 1)
+  {
+    Packet::AskListRoom ask;
+
+    _currentPanel = Panel::PanelId::LISTPANEL;
+    _writeBuff.writeBuffer(ask.to_bytes());
+  }
+}
+
+bool  ClientGame::netShortResponse(const Network::Buffer& data)
 {
   size_t readSize = 200;
-  Packet::ShortResponse cr;
+  Packet::ShortResponse rep;
   size_t  nbUsed;
   
   try {
@@ -108,19 +119,20 @@ bool ClientGame::netShortResponse(const Network::Buffer& data)
     _readBuff.readBuffer(buff, readSize);
     readSize = buff.size();
     tmpBuff += buff;
-    nbUsed = cr.from_bytes(tmpBuff);
+    nbUsed = rep.from_bytes(tmpBuff);
     _readBuff.rollbackReadBuffer(readSize - nbUsed);
-    std::cout << "Get Response = " << static_cast<int>(cr.getResponse()) << std::endl;
-    return true;
+    std::cout << "Get Response = " << static_cast<int>(rep.getResponse()) << std::endl;
+    checkReponse(rep.getResponse());
   }
   catch (std::exception& e)
   {
     _readBuff.rollbackReadBuffer(readSize);
     return false;
   }
+  return true;
 }
 
-bool ClientGame::netGetListRoom(const Network::Buffer& data)
+bool  ClientGame::netGetListRoom(const Network::Buffer& data)
 {
   size_t readSize = 200;
   Packet::GetListRoom cr;
@@ -134,15 +146,16 @@ bool ClientGame::netGetListRoom(const Network::Buffer& data)
     tmpBuff += buff;
     nbUsed = cr.from_bytes(tmpBuff);
     _readBuff.rollbackReadBuffer(readSize - nbUsed);
+    std::cout << "GetListRoom" << std::endl;
     for (auto it : cr.getListRoom())
       std::cout << "Get Room = [" << it.name << "]" << std::endl;
-    return true;
   }
   catch (std::exception& e)
   {
     _readBuff.rollbackReadBuffer(readSize);
     return false;
   }
+  return true;
 }
 
 void  ClientGame::createMenuPanel()
@@ -211,7 +224,7 @@ void  ClientGame::createMenuPanel()
         setSocket(socket);
         _writeBuff.writeBuffer(packet.to_bytes());
         socket->setEventRequest(Network::ASocket::Event::RDWR);
-        _currentPanel = Panel::PanelId::LISTPANEL;
+        _isLoading = true;
       } catch (Network::Error &e) {
         std::cerr << e.what() << std::endl;
       }
