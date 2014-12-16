@@ -11,7 +11,7 @@
 #include "GetListRoom.hpp"
 #include "ShortResponse.hpp"
 
-std::map<Packet::APacket::PacketType, bool (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
+std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &Client::netShortResponse},
   {Packet::APacket::PacketType::HANDSHAKE, &Client::netHandshake},
@@ -34,19 +34,25 @@ void Client::onRead(size_t nbRead)
 
   if (nbRead == 0)
     return;
-
   while (!isPacket && _readBuff.getLeftRead() >= headerSize)
     {
       _readBuff.readBuffer(buff, headerSize);
       pack = Packet::APacket::toPacketType(buff);
       if (pack != Packet::APacket::PacketType::UNKNOW)
         {
+          buff.clear();
+          _readBuff.readBuffer(buff, _readBuff.getLeftRead());
           isPacket = true;
-          bool ret;
           try {
-              ret = (this->*_netWorkBinds.at(pack))(buff);
-              if (!ret)
-                _readBuff.rollbackReadBuffer(headerSize);
+              size_t (Client::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
+              try {
+                  size_t nbUsed = (this->*meth)(buff);
+                  _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
+                }
+              catch (std::exception& e)
+                {
+                  _readBuff.rollbackReadBuffer(buff.size() - 1);
+                }
             }
           catch (std::exception& e)
             {
@@ -56,7 +62,7 @@ void Client::onRead(size_t nbRead)
       else
         {
           _readBuff.rollbackReadBuffer(headerSize - 1);
-          std::cout << "Unknown Packet" << std::endl;
+          std::cerr << "Received Unknown Packet" << std::endl;
         }
     }
 }
@@ -84,105 +90,61 @@ void Client::sendPacket(const Packet::APacket& pack)
 ** Apacket binded functions
 */
 
-bool Client::netShortResponse(const Network::Buffer&)
+size_t Client::netShortResponse(const Network::Buffer&)
 {
-  return false;
+  return 0;
 }
 
-bool Client::netHandshake(const Network::Buffer& data)
+size_t Client::netHandshake(const Network::Buffer& data)
 {
-  size_t readSize = 4096;
   Packet::Handshake hand;
   size_t  nbUsed;
 
-  try {
-      Network::Buffer buff;
-      Network::Buffer tmpBuff(data);
-      _readBuff.readBuffer(buff, readSize);
-      readSize = buff.size();
-      tmpBuff += buff;
-      nbUsed = hand.from_bytes(tmpBuff);
-      _readBuff.rollbackReadBuffer(readSize - nbUsed);
-      _login = hand.getLogin();
-      _protoVersion = hand.getProtocolVersion();
-      std::cout << _login << " " << _protoVersion << std::endl;
-      Packet::ShortResponse rep(0);
-      if (_protoVersion == PROTOCOLE_VERSION)
-        rep = {1};
-      _writeBuff.writeBuffer(rep.to_bytes());
-    }
-  catch (std::exception& e)
-    {
-      _readBuff.rollbackReadBuffer(readSize);
-      return false;
-    }
-  return true;
+  nbUsed = hand.from_bytes(data);
+
+  _login = hand.getLogin();
+  _protoVersion = hand.getProtocolVersion();
+  std::cout << _login << " " << _protoVersion << std::endl;
+  Packet::ShortResponse rep(0);
+  if (_protoVersion == PROTOCOLE_VERSION)
+    rep = {1};
+  _writeBuff.writeBuffer(rep.to_bytes());
+  return nbUsed;
 }
 
-bool Client::netAskListRoom(const Network::Buffer& data)
+size_t Client::netAskListRoom(const Network::Buffer& data)
 {
-  size_t readSize = 200;
   Packet::AskListRoom ask;
   size_t  nbUsed;
 
-  try {
-      Network::Buffer buff;
-      Network::Buffer tmpBuff(data);
-      _readBuff.readBuffer(buff, readSize);
-      readSize = buff.size();
-      tmpBuff += buff;
-      nbUsed = ask.from_bytes(tmpBuff);
-      _readBuff.rollbackReadBuffer(readSize - nbUsed);
-
-      std::cout << "Ask for Room" << std::endl;
-      Packet::GetListRoom room(_server.getLobby().roomLists());
-      _writeBuff.writeBuffer(room.to_bytes());
-    }
-  catch (std::exception& e)
-    {
-      _readBuff.rollbackReadBuffer(readSize);
-      return false;
-    }
-  return true;
+  nbUsed = ask.from_bytes(data);
+  std::cout << "Ask for Room" << std::endl;
+  Packet::GetListRoom room(_server.getLobby().roomLists());
+  _writeBuff.writeBuffer(room.to_bytes());
+  return nbUsed;
 }
 
-bool Client::netCreateRoom(const Network::Buffer& data)
+size_t Client::netCreateRoom(const Network::Buffer& data)
 {
-  size_t readSize = 4096;
   Packet::CreateRoom cr;
   size_t  nbUsed;
 
-  try {
-      Network::Buffer buff;
-      Network::Buffer tmpBuff(data);
-      _readBuff.readBuffer(buff, readSize);
-      readSize = buff.size();
-      tmpBuff += buff;
-      nbUsed = cr.from_bytes(tmpBuff);
-      _readBuff.rollbackReadBuffer(readSize - nbUsed);
-      t_room room = *(cr.getRoom());
-      size_t rId = _server.getLobby().newRoom(room);
-      std::cout << "New room: " << room.name << std::endl;
-      bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
-      Packet::ShortResponse rep(0);
-      if (joined)
-        rep = {1};
-      _writeBuff.writeBuffer(rep.to_bytes());
+  nbUsed = cr.from_bytes(data);
+  t_room room = *(cr.getRoom());
+  size_t rId = _server.getLobby().newRoom(room);
+  std::cout << "New room: " << room.name << std::endl;
+  bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
+  Packet::ShortResponse rep(0);
+  if (joined)
+    rep = {1};
+  _writeBuff.writeBuffer(rep.to_bytes());
 
-      Packet::GetListRoom glr(_server.getLobby().roomLists());
-      _server.broadcastAPacket(glr);
-
-    }
-  catch (std::exception& e)
-    {
-      std::cout << "Packet not long enough." << std::endl;
-      _readBuff.rollbackReadBuffer(readSize);
-      return false;
-    }
-  return true;
+  Packet::GetListRoom glr(_server.getLobby().roomLists());
+  _server.broadcastAPacket(glr);
+  return nbUsed;
 }
 
-bool Client::netJoinRoom(const Network::Buffer&)
+size_t Client::netJoinRoom(const Network::Buffer&)
 {
-  return false;
+  return 0;
 }

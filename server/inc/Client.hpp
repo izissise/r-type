@@ -17,7 +17,7 @@ class Server;
 class Client : public Network::SocketClientHelper, public std::enable_shared_from_this<Client>
 {
 private:
-  static std::map<Packet::APacket::PacketType, bool (Client::*)(const Network::Buffer&)> _netWorkBinds;
+  static std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> _netWorkBinds;
 
 public:
   Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
@@ -31,11 +31,11 @@ protected:
   void onDisconnet() override;
 
 private:
-  bool netShortResponse(const Network::Buffer& data);
-  bool netHandshake(const Network::Buffer& data);
-  bool netAskListRoom(const Network::Buffer& data);
-  bool netCreateRoom(const Network::Buffer& data);
-  bool netJoinRoom(const Network::Buffer& data);
+  size_t netShortResponse(const Network::Buffer& data);
+  size_t netHandshake(const Network::Buffer& data);
+  size_t netAskListRoom(const Network::Buffer& data);
+  size_t netCreateRoom(const Network::Buffer& data);
+  size_t netJoinRoom(const Network::Buffer& data);
 
 private:
   Server& _server;
