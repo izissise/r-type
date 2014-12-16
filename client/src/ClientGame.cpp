@@ -10,6 +10,8 @@ ClientGame::ClientGame()
 : SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
 {
   _currentPanel = Panel::PanelId::MENUPANEL;
+  _list.push_back({"Toto", 1, 4, 0});
+  _list.push_back({"Toto", 2, 4, 0});
   createMenuPanel();
   createListPanel();
 }
@@ -72,6 +74,8 @@ void  ClientGame::onWrite(size_t sizeWrite)
 
 void ClientGame::onDisconnet()
 {
+  std::cout << "Disconnected" << std::endl;
+  _currentPanel = Panel::PanelId::MENUPANEL;
 }
 
 bool  ClientGame::update()

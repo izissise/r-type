@@ -32,7 +32,6 @@ public:
 
 private:
 
-  bool  _hide;
   bool  _hover;
   bool  _isClicked;
 

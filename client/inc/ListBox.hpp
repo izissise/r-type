@@ -19,7 +19,7 @@ private:
   void  updateEntry();
   
   sf::FloatRect           _pos;
-  std::vector<ListItem>   _items;
+  std::map<uint32_t, std::shared_ptr<ListItem>>   _items;
   std::vector<t_room>     _displayRoom;
   std::vector<t_room>     &_list;
 };
