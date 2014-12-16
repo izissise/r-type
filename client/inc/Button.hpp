@@ -17,6 +17,10 @@ public:
          const std::shared_ptr<sf::Sprite> &hoverTexture,
          const std::shared_ptr<sf::Sprite> &clickedTexture,
          const std::shared_ptr<Text> &text);
+  Button(const sf::FloatRect &pos,
+         const std::shared_ptr<sf::Sprite> &displayTexture,
+         const std::shared_ptr<sf::Sprite> &hoverTexture,
+         const std::shared_ptr<sf::Sprite> &clickedTexture);
   ~Button();
   
   void  update(const sf::Event &event);

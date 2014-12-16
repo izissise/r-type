@@ -11,6 +11,16 @@ _clickedTexture(new Image(clickedTexture)), _text(text)
 {
 }
 
+Button::Button(const sf::FloatRect &pos,
+               const std::shared_ptr<sf::Sprite> &displayTexture,
+               const std::shared_ptr<sf::Sprite> &hoverTexture,
+               const std::shared_ptr<sf::Sprite> &clickedTexture)
+: ADrawable(), _hover(false), _isClicked(false),
+_pos(pos), _hoverTexture(new Image(hoverTexture)), _displayTexture(new Image(displayTexture)),
+_clickedTexture(new Image(clickedTexture)), _text(nullptr)
+{
+}
+
 Button::~Button()
 {
   
@@ -79,8 +89,11 @@ void  Button::draw(sf::RenderWindow &win)
     _displayTexture->setPosition({_pos.left, _pos.top});
     _displayTexture->draw(win);
   }
-  _text->setPosition({_pos.left + (_pos.width / 2) - (_text->getLocalBounds().width / 2), _pos.top + (_pos.height / 2) - (_text->getLocalBounds().height / 2)});
-  _text->draw(win);
+  if (_text)
+  {
+    _text->setPosition({_pos.left + (_pos.width / 2) - (_text->getLocalBounds().width / 2), _pos.top + (_pos.height / 2) - (_text->getLocalBounds().height / 2)});
+    _text->draw(win);
+  }
   win.setView(win.getDefaultView());
 }
 
