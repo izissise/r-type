@@ -7,7 +7,7 @@ std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer
 };
 
 ClientGame::ClientGame()
-: SocketClientHelper(), _win({1920, 1080}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
+: SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
 {
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
@@ -175,13 +175,13 @@ void  ClientGame::createMenuPanel()
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
 
   
-  auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {(static_cast<float>(_win.getSize().x) / 2) - 200, 700, 400, 60}, button));
+  auto loginEntry = std::shared_ptr<TextEntry>(new TextEntry("login", {(static_cast<float>(_win.getSize().x) / 2) - 200, 600, 400, 60}, button));
 
   loginEntry->setFont(*font);
   loginEntry->setTextColor(sf::Color::White);
   loginEntry->setCharacterSize(30);
 
-  auto ipEntry = std::shared_ptr<TextEntry>(new TextEntry("ip:port", {(static_cast<float>(_win.getSize().x) / 2) - 200, 780, 400, 60}, button));
+  auto ipEntry = std::shared_ptr<TextEntry>(new TextEntry("ip:port", {(static_cast<float>(_win.getSize().x) / 2) - 200, 680, 400, 60}, button));
   ipEntry->setFont(*font);
   ipEntry->setTextColor(sf::Color::White);
   ipEntry->setCharacterSize(30);
@@ -200,9 +200,9 @@ void  ClientGame::createMenuPanel()
   quitText->setCharacterSize(30);
 
   
-  auto connect = std::shared_ptr<Button>(new Button({ 1670, 845 , 250, 75 }, button, hover, click, connectText));
-  auto setting = std::shared_ptr<Button>(new Button({ 1670, 925 , 250, 75 }, button, hover, click, settingsText));
-  auto exit = std::shared_ptr<Button>(new Button({ 1670, 1005 , 250, 75 }, button, hover, click, quitText));
+  auto connect = std::shared_ptr<Button>(new Button({ 1350, 665 , 250, 75 }, button, hover, click, connectText));
+  auto setting = std::shared_ptr<Button>(new Button({ 1350, 745 , 250, 75 }, button, hover, click, settingsText));
+  auto exit = std::shared_ptr<Button>(new Button({ 1350, 825 , 250, 75 }, button, hover, click, quitText));
   auto back = std::shared_ptr<Image>(new Image(background));
   
   back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
@@ -270,8 +270,8 @@ void  ClientGame::createListPanel()
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
 
-  auto create = std::shared_ptr<Button>(new Button({ 1670, 925 , 250, 75 }, button, hover, click, cr));
-  auto disconnect = std::shared_ptr<Button>(new Button({ 1670, 1005 , 250, 75 }, button, hover, click, d));
+  auto create = std::shared_ptr<Button>(new Button({ 1300, 745 , 300, 75 }, button, hover, click, cr));
+  auto disconnect = std::shared_ptr<Button>(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   auto back = std::shared_ptr<Image>(new Image(background));
   
   back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,

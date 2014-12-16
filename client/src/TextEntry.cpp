@@ -88,18 +88,8 @@ void  TextEntry::update(const sf::Event &event)
     if (_text.empty())
       _first = true;
   }
-  if (_use && event.type == sf::Event::KeyPressed)
-  {
-    if (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z)
-      _text += static_cast<char>(event.key.code + (event.key.shift == true ? 65 : 97));
-    if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9)
-      _text += static_cast<char>(event.key.code + 22);
-    if (event.key.code == sf::Keyboard::BackSpace && !_text.empty())
+  if (_use && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace && !_text.empty())
       _text.pop_back();
-    if (event.key.code == sf::Keyboard::Period)
-      _text += '.';
-    if (event.key.code == sf::Keyboard::SemiColon && event.key.shift)
-      _text += ':';
-  }
-
+  if (_use && event.type == sf::Event::TextEntered && event.text.unicode > 20 && event.text.unicode < 128)
+    _text += static_cast<char>(event.text.unicode);
 }
