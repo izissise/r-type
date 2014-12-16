@@ -15,7 +15,6 @@ private:
     std::condition_variable _condition;
     std::mutex _mutex;
 
-    int _minThreadNumber;
     int _stop;
 
     void ThreadLoop();
