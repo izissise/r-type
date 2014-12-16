@@ -44,4 +44,4 @@ namespace Packet {
     _room->nbPlayer = 0;
     return pos - _begin;
   }
-}
+};

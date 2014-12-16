@@ -48,4 +48,4 @@ namespace Packet {
   {
     return _login;
   }
-}
+};

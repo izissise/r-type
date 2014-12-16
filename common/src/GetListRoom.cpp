@@ -65,4 +65,4 @@ namespace Packet {
     return (pos - _begin);
   }
 
-}
+};

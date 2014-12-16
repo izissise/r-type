@@ -21,6 +21,6 @@ namespace Packet {
 
     uint8_t   _response;
   };
-}
+};
 
 #endif
