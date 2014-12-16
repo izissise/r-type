@@ -16,6 +16,14 @@ void Server::run()
     _net->poll(true);
 }
 
+void Server::broadcastAPacket(const Packet::APacket& pack) const
+{
+  for (auto& i : _clients)
+    {
+      i->sendPacket(pack);
+    }
+}
+
 void Server::unregisterClient(const std::shared_ptr<Client>& cli)
 {
   _clients.erase(std::remove_if(_clients.begin(), _clients.end(),

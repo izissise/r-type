@@ -23,6 +23,8 @@ public:
   Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
   ~Client() = default;
 
+  void sendPacket(const Packet::APacket& pack);
+
 protected:
   void onRead(size_t readSize) override;
   void onWrite(size_t writeSize) override;
