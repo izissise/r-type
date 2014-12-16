@@ -41,14 +41,14 @@ private:
   void  onWrite(size_t sizeWrite) override;
   void  onDisconnet() override;
 
-  static std::map<Packet::APacket::PacketType, bool (ClientGame::*)(const Network::Buffer&)> _netWorkBinds;
+  static std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> _netWorkBinds;
 
-  bool netShortResponse(const Network::Buffer& data);
-  bool netGetListRoom(const Network::Buffer& data);
+  size_t netShortResponse(const Network::Buffer& data);
+  size_t netGetListRoom(const Network::Buffer& data);
 
-  
+
   void  checkReponse(uint8_t rep);
-  
+
   void  createMenuPanel();
   void  createListPanel();
 

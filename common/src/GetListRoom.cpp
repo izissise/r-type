@@ -1,8 +1,6 @@
 #include "GetListRoom.hpp"
 
 namespace Packet {
-  uint16_t GetListRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::GETLISTROOM);;
-
   GetListRoom::GetListRoom()
   : APacket(PacketType::GETLISTROOM), _list()
   {
@@ -20,7 +18,7 @@ namespace Packet {
     return (_list);
   }
 
-  std::string GetListRoom::to_bytes_body() const
+  std::string GetListRoom::to_bytesNoHeader() const
   {
     std::string ret("");
 
@@ -36,9 +34,9 @@ namespace Packet {
     return (ret);
   }
 
-  std::size_t GetListRoom::from_bytes_body(const std::string &bytes)
+  size_t GetListRoom::from_bytes(const std::string &bytes)
   {
-    std::size_t pos = _begin;
+    size_t pos = 0;
     uint32_t    listSize;
 
     get_bytes(bytes, pos, listSize);
@@ -47,7 +45,7 @@ namespace Packet {
     {
       t_room      tmp;
       uint32_t    nameSize;
-      std::size_t size = 0;
+      size_t size = 0;
 
       get_bytes(bytes, pos, nameSize);
       for (; pos < bytes.length() && size < nameSize; ++pos, ++size)
@@ -62,7 +60,7 @@ namespace Packet {
     }
     if (_list.size() != listSize)
       throw std::runtime_error("The size of the room's list is not correct");
-    return (pos - _begin);
+    return pos;
   }
 
 };

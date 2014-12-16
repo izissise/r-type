@@ -19,13 +19,20 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
 namespace Packet {
 
 APacket::APacket(PacketType type)
-  : _type(type), _begin(sizeof(uint16_t))
+  : _type(type)
 {
 }
 
 APacket::operator std::string()
 {
   return to_bytes();
+}
+
+std::string APacket::to_bytes() const
+{
+  std::string res;
+  fill_bytes(res, fromPacketType(_type));
+  return res + to_bytesNoHeader();
 }
 
 Packet::APacket::PacketType APacket::toPacketType(uint16_t p)
@@ -43,36 +50,11 @@ Packet::APacket::PacketType APacket::toPacketType(const std::string& buff)
   size_t i;
   uint16_t res;
 
-  for (i = 0; i < 2 && i != buff.size(); ++i)
+  for (i = 0; i < sizeof(res) && i != buff.size(); ++i)
     res = ((res << 8) | buff[i]);
-  if (i < 2)
+  if (i != sizeof(res))
     return PacketType::UNKNOW;
   return toPacketType(res);
-}
-
-std::string APacket::to_bytes() const
-{
-  std::string ret;
-  std::string packet;
-  uint16_t		type;
-
-  type = getHeaderNumber();
-  fill_bytes(ret, type);
-  ret += to_bytes_body();
-  return (ret);
-}
-
-std::size_t APacket::from_bytes(const std::string &bytes)
-{
-  uint16_t		type;
-  uint16_t		rtype;
-  size_t	    pos = 0;
-
-  type = getHeaderNumber();
-  get_bytes(bytes, pos, rtype);
-  if (bytes.empty() && (type != rtype))
-    throw std::invalid_argument("Error while parsing packet");
-  return from_bytes_body(bytes);
 }
 
 std::string& operator<<(std::string& a, const APacket& p)

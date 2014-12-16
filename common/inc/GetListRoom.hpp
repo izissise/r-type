@@ -9,20 +9,16 @@
 namespace Packet {
   class GetListRoom: public APacket
   {
-  private:
-  	static uint16_t headerNumber;
-
   public:
     GetListRoom();
     GetListRoom(const std::vector<t_room> &);
 
     const std::vector<t_room>  &getListRoom() const;
 
-  private:
-    std::string to_bytes_body() const override;
-    std::size_t from_bytes_body(const std::string &bytes) override;
-	uint16_t getHeaderNumber() const override {return headerNumber;};
+    std::string to_bytesNoHeader() const override;
+    size_t from_bytes(const std::string &bytes) override;
 
+  private:
     std::vector<t_room>       _list;
   };
 };

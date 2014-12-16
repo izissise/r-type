@@ -1,8 +1,6 @@
 #include "CreateRoom.hpp"
 
 namespace Packet {
-  uint16_t CreateRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::CREATEROOM);
-
   CreateRoom::CreateRoom()
   : APacket(PacketType::CREATEROOM), _room(nullptr)
   {
@@ -20,7 +18,7 @@ namespace Packet {
     return (_room);
   }
 
-  std::string CreateRoom::to_bytes_body() const
+  std::string CreateRoom::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, static_cast<uint16_t>(_room->name.length()));
@@ -29,19 +27,19 @@ namespace Packet {
     return (ret);
   }
 
-  std::size_t CreateRoom::from_bytes_body(const std::string &bytes)
+  size_t CreateRoom::from_bytes(const std::string &bytes)
   {
-    std::size_t pos = _begin;
+    size_t pos = 0;
     uint16_t length;
 
     _room.reset(new t_room());
     get_bytes(bytes, pos, length);
-    for (; pos < bytes.length() && pos < length + _begin + sizeof(length); ++pos)
+    for (; pos < bytes.length() && pos < length + sizeof(length); ++pos)
       _room->name += bytes[pos];
-    if (pos - _begin - sizeof(length) != length)
+    if (pos - sizeof(length) != length)
       throw std::runtime_error("The size of the room's name is not right");
     get_bytes(bytes, pos, _room->playerMax);
     _room->nbPlayer = 0;
-    return pos - _begin;
+    return pos;
   }
 };

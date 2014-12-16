@@ -1,8 +1,6 @@
 #include "ShortResponse.hpp"
 
 namespace Packet {
-  uint16_t ShortResponse::headerNumber = static_cast<uint16_t>(APacket::PacketType::SHORTRESPONSE);
-
   ShortResponse::ShortResponse()
   : APacket(PacketType::SHORTRESPONSE), _response(0)
   {
@@ -15,18 +13,18 @@ namespace Packet {
 
   }
 
-  std::string ShortResponse::to_bytes_body() const
+  std::string ShortResponse::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, _response);
     return ret;
   }
 
-  std::size_t ShortResponse::from_bytes_body(const std::string &bytes)
+  size_t ShortResponse::from_bytes(const std::string &bytes)
   {
-    std::size_t pos = _begin;
+    size_t pos = 0;
     get_bytes(bytes, pos, _response);
-    return (pos - _begin);
+    return pos;
   }
 
   uint8_t ShortResponse::getResponse() const
