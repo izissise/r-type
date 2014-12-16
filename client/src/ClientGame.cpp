@@ -164,7 +164,7 @@ bool  ClientGame::netGetListRoom(const Network::Buffer& data)
 
 void  ClientGame::createMenuPanel()
 {
-  auto menuPanel = std::shared_ptr<Panel>(new Panel());
+  auto menuPanel = std::shared_ptr<Panel>(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
@@ -190,9 +190,9 @@ void  ClientGame::createMenuPanel()
   ipEntry->setTextColor(sf::Color::White);
   ipEntry->setCharacterSize(30);
   
-  std::shared_ptr<Text> connectText(new Text("Connect"));
-  std::shared_ptr<Text> settingsText(new Text("Settings"));
-  std::shared_ptr<Text> quitText(new Text("Quit"));
+  std::shared_ptr<Text> connectText(new Text({0, 0, 0, 0}, "Connect"));
+  std::shared_ptr<Text> settingsText(new Text({0, 0, 0, 0}, "Settings"));
+  std::shared_ptr<Text> quitText(new Text({0, 0, 0, 0}, "Quit"));
   connectText->setFont(*font);
   settingsText->setFont(*font);
   quitText->setFont(*font);
@@ -207,11 +207,8 @@ void  ClientGame::createMenuPanel()
   auto connect = std::shared_ptr<Button>(new Button({ 1350, 665 , 250, 75 }, button, hover, click, connectText));
   auto setting = std::shared_ptr<Button>(new Button({ 1350, 745 , 250, 75 }, button, hover, click, settingsText));
   auto exit = std::shared_ptr<Button>(new Button({ 1350, 825 , 250, 75 }, button, hover, click, quitText));
-  auto back = std::shared_ptr<Image>(new Image(background));
+  auto back = std::shared_ptr<Image>(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
   
-  back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
-                 static_cast<float>(_win.getSize().y) / background->getTextureRect().height);
-
   exit->onClick([this]() { _done = true; });
   connect->onClick([this, loginEntry, ipEntry](){
     std::string login = loginEntry->getText();
@@ -248,7 +245,7 @@ void  ClientGame::createMenuPanel()
 
 void  ClientGame::createListPanel()
 {
-  auto listpanel = std::shared_ptr<Panel>(new Panel);
+  auto listpanel = std::shared_ptr<Panel>(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
   
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
@@ -263,8 +260,8 @@ void  ClientGame::createListPanel()
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
 
-  std::shared_ptr<Text> cr(new Text("Create Room"));
-  std::shared_ptr<Text> d(new Text("Disconnect"));
+  std::shared_ptr<Text> cr(new Text({0, 0, 0, 0}, "Create Room"));
+  std::shared_ptr<Text> d(new Text({0, 0, 0, 0}, "Disconnect"));
   
   cr->setFont(*font);
   cr->setColor(sf::Color::White);
@@ -276,10 +273,7 @@ void  ClientGame::createListPanel()
 
   auto create = std::shared_ptr<Button>(new Button({ 1300, 745 , 300, 75 }, button, hover, click, cr));
   auto disconnect = std::shared_ptr<Button>(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
-  auto back = std::shared_ptr<Image>(new Image(background));
-  
-  back->setScale(static_cast<float>(_win.getSize().x) / background->getTextureRect().width,
-                 static_cast<float>(_win.getSize().y) / background->getTextureRect().height);
+  auto back = std::shared_ptr<Image>(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
   
   create->onClick([this]() {
     Packet::CreateRoom room({"toto", 0, 4, 0});

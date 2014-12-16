@@ -8,14 +8,13 @@
 class Text: public ADrawable
 {
 public:
-  Text(const std::string &text = "");
+  Text(const sf::FloatRect &rect, const std::string &text = "");
   ~Text();
   
   void  move(float x, float y);
   
   void  setCharacterSize(unsigned int);
   void  setString(const std::string &);
-  void  setPosition(const sf::Vector2f &);
   void  setFont(const sf::Font &);
   void  setColor(const sf::Color &c) const;
 

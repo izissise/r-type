@@ -16,7 +16,7 @@ public:
     LISTPANEL = 2,
   };
   
-  Panel(bool hide = false);
+  Panel(const sf::FloatRect &rect, bool hide = false);
   virtual ~Panel() {};
 
   virtual void  update(const sf::Event &);

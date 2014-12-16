@@ -2,7 +2,7 @@
 #include "ListBox.hpp"
 
 ListBox::ListBox(const sf::FloatRect &pos, std::vector<t_room> &vec)
-: _pos(pos), _list(vec)
+: ADrawable(false, {pos.left, pos.top}, {pos.width, pos.height}), _list(vec)
 {
   if (!_list.empty())
     updateEntry();
@@ -26,8 +26,14 @@ void  ListBox::update(const sf::Event &event)
 
 void  ListBox::draw(sf::RenderWindow &win)
 {
+  float x = 0;
+
   for (auto it : _items)
+  {
+    it.second->setPosition({x, _pos.y});
     it.second->draw(win);
+    x += it.second->getSize().x;
+  }
 }
 
 void  ListBox::updateEntry()
@@ -46,8 +52,8 @@ void  ListBox::updateEntry()
     std::stringstream ss("");
 
     ss << it.nbPlayer << " / " << it.playerMax;
-    std::shared_ptr<Text>  name(new Text(it.name));
-    std::shared_ptr<Text>  player(new Text(ss.str()));
+    std::shared_ptr<Text>  name(new Text({0, 0, 100, 100}, it.name));
+    std::shared_ptr<Text>  player(new Text({100, 0, 100, 100}, ss.str()));
     
     name->setCharacterSize(30);
     player->setCharacterSize(30);
@@ -68,9 +74,9 @@ void  ListBox::updateEntry()
     hover->setTextureRect(sf::IntRect(0, 30, 480, 30));
     click->setTextureRect(sf::IntRect(0, 60, 480, 30));
     
-    _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_pos.width, _pos.height},
+    _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, _size.y},
                                                            name, player,
-                                                           std::shared_ptr<Button>(new Button({ 0, 0 , _pos.width, 50 }, button, hover, click))));
+                                                           std::shared_ptr<Button>(new Button({ 0, 0 , _size.y, 50 }, button, hover, click))));
     _displayRoom.push_back(it);
   }
 

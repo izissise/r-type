@@ -35,7 +35,6 @@ private:
   bool  _hover;
   bool  _isClicked;
 
-  sf::FloatRect               _pos;
   std::function<void ()>      _onClick;
   std::shared_ptr<Image>      _hoverTexture;
   std::shared_ptr<Image>      _displayTexture;
