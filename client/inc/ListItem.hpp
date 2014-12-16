@@ -8,17 +8,17 @@
 class ListItem: public ADrawable
 {
 public:
-  ListItem(const sf::Vector2f &size, const Text &name, const Text player, const Button &entry);
+  ListItem(const sf::Vector2f &size, const std::shared_ptr<Text> &name, const std::shared_ptr<Text> player, const std::shared_ptr<Button> &entry);
   ~ListItem();
   
   virtual void update(const sf::Event &);
   virtual void draw(sf::RenderWindow &win);
 
 private:
-  sf::Vector2f  _size;
-  Text          _name;
-  Text          _player;
-  Button        _entry;
+  sf::Vector2f                   _size;
+  std::shared_ptr<Text>          _name;
+  std::shared_ptr<Text>          _player;
+  std::shared_ptr<Button>        _entry;
 };
 
 #endif
