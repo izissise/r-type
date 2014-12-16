@@ -8,16 +8,12 @@
 class Image : public ADrawable
 {
 public:
-  Image(const std::shared_ptr<sf::Sprite> &image);
+  Image(const std::shared_ptr<sf::Sprite> &image, const sf::FloatRect &pos);
   ~Image();
   
   virtual void update(const sf::Event &);
   virtual void draw(sf::RenderWindow &win);
   
-  void  setPosition(const sf::Vector2f &pos);
-  void  setScale(float x, float y);
-  const sf::IntRect  &getTextureRect() const;
-
 private:
   std::shared_ptr<sf::Sprite> _image;
 };

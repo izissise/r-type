@@ -26,7 +26,6 @@ public:
   void  update(const sf::Event &event);
 
 private:
-  sf::FloatRect               _pos;
   bool                        _use;
   std::string                 _text;
   bool                        _first;

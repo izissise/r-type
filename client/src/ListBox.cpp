@@ -2,7 +2,7 @@
 #include "ListBox.hpp"
 
 ListBox::ListBox(const sf::FloatRect &pos, std::vector<t_room> &vec)
-: _pos(pos), _list(vec)
+: ADrawable(false, {pos.left, pos.top}, {pos.width, pos.height}), _list(vec), _cam(_pos.y)
 {
   if (!_list.empty())
     updateEntry();
@@ -16,18 +16,34 @@ ListBox::~ListBox()
 void  ListBox::update(const sf::Event &event)
 {
   if (!std::is_permutation(_displayRoom.begin(), _displayRoom.end(), _list.begin(), [](const t_room &a, const t_room &b) -> bool { return a.id == b.id; }))
-  {
-    std::cout << "Differ" << std::endl;
     updateEntry();
-  }
   for (auto it : _items)
     it.second->update(event);
+  if (event.type == sf::Event::MouseWheelMoved
+      && event.mouseWheel.x >= _pos.x && event.mouseWheel.x < _pos.x + _size.x
+      && event.mouseWheel.y >= _pos.y && event.mouseWheel.y < _pos.y + _size.y)
+  {
+    float tmp = _cam + (event.mouseWheel.delta * 2);
+
+    if (tmp <= _pos.y && tmp >= (_pos.y + _size.y) - (_items.size() * 50) - _pos.y)
+      _cam = tmp;
+  }
 }
 
 void  ListBox::draw(sf::RenderWindow &win)
 {
+  float y = _cam;
+  sf::View  view({_pos.x, _pos.y, _size.x, _size.y});
+
+  view.setViewport({ _pos.x / win.getSize().x, _pos.y / win.getSize().y, _size.x / win.getSize().x, _size.y / win.getSize().y});
+  win.setView(view);
   for (auto it : _items)
+  {
+    it.second->setPosition({_pos.x, y});
     it.second->draw(win);
+    y += it.second->getSize().y;
+  }
+  win.setView(win.getDefaultView());
 }
 
 void  ListBox::updateEntry()
@@ -45,9 +61,9 @@ void  ListBox::updateEntry()
   {
     std::stringstream ss("");
 
-    ss << it.nbPlayer << " / " << it.playerMax;
-    std::shared_ptr<Text>  name(new Text(it.name));
-    std::shared_ptr<Text>  player(new Text(ss.str()));
+    ss << static_cast<int>(it.nbPlayer) << " / " << static_cast<int>(it.playerMax);
+    std::shared_ptr<Text>  name(new Text({0, 0, 100, 100}, it.name));
+    std::shared_ptr<Text>  player(new Text({200, 0, 100, 100}, ss.str()));
     
     name->setCharacterSize(30);
     player->setCharacterSize(30);
@@ -68,9 +84,9 @@ void  ListBox::updateEntry()
     hover->setTextureRect(sf::IntRect(0, 30, 480, 30));
     click->setTextureRect(sf::IntRect(0, 60, 480, 30));
     
-    _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_pos.width, _pos.height},
+    _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, 50},
                                                            name, player,
-                                                           std::shared_ptr<Button>(new Button({ 0, 0 , _pos.width, 50 }, button, hover, click))));
+                                                           std::shared_ptr<Button>(new Button({ 0, 0 , _size.x, 50 }, button, hover, click))));
     _displayRoom.push_back(it);
   }
 

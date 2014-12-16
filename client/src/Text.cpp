@@ -1,7 +1,7 @@
 #include "Text.hpp"
 
-Text::Text(const std::string &text)
-: ADrawable(), _text(new sf::Text())
+Text::Text(const sf::FloatRect &rect, const std::string &text)
+: ADrawable(false, {rect.left, rect.top}, {rect.width, rect.height}), _text(new sf::Text())
 {
   _text->setString(text);
 }
@@ -36,11 +36,6 @@ void  Text::setString(const std::string &str)
   _text->setString(str);
 }
 
-void  Text::setPosition(const sf::Vector2f &pos)
-{
-  _text->setPosition(pos);
-}
-
 void  Text::setFont(const sf::Font &font)
 {
   _text->setFont(font);
@@ -59,5 +54,6 @@ void Text::update(const sf::Event &)
 
 void Text::draw(sf::RenderWindow &win)
 {
+  _text->setPosition(_pos.x, _pos.y);
   win.draw(*_text);
 }
