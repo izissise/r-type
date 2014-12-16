@@ -22,12 +22,11 @@ set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 
 # cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
-find_package(Threads)
-find_package(Boost 1.55.0 COMPONENTS filesystem system program_options REQUIRED)
+find_package(Threads REQUIRED)
+find_package(SFML 2 COMPONENTS system window graphics audio)
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CheckIncludeFile)
-INCLUDE(CheckIncludeFileCXX)
 INCLUDE(InstallFilesRecursive)
 INCLUDE(EnableCoverageReport)
 INCLUDE(EnableSlocCount)
@@ -38,12 +37,12 @@ INCLUDE(GenerateValgrind)
 INCLUDE(DefineProjectVersion)
 INCLUDE(CurrentDate)
 INCLUDE(DemangleCppABI)
-INCLUDE(CheckApplyCXXCompilerFlags)
+INCLUDE(CheckApplyCompilerFlags)
 INCLUDE(GenerateExportHeader)
 
 # --- global compiler flags ---
 if (UNIX)
-  COMPILER_CXX_FLAGS(FLAGS "-pipe" "-Wall" "-Wextra"
+  COMPILER_FLAGS(FLAGS "-pipe" "-Wall" "-Wextra"
 			   "--std=c++11"
 			   "-Wchar-subscripts" "-Winit-self" "-Wswitch-enum"
 			   "-Wstrict-aliasing=3"
@@ -52,10 +51,12 @@ if (UNIX)
 			   "-Wmissing-declarations"
 			   "-Wdocumentation"
 			   "-Wno-switch-enum"
+		FLAGS_RELEASE  "-march=native" "-O2"
+		FLAGS_DEBUG    "-DNDEBUG" "-g3"
 			   )
 elseif (MSVC)
-  COMPILER_CXX_FLAGS(FLAGS "/wd4251" # needs to have dll-interface to be used by clients
-			   "/wd4275" # exported class derived from non-exported class
+  COMPILER_FLAGS(FLAGS "/wd4251" # needs to have dll-interface to be used by clients
+		       "/wd4275" # exported class derived from non-exported class
 			   )
 endif()
 
@@ -64,14 +65,19 @@ OPTION(BUILD_TESTS "Decide if the test suite shall be built or not." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TESTS_COVERAGE "Decide if a coverage report should be generated." ON "BUILD_TESTS" OFF)
 CMAKE_DEPENDENT_OPTION(VALGRIND_CHECK "Decide if valgrind should be executed with the test binary to check for memory leaks." ON "BUILD_TESTS" OFF)
 OPTION(CODE_METRICS "Decide if code's metrics should be generated." OFF)
-OPTION(CODE_CHECK "Decide if code should be checked for common errors." OFF)
+OPTION(CODE_CHECK 	"Decide if code should be checked for common errors." OFF)
 OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 
-# --- global definitions ---
-DEFINE_PROJECT_VERSION(PROJECT 0 0 1 "snapshot")
-CURRENT_DATE(PROJECT_BUILD_DATE)
+
+# NetworkLib
+# Build it here in ${CMAKE_CURRENT_BINARY_DIR}/network
+set(NetworkLib_DIR "${CMAKE_CURRENT_BINARY_DIR}/network")
+file(MAKE_DIRECTORY ${NetworkLib_DIR})
+execute_process(COMMAND ${CMAKE_COMMAND} "${PROJECT_SOURCE_DIR}/network" "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" WORKING_DIRECTORY "${NetworkLib_DIR}")
+execute_process(COMMAND ${CMAKE_COMMAND} "--build" "${NetworkLib_DIR}" WORKING_DIRECTORY "${NetworkLib_DIR}")
+find_package(NetworkLib REQUIRED)
 
 # All source files using globs
 file(
@@ -110,15 +116,7 @@ file(
   ${NAME_SERVER}/inc/*
 )
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-#configure_file (
-#  "${NAME_LIB}/inc/Config.h.in"
-#  "${NAME_LIB}/inc/Config.h"
-#)
-
-include_directories("${INCLUDE_DIRECTORY}")
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/${NAME_LIB}/inc/")
+include_directories("${NETWORKLIB_INCLUDE_DIRS}")
 
 add_library(
 # executable name
@@ -127,6 +125,11 @@ add_library(
   ${lib_source_files}
   ${lib_include_files}
 )
+
+set_property(TARGET ${NAME_LIB} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
+
+target_link_libraries(${NAME_LIB} NETWORKLIB_network)
+target_link_libraries(${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
 
 if(BUILD_CLIENT)
     add_executable(
@@ -137,6 +140,8 @@ if(BUILD_CLIENT)
     ${client_include_files}
   )
 
+  set_property(TARGET ${NAME_CLIENT} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_CLIENT}/inc")
+  set_property(TARGET ${NAME_CLIENT} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
   target_link_libraries(${NAME_CLIENT} ${NAME_LIB})
 endif()
 
@@ -147,7 +152,9 @@ if (BUILD_SERVER)
     ${server_source_files}
     ${server_include_files}
   )
-  
+
+  set_property(TARGET ${NAME_SERVER} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_SERVER}/inc")
+  set_property(TARGET ${NAME_SERVER} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
   target_link_libraries(${NAME_SERVER} ${NAME_LIB})
 endif()
 
@@ -159,6 +166,11 @@ file(
 
 if (THREADS_FOUND)
   target_link_libraries (${NAME_LIB} ${CMAKE_THREAD_LIBS_INIT})
+endif()
+
+if (SFML_FOUND)
+  include_directories("${SFML_INCLUDE_DIR}")
+  target_link_libraries (${NAME_CLIENT} ${SFML_LIBRARIES})
 endif()
 
 # --- enable unit tests if desired ---

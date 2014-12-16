@@ -1,15 +1,18 @@
 #include <iostream>
-#include <thread>
-#include <ThreadPool.hpp>
+#include <string>
+#include <exception>
 
-void test() {
-//  std::cout << << std::endl;
-}
+#include "Server.hpp"
 
-int main(int ac, char *av[])
+int main(int, char**)
 {
-  ThreadPool pool(5);
-  std::cout << "Hello from server" << std::endl;
-
+  try {
+      Server serv("0.0.0.0", "9632");
+      serv.run();
+    }
+  catch (std::exception& e)
+    {
+      std::cerr << e.what() << std::endl;
+    }
   return 0;
 }
