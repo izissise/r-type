@@ -10,36 +10,6 @@ ClientGame::ClientGame()
 : SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
 {
   _currentPanel = Panel::PanelId::MENUPANEL;
-  _list.push_back({"Toto1", 1, 4, 0});
-  _list.push_back({"Toto2", 2, 4, 0});
-  _list.push_back({"Toto3", 3, 4, 0});
-  _list.push_back({"Toto4", 4, 4, 0});
-  _list.push_back({"Toto5", 5, 4, 0});
-  _list.push_back({"Toto6", 6, 4, 0});
-  _list.push_back({"Toto7", 7, 4, 0});
-  _list.push_back({"Toto8", 8, 4, 0});
-  _list.push_back({"Toto9", 9, 4, 0});
-  _list.push_back({"Toto10", 10, 4, 0});
-  _list.push_back({"Toto11", 11, 4, 0});
-  _list.push_back({"Toto12", 12, 4, 0});
-  _list.push_back({"Toto13", 13, 4, 0});
-  _list.push_back({"Toto14", 14, 4, 0});
-  _list.push_back({"Toto15", 15, 4, 0});
-  _list.push_back({"Toto16", 16, 4, 0});
-  _list.push_back({"Toto17", 17, 4, 0});
-  _list.push_back({"Toto18", 18, 4, 0});
-  _list.push_back({"Toto19", 19, 4, 0});
-  _list.push_back({"Toto20", 20, 4, 0});
-  _list.push_back({"Toto21", 21, 4, 0});
-  _list.push_back({"Toto22", 22, 4, 0});
-  _list.push_back({"Toto23", 23, 4, 0});
-  _list.push_back({"Toto24", 24, 4, 0});
-  _list.push_back({"Toto25", 25, 4, 0});
-  _list.push_back({"Toto26", 26, 4, 0});
-  _list.push_back({"Toto27", 27, 4, 0});
-  _list.push_back({"Toto28", 28, 4, 0});
-  _list.push_back({"Toto29", 29, 4, 0});
-  _list.push_back({"Toto30", 30, 4, 0});
   createMenuPanel();
   createListPanel();
 }
@@ -319,7 +289,7 @@ void  ClientGame::createListPanel()
   listpanel->add(create);
   listpanel->add(disconnect);
 
-  listpanel->add(std::shared_ptr<ADrawable>(new ListBox({0, 100, 1300, 900}, _list)));
+  listpanel->add(std::shared_ptr<ADrawable>(new ListBox({0, 0, 1300, 900}, _list)));
   _panel[Panel::PanelId::LISTPANEL] = listpanel;
 
 }

@@ -23,9 +23,9 @@ void  ListBox::update(const sf::Event &event)
       && event.mouseWheel.x >= _pos.x && event.mouseWheel.x < _pos.x + _size.x
       && event.mouseWheel.y >= _pos.y && event.mouseWheel.y < _pos.y + _size.y)
   {
-    float tmp = _cam - (event.mouseWheel.delta * 2);
+    float tmp = _cam + (event.mouseWheel.delta * 2);
 
-    if (tmp <= _pos.y && tmp >= (_pos.y + _size.y) - (_items.size() * 50))
+    if (tmp <= _pos.y && tmp >= (_pos.y + _size.y) - (_items.size() * 50) - _pos.y)
       _cam = tmp;
   }
 }
