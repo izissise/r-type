@@ -80,7 +80,7 @@ bool Client::netShortResponse(const Network::Buffer&)
 
 bool Client::netHandshake(const Network::Buffer& data)
 {
-  size_t readSize = 200;
+  size_t readSize = 4096;
   Packet::Handshake hand;
   size_t  nbUsed;
 
@@ -97,7 +97,7 @@ bool Client::netHandshake(const Network::Buffer& data)
       std::cout << _login << " " << _protoVersion << std::endl;
       Packet::ShortResponse rep(0);
       if (_protoVersion == PROTOCOLE_VERSION)
-        rep({1});
+        rep = {1};
       _writeBuff.writeBuffer(rep.to_bytes());
     }
   catch (std::exception& e)
@@ -149,18 +149,19 @@ bool Client::netCreateRoom(const Network::Buffer& data)
       tmpBuff += buff;
       nbUsed = cr.from_bytes(tmpBuff);
       _readBuff.rollbackReadBuffer(readSize - nbUsed);
-      t_room roomName = *(cr.getRoom());
-      size_t rId = _server.getLobby().newRoom(roomName);
-      std::cout  << "New room: " << roomName.name << std::endl;
+      t_room room = *(cr.getRoom());
+      size_t rId = _server.getLobby().newRoom(room);
+      std::cout << "New room: " << room.name << std::endl;
       bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
       Packet::ShortResponse rep(0);
       if (joined)
-        rep({1});
+        rep = {1};
       _writeBuff.writeBuffer(rep.to_bytes());
 
     }
   catch (std::exception& e)
     {
+      std::cout << "Packet not long enough." << std::endl;
       _readBuff.rollbackReadBuffer(readSize);
       return false;
     }

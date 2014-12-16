@@ -36,9 +36,9 @@ namespace Packet {
 
     _room.reset(new t_room());
     get_bytes(bytes, pos, length);
-    for (; pos < bytes.length() && pos < length + sizeof(_type) + sizeof(length); ++pos)
+    for (; pos < bytes.length() && pos < length + _begin + sizeof(length); ++pos)
       _room->name += bytes[pos];
-    if (pos - sizeof(_type) - sizeof(length) != length)
+    if (pos - _begin - sizeof(length) != length)
       throw std::runtime_error("The size of the room's name is not right");
     get_bytes(bytes, pos, _room->playerMax);
     _room->nbPlayer = 0;
