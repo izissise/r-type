@@ -1,8 +1,6 @@
 #include "JoinRoom.hpp"
 
 namespace Packet {
-  uint16_t JoinRoom::headerNumber = static_cast<uint16_t>(APacket::PacketType::JOINROOM);
-
   JoinRoom::JoinRoom()
   : APacket(PacketType::JOINROOM), _idRoom(0)
   {
@@ -15,18 +13,18 @@ namespace Packet {
 
   }
 
-  std::string JoinRoom::to_bytes_body() const
+  std::string JoinRoom::to_bytes() const
   {
     std::string ret = "";
     fill_bytes(ret, _idRoom);
     return ret;
   }
 
-  std::size_t JoinRoom::from_bytes_body(const std::string &bytes)
+  size_t JoinRoom::from_bytes(const std::string &bytes)
   {
-    std::size_t pos = _begin;
+    size_t pos = 0;
     get_bytes(bytes, pos, _idRoom);
-    return (pos - _begin);
+    return pos;
   }
 
   uint16_t JoinRoom::getRoomId() const

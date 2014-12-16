@@ -29,8 +29,10 @@ namespace Packet {
 
     operator std::string();
 
-    std::string to_bytes() const;
-    size_t from_bytes(const std::string &bytes);
+    Packet::APacket::PacketType getType() const {return _type;};
+
+    virtual std::string to_bytes() const = 0;
+    virtual size_t from_bytes(const std::string &bytes) = 0;
 
     static Packet::APacket::PacketType toPacketType(uint16_t p);
 	static Packet::APacket::PacketType toPacketType(const std::string& buff);
@@ -38,10 +40,6 @@ namespace Packet {
 	static uint16_t fromPacketType(Packet::APacket::PacketType p) {return static_cast<uint16_t>(p);};
 
   protected:
-    virtual std::string to_bytes_body() const = 0;
-    virtual std::size_t from_bytes_body(const std::string &bytes) = 0;
-    virtual uint16_t getHeaderNumber() const = 0;
-
     template <typename T>
     void fill_bytes(std::string &bytes, T nb) const
     {
@@ -67,7 +65,6 @@ namespace Packet {
     }
 
     PacketType       _type;
-    uint32_t         _begin;
   };
 
   std::string& operator<<(std::string& a, const APacket& p);
