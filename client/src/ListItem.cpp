@@ -1,1 +1,26 @@
 #include "ListItem.hpp"
+
+ListItem::ListItem(const sf::Vector2f &size, const Text &name, const Text player, const Button &entry)
+: _size(size), _name(name), _player(player), _entry(entry)
+{
+  
+}
+
+ListItem::~ListItem()
+{
+  
+}
+
+void ListItem::update(const sf::Event &event)
+{
+  _entry.update(event);
+  _name.update(event);
+  _player.update(event);
+}
+
+void ListItem::draw(sf::RenderWindow &win)
+{
+  _entry.draw(win);
+  _name.draw(win);
+  _player.draw(win);
+}
