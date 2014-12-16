@@ -14,7 +14,7 @@ namespace Packet {
   }
 
 
-  std::string AskListRoom::to_bytes() const
+  std::string AskListRoom::to_bytesNoHeader() const
   {
     return ("");
   }

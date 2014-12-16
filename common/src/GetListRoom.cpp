@@ -18,7 +18,7 @@ namespace Packet {
     return (_list);
   }
 
-  std::string GetListRoom::to_bytes() const
+  std::string GetListRoom::to_bytesNoHeader() const
   {
     std::string ret("");
 

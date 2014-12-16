@@ -13,7 +13,7 @@ namespace Packet {
 
   }
 
-  std::string JoinRoom::to_bytes() const
+  std::string JoinRoom::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, _idRoom);

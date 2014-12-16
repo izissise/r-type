@@ -14,7 +14,7 @@ namespace Packet {
 
   }
 
-  std::string Handshake::to_bytes() const
+  std::string Handshake::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, _protocolVersion);

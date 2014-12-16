@@ -18,7 +18,7 @@ namespace Packet {
     return (_room);
   }
 
-  std::string CreateRoom::to_bytes() const
+  std::string CreateRoom::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, static_cast<uint16_t>(_room->name.length()));

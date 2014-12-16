@@ -28,6 +28,13 @@ APacket::operator std::string()
   return to_bytes();
 }
 
+std::string APacket::to_bytes() const
+{
+  std::string res;
+  fill_bytes(res, fromPacketType(_type));
+  return res + to_bytesNoHeader();
+}
+
 Packet::APacket::PacketType APacket::toPacketType(uint16_t p)
 {
   try {

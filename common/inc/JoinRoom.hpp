@@ -12,7 +12,7 @@ namespace Packet {
 
     uint16_t getRoomId() const;
 
-	std::string to_bytes() const override;
+	std::string to_bytesNoHeader() const override;
     size_t from_bytes(const std::string &bytes) override;
 
     uint16_t  _idRoom;

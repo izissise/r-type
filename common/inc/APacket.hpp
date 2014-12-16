@@ -31,7 +31,8 @@ namespace Packet {
 
     Packet::APacket::PacketType getType() const {return _type;};
 
-    virtual std::string to_bytes() const = 0;
+    std::string to_bytes() const;
+    virtual std::string to_bytesNoHeader() const = 0;
     virtual size_t from_bytes(const std::string &bytes) = 0;
 
     static Packet::APacket::PacketType toPacketType(uint16_t p);

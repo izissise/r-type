@@ -13,7 +13,7 @@ namespace Packet {
 
   }
 
-  std::string ShortResponse::to_bytes() const
+  std::string ShortResponse::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, _response);
