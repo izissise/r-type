@@ -11,6 +11,7 @@
 #include "ANetwork.hpp"
 #include "AListenSocket.hpp"
 #include "ABasicSocket.hpp"
+#include "APacket.hpp"
 
 #include "Client.hpp"
 #include "Lobby.hpp"
@@ -25,6 +26,7 @@ public:
 
   Lobby& getLobby() {return _lobby;};
 
+  void broadcastAPacket(const Packet::APacket& pack) const;
 
   void unregisterClient(const std::shared_ptr<Client>& cli);
 

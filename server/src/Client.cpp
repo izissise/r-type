@@ -73,6 +73,17 @@ void Client::onDisconnet()
   _server.unregisterClient(tmp);
 }
 
+
+void Client::sendPacket(const Packet::APacket& pack)
+{
+  _writeBuff.writeBuffer(pack.to_bytes());
+}
+
+
+/*
+** Apacket binded functions
+*/
+
 bool Client::netShortResponse(const Network::Buffer&)
 {
   return false;
@@ -157,6 +168,9 @@ bool Client::netCreateRoom(const Network::Buffer& data)
       if (joined)
         rep = {1};
       _writeBuff.writeBuffer(rep.to_bytes());
+
+      Packet::GetListRoom glr(_server.getLobby().roomLists());
+      _server.broadcastAPacket(glr);
 
     }
   catch (std::exception& e)
