@@ -149,6 +149,8 @@ size_t Client::netCreateRoom(const Network::Buffer& data)
 
   Packet::GetListRoom glr(_server.getLobby().roomLists());
   _server.broadcastAPacket(glr);
+  if (_currentRoom != -1)
+    _server.getLobby().leaveRoom(shared_from_this(), rId);
   _currentRoom = rId;
   return nbUsed;
 }
@@ -165,6 +167,8 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   if (joined)
     rep = {1};
   _writeBuff.writeBuffer(rep);
+  if (_currentRoom != -1)
+    _server.getLobby().leaveRoom(shared_from_this(), rId);
   _currentRoom = rId;
   return nbUsed;
 }

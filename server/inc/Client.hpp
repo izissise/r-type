@@ -42,7 +42,7 @@ private:
 
   std::string _login;
   int		  _protoVersion;
-  size_t	  _currentRoom;
+  int		  _currentRoom;
 };
 
 #endif
