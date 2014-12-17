@@ -20,6 +20,10 @@ namespace Packet {
       CREATEROOM = 3, //3
       JOINROOM = 4,	 //4
       ASKLISTROOM = 5, //5
+      STARTGAME = 6,
+      READYGAME = 7,
+      LEAVEROOM = 8,
+      MESSAGE = 9,
       UNKNOW,
     };
 

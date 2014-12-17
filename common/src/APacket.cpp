@@ -13,6 +13,10 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
   Packet::APacket::PacketType::CREATEROOM,
   Packet::APacket::PacketType::JOINROOM,
   Packet::APacket::PacketType::ASKLISTROOM,
+  Packet::APacket::PacketType::STARTGAME,
+  Packet::APacket::PacketType::READYGAME,
+  Packet::APacket::PacketType::LEAVEROOM,
+  Packet::APacket::PacketType::MESSAGE,
   Packet::APacket::PacketType::UNKNOW
 };
 
