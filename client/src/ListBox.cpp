@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <sstream>
 #include "ListBox.hpp"
 
@@ -15,8 +16,7 @@ ListBox::~ListBox()
 
 void  ListBox::update(const sf::Event &event)
 {
-  if (!std::is_permutation(_displayRoom.begin(), _displayRoom.end(), _list.begin(), [](const t_room &a, const t_room &b) -> bool { return a.id == b.id; }))
-    updateEntry();
+  updateEntry();
   for (auto it : _items)
     it.second->update(event);
   if (event.type == sf::Event::MouseWheelMoved
@@ -52,11 +52,8 @@ void  ListBox::updateEntry()
   std::vector<t_room> toRemove;
   
   std::set_difference(_list.begin(), _list.end(), _displayRoom.begin(), _displayRoom.end(),
-                      std::inserter(toAdd, toAdd.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id == b.id; });
+                      std::inserter(toAdd, toAdd.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id != b.id; });
   
-  std::set_difference(_displayRoom.begin(), _displayRoom.end(), _list.begin(), _list.end(),
-                      std::inserter(toRemove, toRemove.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id == b.id; });
-
   for (auto it : toAdd)
   {
     std::stringstream ss("");
@@ -84,11 +81,16 @@ void  ListBox::updateEntry()
     hover->setTextureRect(sf::IntRect(0, 30, 480, 30));
     click->setTextureRect(sf::IntRect(0, 60, 480, 30));
     
+    std::shared_ptr<Button> tmp(new Button({ 0, 0 , _size.x, 50 }, button, hover, click));
+    
+    tmp->onClick([it] { std::cout << "Join [" << it.name << "]" << std::endl; });
     _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, 50},
-                                                           name, player,
-                                                           std::shared_ptr<Button>(new Button({ 0, 0 , _size.x, 50 }, button, hover, click))));
+                                                           name, player, tmp));
     _displayRoom.push_back(it);
   }
+
+  std::set_difference(_displayRoom.begin(), _displayRoom.end(), _list.begin(), _list.end(),
+                      std::inserter(toRemove, toRemove.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id != b.id; });
 
   for (auto it : toRemove)
   {

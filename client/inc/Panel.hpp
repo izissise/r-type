@@ -14,6 +14,9 @@ public:
   {
     MENUPANEL = 1,
     LISTPANEL = 2,
+    CREATEROOMPANEL = 3,
+    ROOMPANEL = 4,
+    GAMEPANEL = 5,
   };
   
   Panel(const sf::FloatRect &rect, bool hide = false);

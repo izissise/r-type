@@ -51,6 +51,9 @@ private:
 
   void  createMenuPanel();
   void  createListPanel();
+  void  createCreateRoomPanel();
+  void  createRoomPanel();
+  void  createGamePanel();
 
   sf::RenderWindow                                        _win;
   bool                                                    _done;
