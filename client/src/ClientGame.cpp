@@ -152,7 +152,7 @@ size_t  ClientGame::netGetListRoom(const Network::Buffer& data)
 void  ClientGame::createMenuPanel()
 {
   std::shared_ptr<Panel> menuPanel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
+  auto backgroundTexture = RessourceManager::instance().getTexture("../assets/connectionBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
 
@@ -306,9 +306,10 @@ void  ClientGame::createCreateRoomPanel()
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
 
-  std::shared_ptr<Text> enterText(new Text({(static_cast<float>(_win.getSize().x) / 2) - 400, 600, 300, 60}, "Room's Name:"));
-  std::shared_ptr<TextEntry> entry(new TextEntry("", {(static_cast<float>(_win.getSize().x) / 2) - 100
-    , 600, 400, 60}, button));
+  std::shared_ptr<Text> enterText(new Text({(static_cast<float>(_win.getSize().x) / 2) - 400,
+                                          (static_cast<float>(_win.getSize().y) / 2), 300, 60}, "Room's Name:"));
+  std::shared_ptr<TextEntry> entry(new TextEntry("", {(static_cast<float>(_win.getSize().x) / 2) - 100 ,
+                                                      (static_cast<float>(_win.getSize().y) / 2), 400, 60}, button));
   
   entry->setFont(*font);
   entry->setTextColor(sf::Color::White);
