@@ -1,8 +1,6 @@
 #include "Message.hpp"
 
 namespace Packet {
-  uint16_t Message::headerNumber = static_cast<uint16_t>(APacket::PacketType::MESSAGE);
-  
   Message::Message()
   : APacket(APacket::PacketType::MESSAGE), _msg()
   {
@@ -20,7 +18,7 @@ namespace Packet {
     return (_msg);
   }
   
-  std::string Message::to_bytes_body() const
+  std::string Message::to_bytesNoHeader() const
   {
     std::string ret = "";
     fill_bytes(ret, static_cast<uint16_t>(_msg.length()));
@@ -28,16 +26,16 @@ namespace Packet {
     return (ret);
   }
   
-  std::size_t Message::from_bytes_body(const std::string &bytes)
+  std::size_t Message::from_bytes(const std::string &bytes)
   {
     std::size_t pos = 0;
     uint16_t length;
     
     _msg = "";
     get_bytes(bytes, pos, length);
-    for (; pos < bytes.length() && pos < length + sizeof(_type) + sizeof(length); ++pos)
+    for (; pos < bytes.length() && pos < length + sizeof(length); ++pos)
       _msg += bytes[pos];
-    if (pos - sizeof(_type) - sizeof(length) != length)
+    if (pos - sizeof(length) != length)
       throw std::runtime_error("The size of the room's name is not right");
     return pos;
   }
