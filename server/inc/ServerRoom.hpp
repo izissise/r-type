@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Client.hpp"
+#include "APacket.hpp"
 
 class ServerRoom
 {
@@ -19,6 +20,8 @@ public:
   size_t getMaxNbPlayer() const {return _nbPMax;};
 
   const std::vector<std::shared_ptr<Client>>& getPlayerList() const {return _clients;};
+
+  void broadcastAPacket(const Packet::APacket& pack);
 
   bool addPlayer(const std::shared_ptr<Client>& p);
   void removePlayer(const std::shared_ptr<Client>& p);

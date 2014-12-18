@@ -9,13 +9,13 @@ namespace Packet {
   public:
     Message();
     Message(const std::string &);
-    
+
     const std::string &getMsg() const;
-    
-  private:
+
     virtual std::string to_bytesNoHeader() const override;
     virtual size_t from_bytes(const std::string &bytes) override;
-    
+
+  private:
     std::string   _msg;
   };
 };

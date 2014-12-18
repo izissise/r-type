@@ -11,6 +11,7 @@
 #include "GetListRoom.hpp"
 #include "ShortResponse.hpp"
 #include "JoinRoom.hpp"
+#include "Message.hpp"
 
 std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
@@ -18,7 +19,10 @@ std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)
   {Packet::APacket::PacketType::HANDSHAKE, &Client::netHandshake},
   {Packet::APacket::PacketType::ASKLISTROOM, &Client::netAskListRoom},
   {Packet::APacket::PacketType::CREATEROOM, &Client::netCreateRoom},
-  {Packet::APacket::PacketType::JOINROOM, &Client::netJoinRoom}
+  {Packet::APacket::PacketType::JOINROOM, &Client::netJoinRoom},
+  {Packet::APacket::PacketType::STARTGAME, &Client::netStartGame},
+  {Packet::APacket::PacketType::LEAVEROOM, &Client::netLeaveRoom},
+  {Packet::APacket::PacketType::MESSAGE, &Client::netMessage}
 };
 
 Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
@@ -85,6 +89,8 @@ void Client::onDisconnet()
 
   std::cout << "Unregistered client" << std::endl;
   _server.unregisterClient(tmp);
+  if (_currentRoom != -1)
+    _server.getLobby().leaveRoom(tmp, _currentRoom);
 }
 
 
@@ -172,3 +178,35 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   _currentRoom = rId;
   return nbUsed;
 }
+
+size_t Client::netStartGame(const Network::Buffer&)
+{
+  return 0;
+}
+
+size_t Client::netLeaveRoom(const Network::Buffer&)
+{
+  _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
+  _currentRoom = -1;
+  return 0;
+}
+
+size_t Client::netMessage(const Network::Buffer& data)
+{
+  Packet::Message msg;
+  size_t  nbUsed;
+
+  nbUsed = msg.from_bytes(data);
+  if (_currentRoom != -1)
+    {
+      try {
+          _server.getLobby().getRoom(_currentRoom).broadcastAPacket(msg);
+        }
+      catch (std::exception& e)
+        {
+          std::cerr << "No such room!" << std::endl;
+        }
+    }
+  return nbUsed;
+}
+

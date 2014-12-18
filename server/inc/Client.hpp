@@ -36,6 +36,9 @@ private:
   size_t netAskListRoom(const Network::Buffer& data);
   size_t netCreateRoom(const Network::Buffer& data);
   size_t netJoinRoom(const Network::Buffer& data);
+  size_t netStartGame(const Network::Buffer& data);
+  size_t netLeaveRoom(const Network::Buffer& data);
+  size_t netMessage(const Network::Buffer& data);
 
 private:
   Server& _server;

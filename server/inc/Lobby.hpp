@@ -20,6 +20,8 @@ public:
   std::vector<t_room> roomLists() const;
   const std::map<size_t, ServerRoom>& getRoomMap() const {return _rooms;};
 
+  ServerRoom& getRoom(size_t rId) {return _rooms.at(rId);};
+
   bool joinRoom(const std::shared_ptr<Client>& cli, size_t roomId);
   void leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId);
 

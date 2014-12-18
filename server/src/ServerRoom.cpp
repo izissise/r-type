@@ -25,3 +25,11 @@ void ServerRoom::removePlayer(const std::shared_ptr<Client>& p)
     return (cl == p);
   }), _clients.end());
 }
+
+void ServerRoom::broadcastAPacket(const Packet::APacket& pack)
+{
+  for (auto& i : _clients)
+    {
+      i->sendPacket(pack);
+    }
+}
