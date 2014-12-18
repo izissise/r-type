@@ -35,11 +35,10 @@ void Client::onRead(size_t nbRead)
   const size_t headerSize = sizeof(uint16_t);
   Network::Buffer buff;
   Packet::APacket::PacketType pack;
-  bool isPacket = false;
 
   if (nbRead == 0)
     return;
-  while (!isPacket && _readBuff.getLeftRead() >= headerSize)
+  while (_readBuff.getLeftRead() >= headerSize)
     {
       _readBuff.readBuffer(buff, headerSize);
       pack = Packet::APacket::toPacketType(buff);
@@ -49,7 +48,6 @@ void Client::onRead(size_t nbRead)
 //      std::cout << std::hex << "0x" << static_cast<int>(buff[1]) << " " << std::dec;
           buff.clear();
           _readBuff.readBuffer(buff, _readBuff.getLeftRead());
-          isPacket = true;
           try {
               size_t (Client::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
               try {
@@ -104,9 +102,9 @@ void Client::sendPacket(const Packet::APacket& pack)
 ** Apacket binded functions
 */
 
-size_t Client::netShortResponse(const Network::Buffer&)
+size_t Client::netShortResponse(const Network::Buffer& data)
 {
-  return 0;
+  return Packet::ShortResponse().from_bytes(data);
 }
 
 size_t Client::netHandshake(const Network::Buffer& data)
@@ -133,8 +131,7 @@ size_t Client::netAskListRoom(const Network::Buffer& data)
 
   nbUsed = ask.from_bytes(data);
   std::cout << "Ask for Room" << std::endl;
-  Packet::GetListRoom room(_server.getLobby().roomLists());
-  _writeBuff.writeBuffer(room);
+  _server.broadcastRoomList();
   return nbUsed;
 }
 
@@ -150,8 +147,7 @@ size_t Client::netCreateRoom(const Network::Buffer& data)
   bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
   _writeBuff.writeBuffer(Packet::ShortResponse(joined));
 
-  Packet::GetListRoom glr(_server.getLobby().roomLists());
-  _server.broadcastAPacket(glr);
+  _server.broadcastRoomList();
   if (_currentRoom != -1)
     _server.getLobby().leaveRoom(shared_from_this(), rId);
   _currentRoom = rId;
@@ -171,7 +167,10 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
     _server.getLobby().leaveRoom(shared_from_this(), rId);
   _currentRoom = rId;
   if (joined)
+  {
     _server.getLobby().getRoom(_currentRoom).sendPlayerList();
+    _server.broadcastRoomList();
+  }
   return nbUsed;
 }
 
@@ -192,6 +191,7 @@ size_t Client::netLeaveRoom(const Network::Buffer&)
   _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
   _currentRoom = -1;
   _isGameReady = false;
+  _server.broadcastRoomList();
   return 0;
 }
 

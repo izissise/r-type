@@ -47,11 +47,10 @@ void  ClientGame::onRead(size_t nbRead)
   const size_t headerSize = sizeof(uint16_t);
   Network::Buffer buff;
   Packet::APacket::PacketType pack;
-  bool isPacket = false;
 
   if (nbRead == 0)
     return;
-  while (!isPacket && _readBuff.getLeftRead() >= headerSize)
+  while (_readBuff.getLeftRead() >= headerSize)
   {
     _readBuff.readBuffer(buff, headerSize);
     pack = Packet::APacket::toPacketType(buff);
@@ -59,7 +58,6 @@ void  ClientGame::onRead(size_t nbRead)
     {
       buff.clear();
       _readBuff.readBuffer(buff, _readBuff.getLeftRead());
-      isPacket = true;
       try {
         size_t (ClientGame::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
         try {

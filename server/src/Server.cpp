@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+#include "GetListRoom.hpp"
+
 Server::Server(const std::string& addr, const std::string& port)
   : _net(Network::NetworkFactory::createNetwork()),
     _lobbyListener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true)),
@@ -23,6 +25,12 @@ void Server::broadcastAPacket(const Packet::APacket& pack) const
     {
       i->sendPacket(pack);
     }
+}
+
+void Server::broadcastRoomList() const
+{
+  Packet::GetListRoom glr(_lobby.roomLists());
+  broadcastAPacket(glr);
 }
 
 void Server::unregisterClient(const std::shared_ptr<Client>& cli)

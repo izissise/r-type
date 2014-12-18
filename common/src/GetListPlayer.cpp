@@ -22,10 +22,10 @@ namespace Packet {
   {
     std::string ret("");
 
-    fill_bytes(ret, static_cast<uint32_t>(_list.size()));
+    fill_bytes(ret, static_cast<uint16_t>(_list.size()));
     for (auto& it : _list)
     {
-      fill_bytes(ret, static_cast<uint32_t>(it.length()));
+      fill_bytes(ret, static_cast<uint16_t>(it.length()));
       ret += it;
     }
     return (ret);
@@ -34,14 +34,14 @@ namespace Packet {
   size_t GetListPlayer::from_bytes(const std::string &bytes)
   {
     size_t pos = 0;
-    uint32_t    listSize;
+    uint16_t    listSize;
 
     get_bytes(bytes, pos, listSize);
     _list.clear();
-    for (uint32_t i = 0; i < listSize && pos < bytes.length(); ++i)
+    for (uint16_t i = 0; i < listSize && pos < bytes.length(); ++i)
     {
       PlayerClient      tmp;
-      uint32_t          nameSize;
+      uint16_t          nameSize;
       size_t size = 0;
 
       get_bytes(bytes, pos, nameSize);

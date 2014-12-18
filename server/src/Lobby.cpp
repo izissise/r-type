@@ -51,7 +51,9 @@ void Lobby::leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId)
           auto it = _rooms.begin();
           if ((it = std::find_if(it, _rooms.end(),
           [roomId](const std::pair<size_t, ServerRoom>& p) {return (roomId == p.first);})) != _rooms.end())
-          _rooms.erase(it);
+          {
+            _rooms.erase(it);
+          }
         }
     }
   catch (std::exception& e)
