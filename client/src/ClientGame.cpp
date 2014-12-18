@@ -4,6 +4,7 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
   {Packet::APacket::PacketType::GETLISTROOM, &ClientGame::netGetListRoom},
+  {Packet::APacket::PacketType::GETLISTPLAYER, &ClientGame::netGetListPlayer},
 };
 
 ClientGame::ClientGame()
@@ -91,6 +92,9 @@ void ClientGame::onDisconnet()
 {
   std::cout << "Disconnected" << std::endl;
   _currentPanel = Panel::PanelId::MENUPANEL;
+  _list.clear();
+  _player.clear();
+  _isLoading = false;
 }
 
 bool  ClientGame::update()
@@ -175,6 +179,21 @@ size_t  ClientGame::netGetListRoom(const Network::Buffer& data)
   return nbUsed;
 }
 
+size_t  ClientGame::netGetListPlayer(const Network::Buffer &data)
+{
+  Packet::GetListPlayer cr;
+  size_t  nbUsed;
+  
+  nbUsed = cr.from_bytes(data);
+  _player.clear();
+  _player = cr.getPlayerList();
+  std::cout << "Get Player = [";
+  for (auto& it : _list)
+    std::cout << it.name << ",";
+  std::cout << "]" << std::endl;
+  return nbUsed;
+}
+
 void  ClientGame::createMenuPanel()
 {
   std::shared_ptr<Panel> menuPanel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
@@ -237,6 +256,7 @@ void  ClientGame::createMenuPanel()
         setSocket(socket);
         _writeBuff.writeBuffer(packet.to_bytes());
         _isLoading = true;
+        _list.clear();
       }
       catch (Network::Error &e) {
         std::cerr << e.what() << std::endl;

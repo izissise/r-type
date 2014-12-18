@@ -23,6 +23,7 @@
 # include "AskListRoom.hpp"
 # include "CreateRoom.hpp"
 # include "JoinRoom.hpp"
+# include "GetListPlayer.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -44,9 +45,9 @@ private:
 
   static std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> _netWorkBinds;
 
-  size_t netShortResponse(const Network::Buffer& data);
-  size_t netGetListRoom(const Network::Buffer& data);
-
+  size_t  netShortResponse(const Network::Buffer& data);
+  size_t  netGetListRoom(const Network::Buffer& data);
+  size_t  netGetListPlayer(const Network::Buffer &data);
 
   void  checkReponse(uint8_t rep);
 
@@ -64,6 +65,7 @@ private:
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
   std::unique_ptr<Network::ANetwork>                      _network;
   std::vector<t_room>                                     _list;
+  std::vector<Packet::PlayerClient>                       _player;
 };
 
 #endif
