@@ -149,11 +149,11 @@ size_t Client::netCreateRoom(const Network::Buffer& data)
 
   if (joined)
     {
+      if (_currentRoom != -1)
+        _server.getLobby().leaveRoom(shared_from_this(), rId);
       _currentRoom = rId;
       _server.getLobby().getRoom(_currentRoom).sendPlayerList();
       _server.broadcastRoomList();
-      if (_currentRoom != -1)
-        _server.getLobby().leaveRoom(shared_from_this(), rId);
       _currentRoom = rId;
     }
   return nbUsed;
@@ -168,10 +168,10 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   size_t rId = jr.getRoomId();
   bool joined = _server.getLobby().joinRoom(shared_from_this(), rId);
   _writeBuff.writeBuffer(Packet::ShortResponse(joined));
-  if (_currentRoom != -1)
-    _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
   if (joined)
     {
+      if (_currentRoom != -1)
+        _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
       _currentRoom = rId;
       _server.getLobby().getRoom(_currentRoom).sendPlayerList();
       _server.broadcastRoomList();
