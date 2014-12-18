@@ -22,6 +22,7 @@
 # include "GetListRoom.hpp"
 # include "AskListRoom.hpp"
 # include "CreateRoom.hpp"
+# include "JoinRoom.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -58,6 +59,7 @@ private:
   sf::RenderWindow                                        _win;
   bool                                                    _done;
   bool                                                    _isLoading;
+  bool                                                    _host;
   Panel::PanelId                                          _currentPanel;
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
   std::unique_ptr<Network::ANetwork>                      _network;

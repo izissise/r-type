@@ -44,30 +44,30 @@ namespace Packet {
 
 	static uint16_t fromPacketType(Packet::APacket::PacketType p) {return static_cast<uint16_t>(p);};
 
-  protected:
     template <typename T>
-    void fill_bytes(std::string &bytes, T nb) const
+    static void fill_bytes(std::string &bytes, T nb)
     {
       auto it = bytes.end();
-
+      
       for (size_t i = 0; i < sizeof(T); ++i)
       {
         it = bytes.insert(it, (nb & 0xFF));
         nb = nb >> 8;
       }
     }
-
+    
     template <typename T>
-    void get_bytes(const std::string &bytes, size_t &pos, T &nb) const
+    static void get_bytes(const std::string &bytes, size_t &pos, T &nb)
     {
       size_t i;
-
+      
       for (i = 0; i < sizeof(T) && pos + i != bytes.size(); ++i)
         nb = ((nb << 8) | bytes[pos + i]);
       pos += i;
       if (i < sizeof(T))
         throw std::invalid_argument("Error while parsing packet");
     }
+  protected:
 
     PacketType       _type;
   };
