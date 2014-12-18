@@ -18,7 +18,8 @@ public:
   void  setCharacterSize(unsigned int);
   void  setTextColor(const sf::Color &);
   const std::string &getText() const;
-  
+  void  setText(const std::string &text);
+
   TextEntry &operator+=(char c);
   TextEntry &operator+=(const std::string &str);
   

@@ -142,6 +142,11 @@ void  ClientGame::checkReponse(uint8_t rep)
         break;
     }
   }
+  else if (_isLoading)
+  {
+    _isLoading = false;
+    std::cerr << "Abort" << std::endl;
+  }
 }
 
 size_t  ClientGame::netShortResponse(const Network::Buffer& data)
@@ -360,8 +365,8 @@ void  ClientGame::createCreateRoomPanel()
     }
     Packet::CreateRoom room({entry->getText(), 0, 4, 0});
     
-    std::cout << "Create Room" << std::endl;
     _isLoading = true;
+    entry->setText("");
     _writeBuff.writeBuffer(room.to_bytes());
   });
   cancel->onClick([this]() {

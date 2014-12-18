@@ -32,6 +32,11 @@ const std::string &TextEntry::getText() const
   return (_text);
 }
 
+void  TextEntry::setText(const std::string &text)
+{
+  _text = text;
+}
+
 TextEntry &TextEntry::operator+=(char c)
 {
   _text += c;
