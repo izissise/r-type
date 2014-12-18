@@ -2,8 +2,8 @@
 #include <sstream>
 #include "ListBox.hpp"
 
-ListBox::ListBox(const sf::FloatRect &pos, std::vector<t_room> &vec)
-: ADrawable(false, {pos.left, pos.top}, {pos.width, pos.height}), _list(vec), _cam(_pos.y)
+ListBox::ListBox(const sf::FloatRect &pos, std::vector<t_room> &vec, std::function<void (uint32_t)> func)
+: ADrawable(false, {pos.left, pos.top}, {pos.width, pos.height}), _list(vec), _cam(_pos.y), _func(func)
 {
   if (!_list.empty())
     updateEntry();
@@ -83,7 +83,10 @@ void  ListBox::updateEntry()
     
     std::shared_ptr<Button> tmp(new Button({ 0, 0 , _size.x, 50 }, button, hover, click));
     
-    tmp->onClick([it] { std::cout << "Join [" << it.name << "]" << std::endl; });
+    tmp->onClick([this, it] {
+      _func(it.id);
+      std::cout << "Join [" << it.name << "]" << std::endl;
+    });
     _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, 50},
                                                            name, player, tmp));
     _displayRoom.push_back(it);
@@ -93,10 +96,7 @@ void  ListBox::updateEntry()
                       std::inserter(toRemove, toRemove.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id != b.id; });
 
   for (auto it : toRemove)
-  {
-    auto end = _displayRoom.end();
-    for (auto it1 = _displayRoom.begin(); it1 != end;it1++)
-      if (it.id == it1->id)
-        end = _displayRoom.erase(it1);
-  }
+    _displayRoom.erase(std::remove_if(_displayRoom.begin(), _displayRoom.end(), [&it](const t_room &a) -> bool {
+      return (a.id == it.id);
+    }), _displayRoom.end());
 }
