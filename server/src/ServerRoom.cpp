@@ -13,6 +13,7 @@ bool ServerRoom::addPlayer(const std::shared_ptr<Client>& p)
   if (getNbPlayers() < _nbPMax)
     {
       _clients.push_back(p);
+//Packet::APacket
       return true;
     }
   return false;
@@ -31,5 +32,19 @@ void ServerRoom::broadcastAPacket(const Packet::APacket& pack)
   for (auto& i : _clients)
     {
       i->sendPacket(pack);
+    }
+}
+
+void ServerRoom::tryLaunchGame(Server& server)
+{
+  bool ok = true;
+  for (auto& i : _clients)
+    {
+      if (!i->isReadyForGame())
+        ok = false;
+    }
+  if (ok)
+    {
+
     }
 }

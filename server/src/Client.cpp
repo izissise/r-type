@@ -20,13 +20,13 @@ std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)
   {Packet::APacket::PacketType::ASKLISTROOM, &Client::netAskListRoom},
   {Packet::APacket::PacketType::CREATEROOM, &Client::netCreateRoom},
   {Packet::APacket::PacketType::JOINROOM, &Client::netJoinRoom},
-  {Packet::APacket::PacketType::STARTGAME, &Client::netStartGame},
+  {Packet::APacket::PacketType::READYGAME, &Client::netReadyGame},
   {Packet::APacket::PacketType::LEAVEROOM, &Client::netLeaveRoom},
   {Packet::APacket::PacketType::MESSAGE, &Client::netMessage}
 };
 
 Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
-  : SocketClientHelper(sock), _server(serv), _currentRoom(-1)
+  : SocketClientHelper(sock), _server(serv), _currentRoom(-1), _isGameReady(false)
 {
 }
 
@@ -179,8 +179,15 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   return nbUsed;
 }
 
-size_t Client::netStartGame(const Network::Buffer&)
+size_t Client::netReadyGame(const Network::Buffer&)
 {
+  if (_currentRoom != -1)
+    {
+      Packet::Message msg(_login + " is ready.");
+      _server.getLobby().getRoom(_currentRoom).broadcastAPacket(msg);
+      _isGameReady = true;
+      _server.getLobby().getRoom(_currentRoom).tryLaunchGame(_server);
+    }
   return 0;
 }
 
@@ -188,6 +195,7 @@ size_t Client::netLeaveRoom(const Network::Buffer&)
 {
   _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
   _currentRoom = -1;
+  _isGameReady = false;
   return 0;
 }
 

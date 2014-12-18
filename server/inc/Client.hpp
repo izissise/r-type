@@ -25,6 +25,8 @@ public:
 
   void sendPacket(const Packet::APacket& pack);
 
+  bool isReadyForGame() const {return _isGameReady;};
+
 protected:
   void onRead(size_t readSize) override;
   void onWrite(size_t writeSize) override;
@@ -36,7 +38,7 @@ private:
   size_t netAskListRoom(const Network::Buffer& data);
   size_t netCreateRoom(const Network::Buffer& data);
   size_t netJoinRoom(const Network::Buffer& data);
-  size_t netStartGame(const Network::Buffer& data);
+  size_t netReadyGame(const Network::Buffer& data);
   size_t netLeaveRoom(const Network::Buffer& data);
   size_t netMessage(const Network::Buffer& data);
 
@@ -46,6 +48,7 @@ private:
   std::string _login;
   int		  _protoVersion;
   int		  _currentRoom;
+  bool		  _isGameReady;
 };
 
 #endif
