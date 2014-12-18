@@ -21,11 +21,12 @@ public:
 
   const std::vector<std::shared_ptr<Client>>& getPlayerList() const {return _clients;};
 
-  void broadcastAPacket(const Packet::APacket& pack);
+  void broadcastAPacket(const Packet::APacket& pack) const;
 
   bool addPlayer(const std::shared_ptr<Client>& p);
   void removePlayer(const std::shared_ptr<Client>& p);
-  void tryLaunchGame(Server& server);
+  void sendPlayerList() const;
+  void tryLaunchGame(Server& server) const;
 
 protected:
   std::vector<std::shared_ptr<Client>>   _clients;

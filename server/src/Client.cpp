@@ -176,6 +176,8 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   if (_currentRoom != -1)
     _server.getLobby().leaveRoom(shared_from_this(), rId);
   _currentRoom = rId;
+  if (joined)
+  _server.getLobby().getRoom(_currentRoom).sendPlayerList();
   return nbUsed;
 }
 

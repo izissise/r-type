@@ -23,6 +23,8 @@ public:
   Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
   ~Client() = default;
 
+  const std::string& getLogin() const {return _login;};
+
   void sendPacket(const Packet::APacket& pack);
 
   bool isReadyForGame() const {return _isGameReady;};

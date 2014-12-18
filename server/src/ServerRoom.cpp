@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "GetListPlayer.hpp"
+
 ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
   : _id(id), _name(name), _nbPMax(nbPMax)
 {
@@ -13,7 +15,6 @@ bool ServerRoom::addPlayer(const std::shared_ptr<Client>& p)
   if (getNbPlayers() < _nbPMax)
     {
       _clients.push_back(p);
-//Packet::APacket
       return true;
     }
   return false;
@@ -25,9 +26,10 @@ void ServerRoom::removePlayer(const std::shared_ptr<Client>& p)
   [&p, this](std::shared_ptr<Client>& cl) -> bool {
     return (cl == p);
   }), _clients.end());
+  sendPlayerList();
 }
 
-void ServerRoom::broadcastAPacket(const Packet::APacket& pack)
+void ServerRoom::broadcastAPacket(const Packet::APacket& pack) const
 {
   for (auto& i : _clients)
     {
@@ -35,7 +37,20 @@ void ServerRoom::broadcastAPacket(const Packet::APacket& pack)
     }
 }
 
-void ServerRoom::tryLaunchGame(Server& server)
+void ServerRoom::sendPlayerList() const
+{
+  Packet::GetListPlayer glp([this]() {
+    std::vector<Packet::PlayerClient> tmp;
+    for (auto& i : _clients)
+      {
+        tmp.push_back(i->getLogin());
+      }
+    return tmp;
+  }());
+  broadcastAPacket(glp);
+}
+
+void ServerRoom::tryLaunchGame(Server& server) const
 {
   bool ok = true;
   for (auto& i : _clients)
