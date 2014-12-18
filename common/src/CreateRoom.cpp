@@ -37,7 +37,7 @@ namespace Packet {
     for (; pos < bytes.length() && pos < length + sizeof(length); ++pos)
       _room->name += bytes[pos];
     if (pos - sizeof(length) != length)
-      throw std::runtime_error("The size of the room's name is not right");
+      throw APacket::PackerParsingError("The size of the room's name is not right");
     get_bytes(bytes, pos, _room->playerMax);
     _room->nbPlayer = 0;
     return pos;

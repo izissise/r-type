@@ -51,7 +51,7 @@ namespace Packet {
       for (; pos < bytes.length() && size < nameSize; ++pos, ++size)
         tmp.name += bytes[pos];
       if (size != nameSize)
-        throw std::runtime_error("The size of the room's name is not right");
+        throw APacket::PackerParsingError("The size of the room's name is not right");
       get_bytes(bytes, pos, tmp.id);
       get_bytes(bytes, pos, tmp.playerMax);
       get_bytes(bytes, pos, tmp.nbPlayer);
@@ -59,7 +59,7 @@ namespace Packet {
       _list.push_back(tmp);
     }
     if (_list.size() != listSize)
-      throw std::runtime_error("The size of the room's list is not correct");
+      throw APacket::PackerParsingError("The size of the room's list is not correct");
     return pos;
   }
 

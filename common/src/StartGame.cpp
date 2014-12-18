@@ -33,7 +33,7 @@ size_t StartGame::from_bytes(const std::string &bytes)
   for (; pos < bytes.length() && pos < length + sizeof(length); ++pos)
     _ip += bytes[pos];
   if (pos - sizeof(length) != length)
-    throw std::runtime_error("The size of the ip is not right");
+    throw APacket::PackerParsingError("The size of the ip is not right");
   get_bytes(bytes, pos, _port);
   return pos;
 }

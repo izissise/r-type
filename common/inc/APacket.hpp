@@ -20,13 +20,20 @@ namespace Packet {
       CREATEROOM = 3, //3
       JOINROOM = 4,	 //4
       ASKLISTROOM = 5, //5
-      STARTGAME = 6,
-      READYGAME = 7,
-      LEAVEROOM = 8,
-      MESSAGE = 9,
-      GETLISTPLAYER = 10,
+      STARTGAME = 6, //6
+      READYGAME = 7, //7
+      LEAVEROOM = 8, //8
+	  MESSAGE = 9, //9
+      GETLISTPLAYER = 10, //10
       UNKNOW,
     };
+
+  class PackerParsingError : public std::runtime_error
+  {
+	public:
+		PackerParsingError(const std::string& err) throw() : runtime_error(err) {};
+		virtual ~PackerParsingError() throw() {};
+  };
 
   public:
     APacket(Packet::APacket::PacketType type);
@@ -49,24 +56,24 @@ namespace Packet {
     static void fill_bytes(std::string &bytes, T nb)
     {
       auto it = bytes.end();
-      
+
       for (size_t i = 0; i < sizeof(T); ++i)
       {
         it = bytes.insert(it, (nb & 0xFF));
         nb = nb >> 8;
       }
     }
-    
+
     template <typename T>
     static void get_bytes(const std::string &bytes, size_t &pos, T &nb)
     {
       size_t i;
-      
+
       for (i = 0; i < sizeof(T) && pos + i != bytes.size(); ++i)
         nb = ((nb << 8) | bytes[pos + i]);
       pos += i;
       if (i < sizeof(T))
-        throw std::invalid_argument("Error while parsing packet");
+        throw APacket::PackerParsingError("Error while parsing packet");
     }
   protected:
 

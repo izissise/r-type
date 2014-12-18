@@ -52,7 +52,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
   std::cout << "New client: " << nClientSock->getRemoteIpAddr() << ":" << nClientSock->getRemotePort() << std::endl;
 }
 
-const std::unique_ptr<Network::AListenSocket>& Server::createNewGame(const ServerRoom& gameInfo)
+const std::shared_ptr<Network::AListenSocket>& Server::createNewGame(const ServerRoom& gameInfo)
 {
   std::shared_ptr<ServerGame> game(new ServerGame(gameInfo, _lobbyListener->getListeningIpAddr()));
 

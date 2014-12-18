@@ -48,11 +48,11 @@ namespace Packet {
       for (; pos < bytes.length() && size < nameSize; ++pos, ++size)
         tmp += bytes[pos];
       if (size != nameSize)
-        throw std::runtime_error("The size of the player list is not right");
+        throw APacket::PackerParsingError("The size of the player list is not right");
       _list.push_back(tmp);
     }
     if (_list.size() != listSize)
-      throw std::runtime_error("The size of the player is not correct");
+      throw APacket::PackerParsingError("The size of the player is not correct");
     return pos;
   }
 

@@ -33,7 +33,7 @@ namespace Packet {
     for (; pos < bytes.length() && _login.size() < loginLength; ++pos)
       _login += bytes[pos];
     if (_login.length() != loginLength)
-      throw (std::runtime_error("Parse Failed: the login size is wrong"));
+      throw (APacket::PackerParsingError("Parse Failed: the login size is wrong"));
     return pos;
   }
 

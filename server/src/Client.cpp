@@ -59,12 +59,12 @@ void Client::onRead(size_t nbRead)
                   size_t nbUsed = (this->*meth)(buff);
                   _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
                 }
-              catch (std::exception& e)
+              catch (Packet::APacket::PackerParsingError& e)
                 {
                   _readBuff.rollbackReadBuffer(buff.size() - 1);
                 }
             }
-          catch (std::exception& e)
+          catch (std::out_of_range& e)
             {
               _readBuff.rollbackReadBuffer(headerSize - 1);
             }
@@ -211,7 +211,7 @@ size_t Client::netMessage(const Network::Buffer& data)
       try {
           _server.getLobby().getRoom(_currentRoom).broadcastAPacket(msg);
         }
-      catch (std::exception& e)
+      catch (std::out_of_range& e)
         {
           std::cerr << "No such room!" << std::endl;
         }

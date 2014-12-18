@@ -12,12 +12,12 @@ public:
 
   void run();
 
-  const std::unique_ptr<Network::AListenSocket>& getNetworkInfo() const {return _udpListener;};
+  const std::shared_ptr<Network::AListenSocket>& getNetworkInfo() const {return _udpListener;};
 
 protected:
   bool									  _runGame;
   std::unique_ptr<Network::ANetwork>      _net;
-  std::unique_ptr<Network::AListenSocket> _udpListener;
+  std::shared_ptr<Network::AListenSocket> _udpListener;
 };
 
 #endif // SERVERGAME_H

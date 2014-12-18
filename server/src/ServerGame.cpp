@@ -8,6 +8,7 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& listeningA
     _net(Network::NetworkFactory::createNetwork()),
     _udpListener(Network::NetworkFactory::createListenSocket(listeningAddr, "", Network::ASocket::SockType::UDP, true))
 {
+	_net->registerListener(_udpListener);
 }
 
 void ServerGame::run()
