@@ -62,7 +62,7 @@ void ServerRoom::tryLaunchGame(Server& server) const
     }
   if (ok)
     {
-      const std::shared_ptr<Network::AListenSocket>& socket = server.createNewGame(*this);
+      const std::unique_ptr<Network::AListenSocket>& socket = server.createNewGame(*this);
       broadcastAPacket(Packet::StartGame(socket->getListeningIpAddr(), socket->getListeningPort()));
     }
 }

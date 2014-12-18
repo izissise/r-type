@@ -18,6 +18,7 @@
 #include "Client.hpp"
 #include "Lobby.hpp"
 #include "ServerRoom.hpp"
+#include "ServerGame.hpp"
 
 class Server
 {
@@ -34,18 +35,18 @@ public:
   void unregisterClient(const std::shared_ptr<Client>& cli);
 
   void  broadcastRoomList() const;
-  const std::shared_ptr<Network::AListenSocket>& createNewGame(const ServerRoom& gameInfo);
+  const std::unique_ptr<Network::AListenSocket>& createNewGame(const ServerRoom& gameInfo);
 
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
 
 protected:
-  Lobby 						          _lobby;
-  std::unique_ptr<Network::ANetwork>      _net;
-  std::shared_ptr<Network::AListenSocket> _lobbyListener;
-  std::deque<std::shared_ptr<Client>>     _clients;
-  ThreadPool							  _threadPool;
- // std::deque<>
+  Lobby 						          	_lobby;
+  std::unique_ptr<Network::ANetwork>      	_net;
+  std::shared_ptr<Network::AListenSocket>	_lobbyListener;
+  std::deque<std::shared_ptr<Client>>    	_clients;
+  ThreadPool							  	_threadPool;
+  std::deque<std::shared_ptr<ServerGame>>	_games;
 };
 
 #endif
