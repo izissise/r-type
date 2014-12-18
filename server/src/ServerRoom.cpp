@@ -41,15 +41,14 @@ void ServerRoom::broadcastAPacket(const Packet::APacket& pack) const
 
 void ServerRoom::sendPlayerList() const
 {
-  Packet::GetListPlayer glp([this]() {
+  broadcastAPacket(Packet::GetListPlayer([this]() {
     std::vector<Packet::PlayerClient> tmp;
     for (auto& i : _clients)
       {
         tmp.push_back(i->getLogin());
       }
     return tmp;
-  }());
-  broadcastAPacket(glp);
+  }()));
 }
 
 void ServerRoom::tryLaunchGame(Server& server) const
