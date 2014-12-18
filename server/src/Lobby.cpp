@@ -44,7 +44,15 @@ bool Lobby::joinRoom(const std::shared_ptr<Client>& cli, size_t roomId)
 void Lobby::leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId)
 {
   try {
-      return (_rooms.at(roomId)).removePlayer(cli);
+      ServerRoom& tmp = (_rooms.at(roomId));
+      tmp.removePlayer(cli);
+      if (tmp.getNbPlayers() == 0)
+        {
+          auto it = _rooms.begin();
+          if ((it = std::find_if(it, _rooms.end(),
+          [roomId](const std::pair<size_t, ServerRoom>& p) {return (roomId == p.first);})) != _rooms.end())
+          _rooms.erase(it);
+        }
     }
   catch (std::exception& e)
     {

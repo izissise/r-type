@@ -28,7 +28,6 @@ protected:
   size_t								 _id;
   std::string 						     _name;
   size_t								 _nbPMax;
-  size_t								 _nbPlayer;
 };
 
 #endif // SERVERROOM_H
