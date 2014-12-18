@@ -24,7 +24,7 @@ public:
 
     template <class R1, typename ... Args>
     void addTask(R1 function, Args&& ... args) {
-        addTask(std::bind(function, std::forward<Args>(args) ...));
+        addTask(std::bind(std::forward<R1>(function), std::forward<Args>(args) ...));
     }
 
     template <class R1>

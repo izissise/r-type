@@ -24,6 +24,7 @@ namespace Packet {
       READYGAME = 7,
       LEAVEROOM = 8,
       MESSAGE = 9,
+      GETLISTPLAYER = 10,
       UNKNOW,
     };
 

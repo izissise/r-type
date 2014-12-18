@@ -55,6 +55,5 @@ void Lobby::leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId)
         }
     }
   catch (std::exception& e)
-    {
-    }
+    {}
 }

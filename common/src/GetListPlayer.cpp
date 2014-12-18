@@ -2,13 +2,13 @@
 
 namespace Packet {
   GetListPlayer::GetListPlayer()
-  : APacket(PacketType::GETLISTROOM), _list()
+  : APacket(PacketType::GETLISTPLAYER), _list()
   {
 
   }
 
   GetListPlayer::GetListPlayer(const std::vector<PlayerClient> &list)
-  : APacket(PacketType::GETLISTROOM), _list(list)
+  : APacket(PacketType::GETLISTPLAYER), _list(list)
   {
 
   }

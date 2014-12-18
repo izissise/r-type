@@ -140,12 +140,15 @@ size_t  ClientGame::netGetListRoom(const Network::Buffer& data)
   Packet::GetListRoom cr;
   size_t  nbUsed;
 
-  std::cout << "GetListRoom" << std::endl;
   nbUsed = cr.from_bytes(data);
   _list.clear();
   _list = cr.getListRoom();
-  for (auto it : _list)
-    std::cout << "Get Room = [" << it.name << "]" << std::endl;
+  std::cout << "Get Room = [";
+  for (auto& it : _list)
+  {
+    std::cout << it.name << ",";
+  }
+  std::cout << "]" << std::endl;
   return nbUsed;
 }
 
@@ -175,7 +178,7 @@ void  ClientGame::createMenuPanel()
   ipEntry->setFont(*font);
   ipEntry->setTextColor(sf::Color::White);
   ipEntry->setCharacterSize(30);
-  
+
   std::shared_ptr<Text> connectText(new Text({0, 0, 0, 0}, "Connect"));
   std::shared_ptr<Text> settingsText(new Text({0, 0, 0, 0}, "Settings"));
   std::shared_ptr<Text> quitText(new Text({0, 0, 0, 0}, "Quit"));
@@ -194,7 +197,7 @@ void  ClientGame::createMenuPanel()
   std::shared_ptr<Button> setting(new Button({ 1350, 745 , 250, 75 }, button, hover, click, settingsText));
   std::shared_ptr<Button> exit(new Button({ 1350, 825 , 250, 75 }, button, hover, click, quitText));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  
+
   exit->onClick([this]() { _done = true; });
   connect->onClick([this, loginEntry, ipEntry]() {
     std::string login = loginEntry->getText();
@@ -233,35 +236,35 @@ void  ClientGame::createMenuPanel()
 void  ClientGame::createListPanel()
 {
   std::shared_ptr<Panel> listpanel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  
+
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
-  
+
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
-  
+
   button->setTextureRect(sf::IntRect(0, 0, 200, 20));
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
-  
+
   std::shared_ptr<Text> cr(new Text({0, 0, 0, 0}, "Create Room"));
   std::shared_ptr<Text> d(new Text({0, 0, 0, 0}, "Disconnect"));
-  
+
   cr->setFont(*font);
   cr->setColor(sf::Color::White);
   cr->setCharacterSize(30);
-  
+
   d->setFont(*font);
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
-  
+
   std::shared_ptr<Button> create(new Button({ 1300, 745 , 300, 75 }, button, hover, click, cr));
   std::shared_ptr<Button> disconnect(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  
+
   create->onClick([this]() {
     _currentPanel = Panel::PanelId::CREATEROOMPANEL;
   });
@@ -269,11 +272,11 @@ void  ClientGame::createListPanel()
     _socket.reset();
     _currentPanel = Panel::PanelId::MENUPANEL;
   });
-  
+
   listpanel->add(back);
   listpanel->add(create);
   listpanel->add(disconnect);
-  
+
   listpanel->add(std::shared_ptr<ADrawable>(new ListBox({0, 0, 1300, 900}, _list)));
   _panel[Panel::PanelId::LISTPANEL] = listpanel;
 }
@@ -281,27 +284,27 @@ void  ClientGame::createListPanel()
 void  ClientGame::createCreateRoomPanel()
 {
   std::shared_ptr<Panel>  panel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  
+
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
-  
+
   std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
   std::shared_ptr<sf::Sprite>  background(new sf::Sprite(*backgroundTexture));
-  
+
   button->setTextureRect(sf::IntRect(0, 0, 200, 20));
   hover->setTextureRect(sf::IntRect(0, 20, 200, 20));
   click->setTextureRect(sf::IntRect(0, 40, 200, 20));
-  
+
   std::shared_ptr<Text> cr(new Text({0, 0, 0, 0}, "Create Room"));
   std::shared_ptr<Text> d(new Text({0, 0, 0, 0}, "Cancel"));
-  
+
   cr->setFont(*font);
   cr->setColor(sf::Color::White);
   cr->setCharacterSize(30);
-  
+
   d->setFont(*font);
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
@@ -310,7 +313,7 @@ void  ClientGame::createCreateRoomPanel()
                                           (static_cast<float>(_win.getSize().y) / 2), 300, 60}, "Room's Name:"));
   std::shared_ptr<TextEntry> entry(new TextEntry("", {(static_cast<float>(_win.getSize().x) / 2) - 100 ,
                                                       (static_cast<float>(_win.getSize().y) / 2), 400, 60}, button));
-  
+
   entry->setFont(*font);
   entry->setTextColor(sf::Color::White);
   entry->setCharacterSize(30);
@@ -322,7 +325,7 @@ void  ClientGame::createCreateRoomPanel()
   std::shared_ptr<Button> create(new Button({ 1300, 745 , 300, 75 }, button, hover, click, cr));
   std::shared_ptr<Button> cancel(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
-  
+
   create->onClick([this, entry]() {
     if (entry->getText().empty())
     {
@@ -330,7 +333,7 @@ void  ClientGame::createCreateRoomPanel()
       return ;
     }
     Packet::CreateRoom room({entry->getText(), 0, 4, 0});
-    
+
     std::cout << "Create Room" << std::endl;
     _socket->setEventRequest(Network::ASocket::Event::RDWR);
     _writeBuff.writeBuffer(room.to_bytes());

@@ -2,7 +2,9 @@
 
 #include <algorithm>
 
+#include "Server.hpp"
 #include "GetListPlayer.hpp"
+#include "StartGame.hpp"
 
 ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
   : _id(id), _name(name), _nbPMax(nbPMax)
@@ -60,6 +62,7 @@ void ServerRoom::tryLaunchGame(Server& server) const
     }
   if (ok)
     {
-
+      const std::shared_ptr<Network::AListenSocket>& socket = server.createNewGame(*this);
+      broadcastAPacket(Packet::StartGame(socket->getListeningIpAddr(), socket->getListeningPort()));
     }
 }

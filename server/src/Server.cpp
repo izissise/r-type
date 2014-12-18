@@ -2,7 +2,8 @@
 
 Server::Server(const std::string& addr, const std::string& port)
   : _net(Network::NetworkFactory::createNetwork()),
-    _lobbyListener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true))
+    _lobbyListener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true)),
+    _threadPool(5)
 {
   _lobbyListener->setAcceptorCallback(std::bind(&Server::acceptNewClient, this, std::placeholders::_1));
   _net->registerListener(_lobbyListener);
@@ -41,4 +42,9 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
   _clients.push_back(nclient);
   _net->registerClient(nClientSock);
   std::cout << "New client: " << nClientSock->getRemoteIpAddr() << ":" << nClientSock->getRemotePort() << std::endl;
+}
+
+const std::shared_ptr<Network::AListenSocket>& Server::createNewGame(const ServerRoom& gameInfo)
+{
+
 }

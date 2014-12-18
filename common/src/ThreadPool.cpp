@@ -31,5 +31,5 @@ ThreadPool::~ThreadPool()
 {
     _stop = true;
     _condition.notify_all();
-    std::for_each(_threads.begin(), _threads.end(), [](std::thread &t) {t.join(); });
+    std::for_each(_threads.begin(), _threads.end(), [](std::thread &t) { t.join(); });
 }

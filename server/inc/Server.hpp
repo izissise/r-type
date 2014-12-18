@@ -13,8 +13,11 @@
 #include "ABasicSocket.hpp"
 #include "APacket.hpp"
 
+#include "ThreadPool.hpp"
+
 #include "Client.hpp"
 #include "Lobby.hpp"
+#include "ServerRoom.hpp"
 
 class Server
 {
@@ -30,6 +33,8 @@ public:
 
   void unregisterClient(const std::shared_ptr<Client>& cli);
 
+  const std::shared_ptr<Network::AListenSocket>& createNewGame(const ServerRoom& gameInfo);
+
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
 
@@ -38,6 +43,8 @@ protected:
   std::unique_ptr<Network::ANetwork>      _net;
   std::shared_ptr<Network::AListenSocket> _lobbyListener;
   std::deque<std::shared_ptr<Client>>     _clients;
+  ThreadPool							  _threadPool;
+ // std::deque<>
 };
 
 #endif
