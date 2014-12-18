@@ -20,7 +20,7 @@ public:
 
   const std::vector<std::shared_ptr<Client>>& getPlayerList() const {return _clients;};
 
-  void addPlayer(const std::shared_ptr<Client>& p);
+  bool addPlayer(const std::shared_ptr<Client>& p);
   void removePlayer(const std::shared_ptr<Client>& p);
 
 protected:
@@ -28,6 +28,7 @@ protected:
   size_t								 _id;
   std::string 						     _name;
   size_t								 _nbPMax;
+  size_t								 _nbPlayer;
 };
 
 #endif // SERVERROOM_H
