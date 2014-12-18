@@ -19,6 +19,9 @@ public:
   void  setTextColor(const sf::Color &);
   const std::string &getText() const;
   void  setText(const std::string &text);
+  
+  void  onKey(sf::Keyboard::Key t, std::function<void ()> func);
+  void  setUse(bool b);
 
   TextEntry &operator+=(char c);
   TextEntry &operator+=(const std::string &str);
@@ -34,6 +37,7 @@ private:
   std::shared_ptr<Image>      _background;
   Text                        _displayText;
   std::string                 _placeHolder;
+  std::map<sf::Keyboard::Key, std::function<void()>> _keyBinding;
 };
 
 #endif

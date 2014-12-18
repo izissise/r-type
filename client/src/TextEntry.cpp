@@ -37,6 +37,16 @@ void  TextEntry::setText(const std::string &text)
   _text = text;
 }
 
+void  TextEntry::onKey(sf::Keyboard::Key t, std::function<void ()> func)
+{
+  _keyBinding[t] = func;
+}
+
+void  TextEntry::setUse(bool b)
+{
+  _use = b;
+}
+
 TextEntry &TextEntry::operator+=(char c)
 {
   _text += c;
@@ -74,6 +84,8 @@ void  TextEntry::draw(sf::RenderWindow &win)
 
 void  TextEntry::update(const sf::Event &event)
 {
+  if (_use && _first)
+    _first = false;
   if (event.type == sf::Event::MouseMoved)
   {
     if (event.mouseMove.x >= _pos.x && event.mouseMove.x < _pos.x + _size.x
@@ -95,6 +107,8 @@ void  TextEntry::update(const sf::Event &event)
   }
   if (_use && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace && !_text.empty())
       _text.pop_back();
+  if (_use && event.type == sf::Event::KeyPressed && _keyBinding.find(event.key.code) != _keyBinding.end())
+    _keyBinding[event.key.code]();
   if (_use && event.type == sf::Event::TextEntered && event.text.unicode > 20 && event.text.unicode < 128)
     _text += static_cast<char>(event.text.unicode);
 }

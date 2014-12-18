@@ -240,11 +240,10 @@ void  ClientGame::createMenuPanel()
   std::shared_ptr<Button> exit(new Button({ 1350, 825 , 250, 75 }, button, hover, click, quitText));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
 
-  exit->onClick([this]() { _done = true; });
-  connect->onClick([this, loginEntry, ipEntry]() {
+  std::function<void ()> func([this, loginEntry, ipEntry]() {
     std::string login = loginEntry->getText();
     std::string ip = ipEntry->getText();
-
+    
     if (!login.empty() && !ip.empty())
     {
       int nbColon = std::count(ip.begin(), ip.end(), ':');
@@ -265,7 +264,15 @@ void  ClientGame::createMenuPanel()
     else
       std::cerr << "The login or the ip is not fill" << std::endl;
   });
-
+  
+  exit->onClick([this]() { _done = true; });
+  connect->onClick(func);
+  loginEntry->onKey(sf::Keyboard::Return, func);
+  ipEntry->onKey(sf::Keyboard::Return, func);
+  
+  loginEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(false); ipEntry->setUse(true); });
+  ipEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(true); ipEntry->setUse(false); });
+  
   menuPanel->add(back);
   menuPanel->add(ipEntry);
   menuPanel->add(loginEntry);
@@ -375,7 +382,7 @@ void  ClientGame::createCreateRoomPanel()
   std::shared_ptr<Button> cancel(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
 
-  create->onClick([this, entry]() {
+  std::function<void ()> func([this, entry]() {
     if (_isLoading)
       return ;
     if (entry->getText().empty())
@@ -384,11 +391,15 @@ void  ClientGame::createCreateRoomPanel()
       return ;
     }
     Packet::CreateRoom room({entry->getText(), 0, 4, 0});
-
+    
     _isLoading = true;
     entry->setText("");
     _writeBuff.writeBuffer(room.to_bytes());
   });
+;
+  
+  create->onClick(func);
+  entry->onKey(sf::Keyboard::Return, func);
   cancel->onClick([this]() {
     _isLoading = false;
     _currentPanel = Panel::PanelId::LISTPANEL;
@@ -421,23 +432,17 @@ void  ClientGame::createRoomPanel()
 
 
   std::shared_ptr<Text> ready(new Text({0, 0, 0, 0}, "Ready"));
-  std::shared_ptr<Text> start(new Text({0, 0, 0, 0}, "Start"));
   std::shared_ptr<Text> d(new Text({0, 0, 0, 0}, "Leave Room"));
 
   ready->setFont(*font);
   ready->setColor(sf::Color::White);
   ready->setCharacterSize(30);
 
-  start->setFont(*font);
-  start->setColor(sf::Color::White);
-  start->setCharacterSize(30);
-
   d->setFont(*font);
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
 
   std::shared_ptr<Button> r(new Button({ 1300, 745 , 300, 75 }, button, hover, click, ready));
-  std::shared_ptr<Button> s(new Button({ 1300, 745 , 300, 75 }, button, hover, click, start));
   std::shared_ptr<Button> disconnect(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
 
@@ -455,10 +460,7 @@ void  ClientGame::createRoomPanel()
   });
 
   panel->add(back);
-  if (_host == true)
-    panel->add(s);
-  else
-    panel->add(r);
+  panel->add(r);
   panel->add(disconnect);
 
   _panel[Panel::PanelId::ROOMPANEL] = panel;
