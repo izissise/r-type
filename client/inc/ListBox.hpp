@@ -17,6 +17,7 @@ public:
 
 private:
   void  updateEntry();
+  bool  isSame() const;
   
   std::map<uint32_t, std::shared_ptr<ListItem>>   _items;
   std::vector<t_room>     _displayRoom;
