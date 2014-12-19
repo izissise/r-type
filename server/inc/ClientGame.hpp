@@ -11,7 +11,8 @@
 class ClientGame : public Network::IdentityClientHelper, public std::enable_shared_from_this<ClientGame>
 {
 public:
-  ClientGame();
+  ClientGame(const std::shared_ptr<Network::Identity>& id,
+             const std::weak_ptr<Network::AListenSocket>& listener);
   virtual ~ClientGame() = default;
 protected:
   void onRead() override;

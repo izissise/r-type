@@ -1,9 +1,12 @@
 #include "ClientGame.hpp"
 
-ClientGame::ClientGame()
+ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
+                       const std::weak_ptr<Network::AListenSocket>& listener)
+  : IdentityClientHelper(id, listener)
 {
 }
 
-ClientGame::~ClientGame()
+void ClientGame::onRead()
 {
+
 }

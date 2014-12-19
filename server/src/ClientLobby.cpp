@@ -126,6 +126,8 @@ size_t ClientLobby::netHandshake(const Network::Buffer& data)
   Packet::ShortResponse rep(0);
   if (_protoVersion == PROTOCOLE_VERSION)
     rep = {1};
+  else
+    _disconnectWhenAllWrited = true;
   _writeBuff.writeBuffer(rep);
   return nbUsed;
 }
