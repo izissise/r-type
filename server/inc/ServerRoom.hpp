@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-#include "Client.hpp"
+#include "ClientLobby.hpp"
 #include "APacket.hpp"
 
 class ServerRoom
@@ -19,17 +19,17 @@ public:
   size_t getNbPlayers() const {return _clients.size();};
   size_t getMaxNbPlayer() const {return _nbPMax;};
 
-  const std::vector<std::shared_ptr<Client>>& getPlayerList() const {return _clients;};
+  const std::vector<std::shared_ptr<ClientLobby>>& getPlayerList() const {return _clients;};
 
   void broadcastAPacket(const Packet::APacket& pack) const;
 
-  bool addPlayer(const std::shared_ptr<Client>& p);
-  void removePlayer(const std::shared_ptr<Client>& p);
+  bool addPlayer(const std::shared_ptr<ClientLobby>& p);
+  void removePlayer(const std::shared_ptr<ClientLobby>& p);
   void sendPlayerList() const;
   void tryLaunchGame(Server& server) const;
 
 protected:
-  std::vector<std::shared_ptr<Client>>   _clients;
+  std::vector<std::shared_ptr<ClientLobby>>   _clients;
   size_t								 _id;
   std::string 						     _name;
   size_t								 _nbPMax;

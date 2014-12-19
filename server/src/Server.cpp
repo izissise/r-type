@@ -33,10 +33,10 @@ void Server::broadcastRoomList() const
   broadcastAPacket(glr);
 }
 
-void Server::unregisterClient(const std::shared_ptr<Client>& cli)
+void Server::unregisterClient(const std::shared_ptr<ClientLobby>& cli)
 {
   _clients.erase(std::remove_if(_clients.begin(), _clients.end(),
-  [&cli](std::shared_ptr<Client>& cl) -> bool {
+  [&cli](std::shared_ptr<ClientLobby>& cl) -> bool {
     return (cli == cl);
   }), _clients.end());
 }
@@ -45,7 +45,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
   std::shared_ptr<Network::AListenSocket> listener = that.lock();
   std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
-  std::shared_ptr<Client> nclient(new Client(nClientSock, *this));
+  std::shared_ptr<ClientLobby> nclient(new ClientLobby(nClientSock, *this));
 
   _clients.push_back(nclient);
   _net->registerClient(nClientSock);

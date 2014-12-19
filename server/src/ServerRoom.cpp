@@ -11,7 +11,7 @@ ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
 }
 
 
-bool ServerRoom::addPlayer(const std::shared_ptr<Client>& p)
+bool ServerRoom::addPlayer(const std::shared_ptr<ClientLobby>& p)
 {
   if (getNbPlayers() < _nbPMax)
     {
@@ -21,10 +21,10 @@ bool ServerRoom::addPlayer(const std::shared_ptr<Client>& p)
   return false;
 }
 
-void ServerRoom::removePlayer(const std::shared_ptr<Client>& p)
+void ServerRoom::removePlayer(const std::shared_ptr<ClientLobby>& p)
 {
   _clients.erase(std::remove_if(_clients.begin(), _clients.end(),
-  [&p, this](std::shared_ptr<Client>& cl) -> bool {
+  [&p, this](std::shared_ptr<ClientLobby>& cl) -> bool {
     return (cl == p);
   }), _clients.end());
   sendPlayerList();

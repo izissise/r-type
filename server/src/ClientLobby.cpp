@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "ClientLobby.hpp"
 
 #include <initializer_list>
 #include <type_traits>
@@ -14,24 +14,24 @@
 #include "Message.hpp"
 #include "StartGame.hpp"
 
-std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
+std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> ClientLobby::_netWorkBinds =
 {
-  {Packet::APacket::PacketType::SHORTRESPONSE, &Client::netShortResponse},
-  {Packet::APacket::PacketType::HANDSHAKE, &Client::netHandshake},
-  {Packet::APacket::PacketType::ASKLISTROOM, &Client::netAskListRoom},
-  {Packet::APacket::PacketType::CREATEROOM, &Client::netCreateRoom},
-  {Packet::APacket::PacketType::JOINROOM, &Client::netJoinRoom},
-  {Packet::APacket::PacketType::READYGAME, &Client::netReadyGame},
-  {Packet::APacket::PacketType::LEAVEROOM, &Client::netLeaveRoom},
-  {Packet::APacket::PacketType::MESSAGE, &Client::netMessage}
+  {Packet::APacket::PacketType::SHORTRESPONSE, &ClientLobby::netShortResponse},
+  {Packet::APacket::PacketType::HANDSHAKE, &ClientLobby::netHandshake},
+  {Packet::APacket::PacketType::ASKLISTROOM, &ClientLobby::netAskListRoom},
+  {Packet::APacket::PacketType::CREATEROOM, &ClientLobby::netCreateRoom},
+  {Packet::APacket::PacketType::JOINROOM, &ClientLobby::netJoinRoom},
+  {Packet::APacket::PacketType::READYGAME, &ClientLobby::netReadyGame},
+  {Packet::APacket::PacketType::LEAVEROOM, &ClientLobby::netLeaveRoom},
+  {Packet::APacket::PacketType::MESSAGE, &ClientLobby::netMessage}
 };
 
-Client::Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
+ClientLobby::ClientLobby(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
   : SocketClientHelper(sock), _server(serv), _currentRoom(-1), _isGameReady(false)
 {
 }
 
-void Client::onRead(size_t nbRead)
+void ClientLobby::onRead(size_t nbRead)
 {
   const size_t headerSize = sizeof(uint16_t);
   Network::Buffer buff;
@@ -50,7 +50,7 @@ void Client::onRead(size_t nbRead)
           buff.clear();
           _readBuff.readBuffer(buff, _readBuff.getLeftRead());
           try {
-              size_t (Client::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
+              size_t (ClientLobby::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
               try {
 //                  for (auto& i : buff)
 //                    {
@@ -78,13 +78,13 @@ void Client::onRead(size_t nbRead)
     }
 }
 
-void Client::onWrite(size_t)
+void ClientLobby::onWrite(size_t)
 {
 }
 
-void Client::onDisconnet()
+void ClientLobby::onDisconnet()
 {
-  std::shared_ptr<Client> tmp = shared_from_this();
+  std::shared_ptr<ClientLobby> tmp = shared_from_this();
 
   std::cout << "Unregistered client" << std::endl;
   _server.unregisterClient(tmp);
@@ -93,12 +93,12 @@ void Client::onDisconnet()
 }
 
 
-void Client::sendPacket(const Packet::APacket& pack)
+void ClientLobby::sendPacket(const Packet::APacket& pack)
 {
   _writeBuff.writeBuffer(pack);
 }
 
-void Client::startGame(uint16_t port)
+void ClientLobby::startGame(uint16_t port)
 {
   sendPacket(Packet::StartGame(_socket->getIpAddr(), port));
 }
@@ -108,12 +108,12 @@ void Client::startGame(uint16_t port)
 ** Apacket binded functions
 */
 
-size_t Client::netShortResponse(const Network::Buffer& data)
+size_t ClientLobby::netShortResponse(const Network::Buffer& data)
 {
   return Packet::ShortResponse().from_bytes(data);
 }
 
-size_t Client::netHandshake(const Network::Buffer& data)
+size_t ClientLobby::netHandshake(const Network::Buffer& data)
 {
   Packet::Handshake hand;
   size_t  nbUsed;
@@ -130,7 +130,7 @@ size_t Client::netHandshake(const Network::Buffer& data)
   return nbUsed;
 }
 
-size_t Client::netAskListRoom(const Network::Buffer& data)
+size_t ClientLobby::netAskListRoom(const Network::Buffer& data)
 {
   Packet::AskListRoom ask;
   size_t  nbUsed;
@@ -141,7 +141,7 @@ size_t Client::netAskListRoom(const Network::Buffer& data)
   return nbUsed;
 }
 
-size_t Client::netCreateRoom(const Network::Buffer& data)
+size_t ClientLobby::netCreateRoom(const Network::Buffer& data)
 {
   Packet::CreateRoom cr;
   size_t  nbUsed;
@@ -165,7 +165,7 @@ size_t Client::netCreateRoom(const Network::Buffer& data)
   return nbUsed;
 }
 
-size_t Client::netJoinRoom(const Network::Buffer& data)
+size_t ClientLobby::netJoinRoom(const Network::Buffer& data)
 {
   Packet::JoinRoom jr;
   size_t  nbUsed;
@@ -185,7 +185,7 @@ size_t Client::netJoinRoom(const Network::Buffer& data)
   return nbUsed;
 }
 
-size_t Client::netReadyGame(const Network::Buffer&)
+size_t ClientLobby::netReadyGame(const Network::Buffer&)
 {
   if (_currentRoom != -1)
     {
@@ -196,7 +196,7 @@ size_t Client::netReadyGame(const Network::Buffer&)
   return 0;
 }
 
-size_t Client::netLeaveRoom(const Network::Buffer&)
+size_t ClientLobby::netLeaveRoom(const Network::Buffer&)
 {
   _server.getLobby().leaveRoom(shared_from_this(), _currentRoom);
   _currentRoom = -1;
@@ -205,7 +205,7 @@ size_t Client::netLeaveRoom(const Network::Buffer&)
   return 0;
 }
 
-size_t Client::netMessage(const Network::Buffer& data)
+size_t ClientLobby::netMessage(const Network::Buffer& data)
 {
   Packet::Message msg;
   size_t  nbUsed;

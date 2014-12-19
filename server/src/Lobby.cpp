@@ -30,7 +30,7 @@ std::vector<t_room> Lobby::roomLists() const
   return roomList;
 }
 
-bool Lobby::joinRoom(const std::shared_ptr<Client>& cli, size_t roomId)
+bool Lobby::joinRoom(const std::shared_ptr<ClientLobby>& cli, size_t roomId)
 {
   try {
       return (_rooms.at(roomId)).addPlayer(cli);
@@ -41,7 +41,7 @@ bool Lobby::joinRoom(const std::shared_ptr<Client>& cli, size_t roomId)
     }
 }
 
-void Lobby::leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId)
+void Lobby::leaveRoom(const std::shared_ptr<ClientLobby>& cli, size_t roomId)
 {
   try {
       ServerRoom& tmp = (_rooms.at(roomId));
