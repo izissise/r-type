@@ -2,20 +2,56 @@
 
 #include "GetListRoom.hpp"
 
-Server::Server(const std::string& addr, const std::string& port)
+Server::Server(const std::vector<std::string>& args)
   : _net(Network::NetworkFactory::createNetwork()),
-    _lobbyListener(Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true)),
     _threadPool(5)
 {
-  _lobbyListener->setAcceptorCallback(std::bind(&Server::acceptNewClient, this, std::placeholders::_1));
-  _net->registerListener(_lobbyListener);
-  std::cout << "Server listening on " << _lobbyListener->getListeningIpAddr() << ":"
-            << _lobbyListener->getListeningPort() << std::endl;
+  auto addListen = [this](const std::string & addr, const std::string & port) {
+    std::shared_ptr<Network::AListenSocket> lobbyListener = Network::NetworkFactory::createListenSocket(addr, port, Network::ASocket::SockType::TCP, true);
+    lobbyListener->setAcceptorCallback(std::bind(&Server::acceptNewClient, this, std::placeholders::_1));
+    _net->registerListener(lobbyListener);
+    _lobbyListener.push_back(lobbyListener);
+    std::cout << "Server listening on " << lobbyListener->getListeningIpAddr() << ":"
+              << lobbyListener->getListeningPort() << std::endl;
+  };
+
+
+  size_t i;
+  for (i = 1; i < args.size(); ++i)
+    {
+      try
+        {
+          if ((i + 3 < args.size()) && args[i] == "-h" && args[i + 2] == "-p")
+            {
+              addListen(args[i + 1], args[i + 3]);
+              i += 2;
+            }
+          else if ((i + 1 < args.size()) && args[i] == "-p")
+            {
+              addListen("0.0.0.0", args[i + 1]);
+              addListen("::1", args[i + 1]);
+              i += 1;
+            }
+          else if ((i + 1 < args.size()) && args[i] == "-h")
+            {
+              addListen(args[i + 1], "8000");
+              i += 1;
+            }
+        }
+      catch (std::exception& e) {
+          std::cerr << "Can't bind address: " << e.what() << std::endl;
+        }
+    }
+  if (i == 1)
+    {
+      addListen("0.0.0.0", "8000");
+      addListen("::1", "8000");
+    }
 }
 
 void Server::run()
 {
-  while (1)
+  while (true)
     _net->poll(true);
 }
 
@@ -54,7 +90,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 
 uint16_t Server::createNewGame(const ServerRoom& gameInfo)
 {
-  std::shared_ptr<ServerGame> game(new ServerGame(gameInfo, _lobbyListener->getListeningIpAddr()));
+  std::shared_ptr<ServerGame> game(new ServerGame(gameInfo, (_lobbyListener.at(0)->getListeningIpAddr())));
 
   _games.push_back(game);
   _threadPool.addTask(&ServerGame::run, game);

@@ -23,7 +23,7 @@
 class Server
 {
 public:
-  Server(const std::string& addr, const std::string& port);
+  Server(const std::vector<std::string>& args);
   ~Server() = default;
 
   void run();
@@ -41,12 +41,12 @@ protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
 
 protected:
-  Lobby 						          	_lobby;
-  std::unique_ptr<Network::ANetwork>      	_net;
-  std::shared_ptr<Network::AListenSocket>	_lobbyListener;
-  std::deque<std::shared_ptr<ClientLobby>>    	_clients;
-  ThreadPool							  	_threadPool;
-  std::deque<std::shared_ptr<ServerGame>>	_games;
+  Lobby 						          				_lobby;
+  std::unique_ptr<Network::ANetwork>      				_net;
+  std::deque<std::shared_ptr<Network::AListenSocket>>	_lobbyListener;
+  std::deque<std::shared_ptr<ClientLobby>> 				_clients;
+  ThreadPool							  				_threadPool;
+  std::deque<std::shared_ptr<ServerGame>>				_games;
 };
 
 #endif

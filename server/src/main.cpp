@@ -1,13 +1,18 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include <exception>
 
 #include "Server.hpp"
 
-int main(int, char**)
+int main(int ac, char *av[])
 {
+  std::vector<std::string> args;
+
+  for (int acc = 0; acc < ac; ++acc)
+    args.push_back(av[acc]);
   try {
-      Server serv("0.0.0.0", "8000");
+      Server serv(args);
       serv.run();
     }
   catch (std::exception& e)
