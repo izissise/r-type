@@ -90,7 +90,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 
 uint16_t Server::createNewGame(const ServerRoom& gameInfo)
 {
-  std::shared_ptr<ServerGame> game(new ServerGame(gameInfo, (_lobbyListener.at(0)->getListeningIpAddr())));
+  std::shared_ptr<ServerGame> game(new ServerGame(gameInfo));
 
   _games.push_back(game);
   _threadPool.addTask(&ServerGame::run, game);

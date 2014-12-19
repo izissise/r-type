@@ -13,7 +13,7 @@
 class ServerGame
 {
 public:
-  ServerGame(const ServerRoom& gameInfo, const std::string& listeningAddr = "0.0.0.0");
+  ServerGame(const ServerRoom& gameInfo);
   virtual ~ServerGame() = default;
 
   void run();

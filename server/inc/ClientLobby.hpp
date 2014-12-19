@@ -30,6 +30,8 @@ public:
 
   bool isReadyForGame() const {return _isGameReady;};
 
+  const std::string& getConnectionAddress() const {return _socket->getIpAddr();};
+
 protected:
   void onRead(size_t readSize) override;
   void onWrite(size_t writeSize) override;
