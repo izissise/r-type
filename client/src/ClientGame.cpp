@@ -212,6 +212,7 @@ size_t  ClientGame::netMessage(const Network::Buffer &data)
   size_t  nbUsed;
   
   nbUsed = rep.from_bytes(data);
+  _chat.push_back(rep.getMsg());
   std::cout << "Message = " << rep.getMsg() << std::endl;
   return nbUsed;
 }
@@ -467,6 +468,8 @@ void  ClientGame::createRoomPanel()
   std::shared_ptr<Button> r(new Button({ 1300, 745 , 300, 75 }, button, hover, click, ready));
   std::shared_ptr<Button> disconnect(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
+  std::shared_ptr<TextEntry> entry(new TextEntry("", { 0, static_cast<float>(_win.getSize().y) - 60,
+                                                      static_cast<float>(_win.getSize().x) - disconnect->getSize().x, 60}, button));
 
   r->onClick([this]() {
     Network::Buffer msg;
@@ -474,14 +477,32 @@ void  ClientGame::createRoomPanel()
     _writeBuff.writeBuffer(msg);
   });
 
-  disconnect->onClick([this]() {
+  disconnect->onClick([this, entry]() {
+    entry->setText("");
     Network::Buffer msg;
     Packet::APacket::fill_bytes(msg, Packet::APacket::fromPacketType(Packet::APacket::PacketType::LEAVEROOM));
     _writeBuff.writeBuffer(msg);
+    _chat.clear();
+    _player.clear();
     _currentPanel = Panel::PanelId::LISTPANEL;
   });
+  
+  entry->setFont(*font);
+  entry->setTextColor(sf::Color::White);
+  entry->setCharacterSize(30);
+  entry->onKey(sf::Keyboard::Return, [this, entry]() {
+    if (!entry->getText().empty())
+      _writeBuff.writeBuffer(Packet::Message(entry->getText()).to_bytes());
+      entry->setText("");
+  });
+  
+  std::shared_ptr<MessageBox> _chatBox(new MessageBox({0, 0, 1299, static_cast<float>(_win.getSize().y) - 61}, _chat, true));
+  std::shared_ptr<MessageBox> _playerBox(new MessageBox({1300, 0 , 300, 745}, _player));
 
   panel->add(back);
+  panel->add(entry);
+  panel->add(_chatBox);
+  panel->add(_playerBox);
   panel->add(r);
   panel->add(disconnect);
 
