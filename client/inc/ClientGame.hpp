@@ -17,6 +17,7 @@
 # include "ClientHelper.hpp"
 # include "ListBox.hpp"
 # include "Room.hpp"
+# include "MessageBox.hpp"
 
 # include "ShortResponse.hpp"
 # include "GetListRoom.hpp"
@@ -69,6 +70,7 @@ private:
   std::unique_ptr<Network::ANetwork>                      _network;
   std::vector<t_room>                                     _list;
   std::vector<Packet::PlayerClient>                       _player;
+  std::vector<std::string>                                _chat;
 };
 
 #endif
