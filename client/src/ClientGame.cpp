@@ -5,6 +5,8 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
   {Packet::APacket::PacketType::GETLISTROOM, &ClientGame::netGetListRoom},
   {Packet::APacket::PacketType::GETLISTPLAYER, &ClientGame::netGetListPlayer},
+  {Packet::APacket::PacketType::STARTGAME, &ClientGame::netStartGame},
+  {Packet::APacket::PacketType::MESSAGE, &ClientGame::netMessage},
 };
 
 ClientGame::ClientGame()
@@ -191,6 +193,26 @@ size_t  ClientGame::netGetListPlayer(const Network::Buffer &data)
   for (auto& it : _player)
     std::cout << it << ",";
   std::cout << "]" << std::endl;
+  return nbUsed;
+}
+
+size_t  ClientGame::netStartGame(const Network::Buffer &data)
+{
+  Packet::StartGame rep;
+  size_t  nbUsed;
+  
+  nbUsed = rep.from_bytes(data);
+  std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << std::endl;
+  return nbUsed;
+}
+
+size_t  ClientGame::netMessage(const Network::Buffer &data)
+{
+  Packet::Message rep;
+  size_t  nbUsed;
+  
+  nbUsed = rep.from_bytes(data);
+  std::cout << "Message = " << rep.getMsg() << std::endl;
   return nbUsed;
 }
 

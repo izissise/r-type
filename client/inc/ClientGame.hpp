@@ -24,6 +24,8 @@
 # include "CreateRoom.hpp"
 # include "JoinRoom.hpp"
 # include "GetListPlayer.hpp"
+# include "StartGame.hpp"
+# include "Message.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -48,6 +50,8 @@ private:
   size_t  netShortResponse(const Network::Buffer& data);
   size_t  netGetListRoom(const Network::Buffer& data);
   size_t  netGetListPlayer(const Network::Buffer &data);
+  size_t  netStartGame(const Network::Buffer &data);
+  size_t  netMessage(const Network::Buffer &data);
 
   void  checkReponse(uint8_t rep);
 
