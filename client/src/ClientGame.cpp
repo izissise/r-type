@@ -149,6 +149,8 @@ void  ClientGame::checkReponse(uint8_t rep)
   else if (_isLoading)
   {
     _isLoading = false;
+    if (_currentPanel == Panel::PanelId::MENUPANEL)
+      _socket.reset();
     std::cerr << "Abort" << std::endl;
   }
 }
