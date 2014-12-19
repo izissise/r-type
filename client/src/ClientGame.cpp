@@ -54,35 +54,35 @@ void  ClientGame::onRead(size_t nbRead)
   if (nbRead == 0)
     return;
   while (_readBuff.getLeftRead() >= headerSize)
-  {
-    _readBuff.readBuffer(buff, headerSize);
-    pack = Packet::APacket::toPacketType(buff);
-    if (pack != Packet::APacket::PacketType::UNKNOW)
     {
-      buff.clear();
-      _readBuff.readBuffer(buff, _readBuff.getLeftRead());
-      try {
-        size_t (ClientGame::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
-        try {
-          size_t nbUsed = (this->*meth)(buff);
-          _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
-        }
-        catch (std::exception& e)
+      _readBuff.readBuffer(buff, headerSize);
+      pack = Packet::APacket::toPacketType(buff);
+      if (pack != Packet::APacket::PacketType::UNKNOW)
         {
-          _readBuff.rollbackReadBuffer(buff.size() - 1);
+          buff.clear();
+          _readBuff.readBuffer(buff, _readBuff.getLeftRead());
+          try {
+              size_t (ClientGame::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
+              try {
+                  size_t nbUsed = (this->*meth)(buff);
+                  _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
+                }
+              catch (Packet::APacket::PackerParsingError& e)
+                {
+                  _readBuff.rollbackReadBuffer(buff.size() - 1);
+                }
+            }
+          catch (std::out_of_range& e)
+            {
+              _readBuff.rollbackReadBuffer(headerSize - 1);
+            }
         }
-      }
-      catch (std::exception& e)
-      {
-        _readBuff.rollbackReadBuffer(headerSize - 1);
-      }
+      else
+        {
+          _readBuff.rollbackReadBuffer(headerSize - 1);
+          std::cerr << "Received Unknown Packet" << std::endl;
+        }
     }
-    else
-    {
-      _readBuff.rollbackReadBuffer(headerSize - 1);
-      std::cerr << "Received Unknown Packet" << std::endl;
-    }
-  }
 }
 
 void  ClientGame::onWrite(size_t)
@@ -202,7 +202,7 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
 {
   Packet::StartGame rep;
   size_t  nbUsed;
-  
+
   nbUsed = rep.from_bytes(data);
   std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << std::endl;
   return nbUsed;
@@ -212,7 +212,7 @@ size_t  ClientGame::netMessage(const Network::Buffer &data)
 {
   Packet::Message rep;
   size_t  nbUsed;
-  
+
   nbUsed = rep.from_bytes(data);
   _chat.push_back(rep.getMsg());
   std::cout << "Message = " << rep.getMsg() << std::endl;
@@ -268,7 +268,7 @@ void  ClientGame::createMenuPanel()
   std::function<void ()> func([this, loginEntry, ipEntry]() {
     std::string login = loginEntry->getText();
     std::string ip = ipEntry->getText();
-    
+
     if (!login.empty() && !ip.empty())
     {
       int nbColon = std::count(ip.begin(), ip.end(), ':');
@@ -289,15 +289,15 @@ void  ClientGame::createMenuPanel()
     else
       std::cerr << "The login or the ip is not fill" << std::endl;
   });
-  
+
   exit->onClick([this]() { _done = true; });
   connect->onClick(func);
   loginEntry->onKey(sf::Keyboard::Return, func);
   ipEntry->onKey(sf::Keyboard::Return, func);
-  
+
   loginEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(false); ipEntry->setUse(true); });
   ipEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(true); ipEntry->setUse(false); });
-  
+
   menuPanel->add(back);
   menuPanel->add(ipEntry);
   menuPanel->add(loginEntry);
@@ -416,13 +416,13 @@ void  ClientGame::createCreateRoomPanel()
       return ;
     }
     Packet::CreateRoom room({entry->getText(), 0, 4, 0});
-    
+
     _isLoading = true;
     entry->setText("");
     _writeBuff.writeBuffer(room.to_bytes());
   });
 ;
-  
+
   create->onClick(func);
   entry->onKey(sf::Keyboard::Return, func);
   cancel->onClick([this]() {
@@ -488,7 +488,7 @@ void  ClientGame::createRoomPanel()
     _player.clear();
     _currentPanel = Panel::PanelId::LISTPANEL;
   });
-  
+
   entry->setFont(*font);
   entry->setTextColor(sf::Color::White);
   entry->setCharacterSize(30);
@@ -497,7 +497,7 @@ void  ClientGame::createRoomPanel()
       _writeBuff.writeBuffer(Packet::Message(entry->getText()).to_bytes());
       entry->setText("");
   });
-  
+
   std::shared_ptr<MessageBox> _chatBox(new MessageBox({0, 0, 1299, static_cast<float>(_win.getSize().y) - 61}, _chat, true));
   std::shared_ptr<MessageBox> _playerBox(new MessageBox({1300, 0 , 300, 745}, _player));
 
