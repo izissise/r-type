@@ -48,55 +48,61 @@ void  ListBox::draw(sf::RenderWindow &win)
 
 void  ListBox::updateEntry()
 {
-  std::vector<t_room> toAdd;
-  std::vector<t_room> toRemove;
-  
-  std::set_difference(_list.begin(), _list.end(), _displayRoom.begin(), _displayRoom.end(),
-                      std::inserter(toAdd, toAdd.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id != b.id; });
-  
-  for (auto it : toAdd)
+  if (!isSame())
   {
-    std::stringstream ss("");
+    _displayRoom.clear();
+    _items.clear();
+    _displayRoom = _list;
 
-    ss << static_cast<int>(it.nbPlayer) << " / " << static_cast<int>(it.playerMax);
-    std::shared_ptr<Text>  name(new Text({0, 0, 100, 100}, it.name));
-    std::shared_ptr<Text>  player(new Text({200, 0, 100, 100}, ss.str()));
-    
-    name->setCharacterSize(30);
-    player->setCharacterSize(30);
-    
-    name->setColor(sf::Color::Black);
-    player->setColor(sf::Color::Black);
-
-    name->setFont(*RessourceManager::instance().getFont("../assets/font.ttf"));
-    player->setFont(*RessourceManager::instance().getFont("../assets/font.ttf"));
-    
-    auto texture = RessourceManager::instance().getTexture("../assets/ListEntry.png");
-    
-    std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
-    std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
-    std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
-    
-    button->setTextureRect(sf::IntRect(0, 0, 480, 30));
-    hover->setTextureRect(sf::IntRect(0, 30, 480, 30));
-    click->setTextureRect(sf::IntRect(0, 60, 480, 30));
-    
-    std::shared_ptr<Button> tmp(new Button({ 0, 0 , _size.x, 50 }, button, hover, click));
-    
-    tmp->onClick([this, it] {
-      _func(it.id);
-      std::cout << "Join [" << it.name << "]" << std::endl;
-    });
-    _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, 50},
-                                                           name, player, tmp));
-    _displayRoom.push_back(it);
+    for (auto &it : _displayRoom)
+    {
+      std::stringstream ss("");
+      
+      ss << static_cast<int>(it.nbPlayer) << " / " << static_cast<int>(it.playerMax);
+      std::shared_ptr<Text>  name(new Text({0, 0, 100, 100}, it.name));
+      std::shared_ptr<Text>  player(new Text({200, 0, 100, 100}, ss.str()));
+      
+      name->setCharacterSize(30);
+      player->setCharacterSize(30);
+      
+      name->setColor(sf::Color::Black);
+      player->setColor(sf::Color::Black);
+      
+      name->setFont(*RessourceManager::instance().getFont("../assets/font.ttf"));
+      player->setFont(*RessourceManager::instance().getFont("../assets/font.ttf"));
+      
+      auto texture = RessourceManager::instance().getTexture("../assets/ListEntry.png");
+      
+      std::shared_ptr<sf::Sprite>  button(new sf::Sprite(*texture));
+      std::shared_ptr<sf::Sprite>  hover(new sf::Sprite(*texture));
+      std::shared_ptr<sf::Sprite>  click(new sf::Sprite(*texture));
+      
+      button->setTextureRect(sf::IntRect(0, 0, 480, 30));
+      hover->setTextureRect(sf::IntRect(0, 30, 480, 30));
+      click->setTextureRect(sf::IntRect(0, 60, 480, 30));
+      
+      std::shared_ptr<Button> tmp(new Button({ 0, 0 , _size.x, 50 }, button, hover, click));
+      
+      tmp->onClick([this, it] {
+        _func(it.id);
+        std::cout << "Join [" << it.name << "]" << std::endl;
+      });
+      _items[it.id] = std::shared_ptr<ListItem>(new ListItem({_size.x, 50},
+                                                             name, player, tmp));
+    }
   }
+}
 
-  std::set_difference(_displayRoom.begin(), _displayRoom.end(), _list.begin(), _list.end(),
-                      std::inserter(toRemove, toRemove.begin()), [](const t_room &a, const t_room &b) -> bool { return a.id != b.id; });
-
-  for (auto it : toRemove)
-    _displayRoom.erase(std::remove_if(_displayRoom.begin(), _displayRoom.end(), [&it](const t_room &a) -> bool {
-      return (a.id == it.id);
-    }), _displayRoom.end());
+bool  ListBox::isSame() const
+{
+  auto first1 = _list.begin();
+  auto first2 = _displayRoom.begin();
+  
+  for (; first1 != _list.end() && first2 != _displayRoom.end(); first1++, first2++) {
+    if (!((*first1).id == (*first2).id && (*first1).nbPlayer == (*first2).nbPlayer))
+      return false;
+  }
+  if (first1 == _list.end() && first2 == _displayRoom.end())
+    return true;
+  return false;
 }
