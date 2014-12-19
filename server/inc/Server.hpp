@@ -15,7 +15,7 @@
 
 #include "ThreadPool.hpp"
 
-#include "Client.hpp"
+#include "ClientLobby.hpp"
 #include "Lobby.hpp"
 #include "ServerRoom.hpp"
 #include "ServerGame.hpp"
@@ -32,10 +32,10 @@ public:
 
   void broadcastAPacket(const Packet::APacket& pack) const;
 
-  void unregisterClient(const std::shared_ptr<Client>& cli);
+  void unregisterClient(const std::shared_ptr<ClientLobby>& cli);
 
   void  broadcastRoomList() const;
-  const std::shared_ptr<Network::AListenSocket>& createNewGame(const ServerRoom& gameInfo);
+  uint16_t createNewGame(const ServerRoom& gameInfo);
 
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
@@ -44,7 +44,7 @@ protected:
   Lobby 						          	_lobby;
   std::unique_ptr<Network::ANetwork>      	_net;
   std::shared_ptr<Network::AListenSocket>	_lobbyListener;
-  std::deque<std::shared_ptr<Client>>    	_clients;
+  std::deque<std::shared_ptr<ClientLobby>>    	_clients;
   ThreadPool							  	_threadPool;
   std::deque<std::shared_ptr<ServerGame>>	_games;
 };

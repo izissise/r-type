@@ -14,18 +14,19 @@
 
 class Server;
 
-class Client : public Network::SocketClientHelper, public std::enable_shared_from_this<Client>
+class ClientLobby : public Network::SocketClientHelper, public std::enable_shared_from_this<ClientLobby>
 {
 private:
-  static std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> _netWorkBinds;
+  static std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> _netWorkBinds;
 
 public:
-  Client(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
-  ~Client() = default;
+  ClientLobby(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
+  ~ClientLobby() = default;
 
   const std::string& getLogin() const {return _login;};
 
   void sendPacket(const Packet::APacket& pack);
+  void startGame(uint16_t port);
 
   bool isReadyForGame() const {return _isGameReady;};
 

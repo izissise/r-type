@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-#include "Client.hpp"
+#include "ClientLobby.hpp"
 #include "Room.hpp"
 #include "ServerRoom.hpp"
 
@@ -22,8 +22,8 @@ public:
 
   ServerRoom& getRoom(size_t rId) {return _rooms.at(rId);};
 
-  bool joinRoom(const std::shared_ptr<Client>& cli, size_t roomId);
-  void leaveRoom(const std::shared_ptr<Client>& cli, size_t roomId);
+  bool joinRoom(const std::shared_ptr<ClientLobby>& cli, size_t roomId);
+  void leaveRoom(const std::shared_ptr<ClientLobby>& cli, size_t roomId);
 
 private:
   size_t					   _roomId;

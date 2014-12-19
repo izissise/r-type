@@ -8,7 +8,8 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& listeningA
     _net(Network::NetworkFactory::createNetwork()),
     _udpListener(Network::NetworkFactory::createListenSocket(listeningAddr, "", Network::ASocket::SockType::UDP, true))
 {
-	_net->registerListener(_udpListener);
+  //_udpListener->setNewConnectionCallback();
+  _net->registerListener(_udpListener);
 }
 
 void ServerGame::run()
@@ -18,4 +19,10 @@ void ServerGame::run()
       _net->poll();
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
+                          const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data)
+{
+
 }
