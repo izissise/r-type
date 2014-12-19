@@ -35,7 +35,7 @@ public:
   void unregisterClient(const std::shared_ptr<Client>& cli);
 
   void  broadcastRoomList() const;
-  const std::shared_ptr<Network::AListenSocket>& createNewGame(const ServerRoom& gameInfo);
+  uint16_t createNewGame(const ServerRoom& gameInfo);
 
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);

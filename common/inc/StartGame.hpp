@@ -1,5 +1,5 @@
-#ifndef _MESSAGE_HPP_
-# define _MESSAGE_HPP_
+#ifndef _STARTGAME_HPP_
+# define _STARTGAME_HPP_
 
 # include "APacket.hpp"
 

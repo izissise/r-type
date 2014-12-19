@@ -12,6 +12,7 @@
 #include "ShortResponse.hpp"
 #include "JoinRoom.hpp"
 #include "Message.hpp"
+#include "StartGame.hpp"
 
 std::map<Packet::APacket::PacketType, size_t (Client::*)(const Network::Buffer&)> Client::_netWorkBinds =
 {
@@ -95,6 +96,11 @@ void Client::onDisconnet()
 void Client::sendPacket(const Packet::APacket& pack)
 {
   _writeBuff.writeBuffer(pack);
+}
+
+void Client::startGame(uint16_t port)
+{
+  sendPacket(Packet::StartGame(_socket->getIpAddr(), port));
 }
 
 
@@ -183,8 +189,7 @@ size_t Client::netReadyGame(const Network::Buffer&)
 {
   if (_currentRoom != -1)
     {
-      Packet::Message msg(_login + " is ready.");
-      _server.getLobby().getRoom(_currentRoom).broadcastAPacket(msg);
+      _server.getLobby().getRoom(_currentRoom).broadcastAPacket(Packet::Message(_login + " is ready."));
       _isGameReady = true;
       _server.getLobby().getRoom(_currentRoom).tryLaunchGame(_server);
     }
