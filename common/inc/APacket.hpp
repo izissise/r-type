@@ -23,7 +23,7 @@ namespace Packet {
       STARTGAME = 6, //6
       READYGAME = 7, //7
       LEAVEROOM = 8, //8
-	  MESSAGE = 9, //9
+      MESSAGE = 9, //9
       GETLISTPLAYER = 10, //10
       UNKNOW,
     };
