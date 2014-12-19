@@ -216,7 +216,7 @@ size_t ClientLobby::netMessage(const Network::Buffer& data)
   if (_currentRoom != -1)
     {
       try {
-          _server.getLobby().getRoom(_currentRoom).broadcastAPacket(msg);
+          _server.getLobby().getRoom(_currentRoom).broadcastAPacket(Packet::Message(_login + ": " + msg.getMsg() ));
         }
       catch (std::out_of_range& e)
         {
