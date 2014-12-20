@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+#include <sstream>
+
 #include "GetListRoom.hpp"
 
 Server::Server(const std::vector<std::string>& args)
@@ -94,5 +96,5 @@ uint16_t Server::createNewGame(const ServerRoom& gameInfo)
 
   _games.push_back(game);
   _threadPool.addTask(&ServerGame::run, game);
-  return game->getNetworkInfo()->getListeningPort();
+  return [&game]() {std::stringstream ss(""); ss << game->listeningPort(); uint16_t port; ss >> port; return port;}();
 }

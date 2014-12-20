@@ -1,6 +1,7 @@
 #include "ServerGame.hpp"
 
 #include <iostream>
+#include <sstream>
 
 #include "ClientLobby.hpp"
 
@@ -8,16 +9,25 @@ ServerGame::ServerGame(const ServerRoom& gameInfo)
   : _runGame(true),
     _net(Network::NetworkFactory::createNetwork())
 {
+  _listeningPort = "";
+  std::cout << "New game on: ";
   for (auto& i : gameInfo.getPlayerList())
     {
       std::string addr = i->getConnectionAddress();
-      std::cout << "New game on: ";
-      std::shared_ptr<Network::AListenSocket> udpListener(Network::NetworkFactory::createListenSocket(addr, "", Network::ASocket::SockType::UDP, true));
-      std::cout << udpListener->getListeningIpAddr() << ":" << udpListener->getListeningPort() << " ";
-      udpListener->setNewConnectionCallback(std::bind(&ServerGame::joinGame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-      _net->registerListener(udpListener);
-      std::cout << std::endl;
+      try {
+          std::shared_ptr<Network::AListenSocket> udpListener(Network::NetworkFactory::createListenSocket(addr,
+              (_listeningPort == "") ? "" : _listeningPort, Network::ASocket::SockType::UDP, true));
+              if (_listeningPort == "")
+			  _listeningPort = [&udpListener](){std::stringstream ss; ss << udpListener->getListeningPort(); return ss.str();}();
+          std::cout << udpListener->getListeningIpAddr() << ":" << udpListener->getListeningPort() << " ";
+          udpListener->setNewConnectionCallback(std::bind(&ServerGame::joinGame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+          _net->registerListener(udpListener);
+          _udpListener.push_back(udpListener);
+        }
+      catch (Network::Error& e)
+        { }
     }
+  std::cout << std::endl;
 }
 
 void ServerGame::run()
