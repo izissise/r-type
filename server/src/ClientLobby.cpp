@@ -98,9 +98,9 @@ void ClientLobby::sendPacket(const Packet::APacket& pack)
   _writeBuff.writeBuffer(pack);
 }
 
-void ClientLobby::startGame(uint16_t port)
+void ClientLobby::startGame(uint16_t port, size_t id)
 {
-  sendPacket(Packet::StartGame(_socket->getIpAddr(), port));
+  sendPacket(Packet::StartGame(_socket->getIpAddr(), port, id));
 }
 
 

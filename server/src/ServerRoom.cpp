@@ -60,10 +60,12 @@ void ServerRoom::tryLaunchGame(Server& server) const
     }
   if (ok)
     {
+      size_t id = 0;
       uint16_t port = server.createNewGame(*this);
       for (auto& i : _clients)
         {
-          i->startGame(port);
+          i->startGame(port, id);
+          id++;
         }
     }
 }

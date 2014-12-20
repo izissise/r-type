@@ -7,8 +7,8 @@ StartGame::StartGame()
 
 }
 
-StartGame::StartGame(const std::string& ip, uint16_t port)
-  : APacket(APacket::PacketType::STARTGAME), _ip(ip), _port(port)
+StartGame::StartGame(const std::string& ip, uint16_t port, uint16_t pId)
+  : APacket(APacket::PacketType::STARTGAME), _ip(ip), _port(port), _playerId(pId)
 {
 
 }
@@ -19,9 +19,10 @@ std::string StartGame::to_bytesNoHeader() const
   fill_bytes(ret, static_cast<uint16_t>(_ip.length()));
   ret += _ip;
   fill_bytes(ret, _port);
+  fill_bytes(ret, _playerId);
   return (ret);
 }
-  
+
 size_t StartGame::from_bytes(const std::string &bytes)
 {
   size_t pos = 0;
@@ -35,6 +36,7 @@ size_t StartGame::from_bytes(const std::string &bytes)
   if (_ip.size() != length)
     throw APacket::PackerParsingError("The size of the ip is not right");
   get_bytes(bytes, pos, _port);
+  get_bytes(bytes, pos, _playerId);
   return pos;
 }
 };

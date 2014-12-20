@@ -26,7 +26,7 @@ public:
   const std::string& getLogin() const {return _login;};
 
   void sendPacket(const Packet::APacket& pack);
-  void startGame(uint16_t port);
+  void startGame(uint16_t port, size_t id);
 
   bool isReadyForGame() const {return _isGameReady;};
 

@@ -17,6 +17,9 @@ public:
   ClientGame(const std::shared_ptr<Network::Identity>& id,
              const std::weak_ptr<Network::AListenSocket>& listener);
   virtual ~ClientGame() = default;
+
+  //void sendPacket(Packet::
+
 protected:
   void onRead() override;
 
