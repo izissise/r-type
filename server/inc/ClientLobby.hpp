@@ -8,16 +8,15 @@
 #define PROTOCOLEVERSION 0x01000000
 
 #include "APacket.hpp"
-#include "ClientHelper.hpp"
 #include "ABasicSocket.hpp"
 #include "RingBuffer.hpp"
+#include "RtypeProtoHelper.hpp"
 
 class Server;
 
-class ClientLobby : public Network::SocketClientHelper, public std::enable_shared_from_this<ClientLobby>
+class ClientLobby : public RtypeProtoHelper<ClientLobby>, public std::enable_shared_from_this<ClientLobby>
 {
-private:
-  static std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> _netWorkBinds;
+  friend RtypeProtoHelper;
 
 public:
   ClientLobby(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);
@@ -33,8 +32,6 @@ public:
   const std::string& getConnectionAddress() const {return _socket->getIpAddr();};
 
 protected:
-  void onRead(size_t readSize) override;
-  void onWrite(size_t writeSize) override;
   void onDisconnet() override;
 
 private:
@@ -46,6 +43,7 @@ private:
   size_t netReadyGame(const Network::Buffer& data);
   size_t netLeaveRoom(const Network::Buffer& data);
   size_t netMessage(const Network::Buffer& data);
+
 
 private:
   Server& _server;

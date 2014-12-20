@@ -1,14 +1,14 @@
 #include "Game.hpp"
 
-Game::Game(const sf::FloatRect &rect)
-: Panel(rect), SocketClientHelper(), _network(Network::NetworkFactory::createNetwork())
+template<>
+std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> RtypeProtoHelper<Game>::_netWorkBinds =
 {
-  
-}
+};
 
-Game::~Game()
+Game::Game(const sf::FloatRect &rect)
+: Panel(rect), _network(Network::NetworkFactory::createNetwork())
 {
-  
+
 }
 
 void  Game::update(const sf::Event &event)
@@ -31,16 +31,6 @@ bool  Game::connect(const std::string &ip, const std::string &port, const std::s
     std::cerr << e.what() << std::endl;
     return false;
   }
-}
-
-void  Game::onRead(size_t sizeRead)
-{
-  std::cout << "Read" << std::endl;
-}
-
-void  Game::onWrite(size_t sizeWrite)
-{
-  std::cout << "Write" << std::endl;
 }
 
 void  Game::onDisconnet()

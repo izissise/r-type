@@ -7,6 +7,7 @@
 # include <thread>
 # include <memory>
 # include <sstream>
+
 # include "Observer.hpp"
 # include "Panel.hpp"
 # include "TextEntry.hpp"
@@ -15,7 +16,7 @@
 # include "RessourceManager.hpp"
 # include "NetworkFactory.hpp"
 # include "Handshake.hpp"
-# include "ClientHelper.hpp"
+# include "RtypeProtoHelper.hpp"
 # include "ListBox.hpp"
 # include "Room.hpp"
 # include "MessageBox.hpp"
@@ -32,8 +33,10 @@
 
 # define DEFAULTPORT "8000"
 
-class ClientGame: public Network::SocketClientHelper
+class ClientGame: public RtypeProtoHelper<ClientGame>
 {
+  friend RtypeProtoHelper;
+
 public:
   ClientGame();
   ~ClientGame();
@@ -42,14 +45,10 @@ public:
   bool  update();
   void  draw();
 
-
-private:
-  void  onRead(size_t sizeRead) override;
-  void  onWrite(size_t sizeWrite) override;
+protected:
   void  onDisconnet() override;
 
-  static std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> _netWorkBinds;
-
+private:
   size_t  netShortResponse(const Network::Buffer& data);
   size_t  netGetListRoom(const Network::Buffer& data);
   size_t  netGetListPlayer(const Network::Buffer &data);

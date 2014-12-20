@@ -14,7 +14,8 @@
 #include "Message.hpp"
 #include "StartGame.hpp"
 
-std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> ClientLobby::_netWorkBinds =
+template<>
+std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> RtypeProtoHelper<ClientLobby>::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientLobby::netShortResponse},
   {Packet::APacket::PacketType::HANDSHAKE, &ClientLobby::netHandshake},
@@ -27,58 +28,7 @@ std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buf
 };
 
 ClientLobby::ClientLobby(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv)
-  : SocketClientHelper(sock), _server(serv), _currentRoom(-1), _isGameReady(false)
-{
-}
-
-void ClientLobby::onRead(size_t nbRead)
-{
-  const size_t headerSize = sizeof(uint16_t);
-  Network::Buffer buff;
-  Packet::APacket::PacketType pack;
-
-  if (nbRead == 0)
-    return;
-  while (_readBuff.getLeftRead() >= headerSize)
-    {
-      _readBuff.readBuffer(buff, headerSize);
-      pack = Packet::APacket::toPacketType(buff);
-      if (pack != Packet::APacket::PacketType::UNKNOW)
-        {
-//      std::cout << std::hex << "0x" << static_cast<int>(buff[0]) << " " << std::dec;
-//      std::cout << std::hex << "0x" << static_cast<int>(buff[1]) << " " << std::dec;
-          buff.clear();
-          _readBuff.readBuffer(buff, _readBuff.getLeftRead());
-          try {
-              size_t (ClientLobby::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
-              try {
-//                  for (auto& i : buff)
-//                    {
-//                      std::cout << std::hex << "0x" << static_cast<int>(i) << " " << std::dec;
-//                    }
-//                  std::cout << std::endl;
-                  size_t nbUsed = (this->*meth)(buff);
-                  _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
-                }
-              catch (Packet::APacket::PackerParsingError& e)
-                {
-                  _readBuff.rollbackReadBuffer(buff.size() - 1);
-                }
-            }
-          catch (std::out_of_range& e)
-            {
-              _readBuff.rollbackReadBuffer(headerSize - 1);
-            }
-        }
-      else
-        {
-          _readBuff.rollbackReadBuffer(headerSize - 1);
-          std::cerr << "Received Unknown Packet" << std::endl;
-        }
-    }
-}
-
-void ClientLobby::onWrite(size_t)
+  : RtypeProtoHelper(sock), _server(serv), _currentRoom(-1), _isGameReady(false)
 {
 }
 

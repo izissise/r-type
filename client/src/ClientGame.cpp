@@ -1,6 +1,7 @@
 #include "ClientGame.hpp"
 
-std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> ClientGame::_netWorkBinds =
+template<>
+std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> RtypeProtoHelper<ClientGame>::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
   {Packet::APacket::PacketType::GETLISTROOM, &ClientGame::netGetListRoom},
@@ -10,7 +11,7 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 };
 
 ClientGame::ClientGame()
-: SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
+: _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
   _network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}))
 {
   sf::Image icon;
@@ -45,51 +46,6 @@ void ClientGame::run()
     if (t.count() < fps)
       std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>(fps - t.count())) );
   }
-}
-
-void  ClientGame::onRead(size_t nbRead)
-{
-  const size_t headerSize = sizeof(uint16_t);
-  Network::Buffer buff;
-  Packet::APacket::PacketType pack;
-
-  if (nbRead == 0)
-    return;
-  while (_readBuff.getLeftRead() >= headerSize)
-    {
-      _readBuff.readBuffer(buff, headerSize);
-      pack = Packet::APacket::toPacketType(buff);
-      if (pack != Packet::APacket::PacketType::UNKNOW)
-        {
-          buff.clear();
-          _readBuff.readBuffer(buff, _readBuff.getLeftRead());
-          try {
-              size_t (ClientGame::*meth)(const Network::Buffer&) = _netWorkBinds.at(pack);
-              try {
-                  size_t nbUsed = (this->*meth)(buff);
-                  _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
-                }
-              catch (Packet::APacket::PackerParsingError& e)
-                {
-                  _readBuff.rollbackReadBuffer(buff.size() - 1);
-                }
-            }
-          catch (std::out_of_range& e)
-            {
-              _readBuff.rollbackReadBuffer(headerSize - 1);
-            }
-        }
-      else
-        {
-          _readBuff.rollbackReadBuffer(headerSize - 1);
-          std::cerr << "Received Unknown Packet" << std::endl;
-        }
-    }
-}
-
-void  ClientGame::onWrite(size_t)
-{
-  std::cout << "Write" << std::endl;
 }
 
 void ClientGame::onDisconnet()
@@ -206,7 +162,7 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
   Packet::StartGame rep;
   size_t  nbUsed;
   std::stringstream ss("");
-  
+
   nbUsed = rep.from_bytes(data);
   std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << std::endl;
   ss << rep.getPort();
