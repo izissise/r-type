@@ -10,7 +10,8 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 };
 
 ClientGame::ClientGame()
-: SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false), _network(Network::NetworkFactory::createNetwork())
+: SocketClientHelper(), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
+  _network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}))
 {
   sf::Image icon;
 
@@ -21,6 +22,7 @@ ClientGame::ClientGame()
   createListPanel();
   createCreateRoomPanel();
   createRoomPanel();
+  _panel[Panel::PanelId::GAMEPANEL] = _game;
 }
 
 ClientGame::~ClientGame()
@@ -96,6 +98,7 @@ void ClientGame::onDisconnet()
   _currentPanel = Panel::PanelId::MENUPANEL;
   _list.clear();
   _player.clear();
+  _chat.clear();
   _isLoading = false;
 }
 
@@ -202,9 +205,13 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
 {
   Packet::StartGame rep;
   size_t  nbUsed;
-
+  std::stringstream ss("");
+  
   nbUsed = rep.from_bytes(data);
   std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << std::endl;
+  ss << rep.getPort();
+  if (_game->connect(rep.getIp(), ss.str(), _login))
+    _currentPanel = Panel::PanelId::GAMEPANEL;
   return nbUsed;
 }
 
@@ -280,6 +287,7 @@ void  ClientGame::createMenuPanel()
         setSocket(socket);
         _writeBuff.writeBuffer(packet.to_bytes());
         _isLoading = true;
+        _login = login;
         _list.clear();
       }
       catch (Network::Error &e) {

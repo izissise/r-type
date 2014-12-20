@@ -6,6 +6,7 @@
 # include <iostream>
 # include <thread>
 # include <memory>
+# include <sstream>
 # include "Observer.hpp"
 # include "Panel.hpp"
 # include "TextEntry.hpp"
@@ -18,6 +19,7 @@
 # include "ListBox.hpp"
 # include "Room.hpp"
 # include "MessageBox.hpp"
+# include "Game.hpp"
 
 # include "ShortResponse.hpp"
 # include "GetListRoom.hpp"
@@ -71,6 +73,8 @@ private:
   std::vector<t_room>                                     _list;
   std::vector<Packet::PlayerClient>                       _player;
   std::vector<std::string>                                _chat;
+  std::string                                             _login;
+  std::shared_ptr<Game>                                   _game;
 };
 
 #endif
