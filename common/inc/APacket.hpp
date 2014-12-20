@@ -59,7 +59,7 @@ namespace Packet {
 
       for (size_t i = 0; i < sizeof(T); ++i)
       {
-        it = bytes.insert(it, (nb & 0xFF));
+        it = bytes.insert(it, (nb & static_cast<uint8_t>(0xFF)));
         nb = nb >> 8;
       }
     }
@@ -70,7 +70,7 @@ namespace Packet {
       size_t i;
 
       for (i = 0; i < sizeof(T) && pos + i != bytes.size(); ++i)
-        nb = ((nb << 8) | bytes[pos + i]);
+        nb = ((nb << 8) | static_cast<uint8_t>(bytes[pos + i]));
       pos += i;
       if (i < sizeof(T))
         throw APacket::PackerParsingError("Error while parsing packet");

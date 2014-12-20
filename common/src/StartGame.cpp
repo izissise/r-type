@@ -21,7 +21,7 @@ std::string StartGame::to_bytesNoHeader() const
   fill_bytes(ret, _port);
   return (ret);
 }
-
+  
 size_t StartGame::from_bytes(const std::string &bytes)
 {
   size_t pos = 0;
@@ -30,10 +30,11 @@ size_t StartGame::from_bytes(const std::string &bytes)
   _ip = "";
   _port = 0;
   get_bytes(bytes, pos, length);
-  for (; pos < bytes.length() && pos < length + sizeof(length); ++pos)
+  for (; pos < bytes.length() && _ip.size() < length; pos++)
     _ip += bytes[pos];
-  if (pos - sizeof(length) != length)
+  if (_ip.size() != length)
     throw APacket::PackerParsingError("The size of the ip is not right");
+  std::cout << "Bytes [" << (int)bytes[pos] << "] [" << (int)bytes[pos + 1] << "]" << std::endl;
   get_bytes(bytes, pos, _port);
   return pos;
 }
