@@ -4,7 +4,7 @@
 template<>
 std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> RtypeProtoHelper<Game>::_netWorkBinds =
 {
-  {Packet::APacket::PacketType::SHORTRESPONSE, &Game::netShortResponse },
+  {Packet::APacket::PacketType::SHORTRESPONSE, &Game::netShortResponse},
 };
 
 Game::Game(const sf::FloatRect &rect)
@@ -45,11 +45,11 @@ std::size_t  Game::netShortResponse(const Network::Buffer &data)
   std::cout << "Call" << std::endl;
   Packet::ShortResponse  rep;
   size_t  nbUsed;
-  
+
   nbUsed = rep.from_bytes(data);
   if (rep.getResponse() == 1)
   {
-    std::cout << "Connection Accepted" << std::endl;
+    std::cout << "Connection Accepted" << std::endl;
     _begin = true;
   }
   else

@@ -6,7 +6,7 @@
 class UDPConnectionProblem : public std::runtime_error
 {
 public:
-  UDPConnectionProblem(const std::string &what);
+  UDPConnectionProblem(const std::string &w);
 };
 
 #endif

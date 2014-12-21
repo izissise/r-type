@@ -21,6 +21,7 @@ ServerGame::ServerGame(const ServerRoom& gameInfo)
 			  _listeningPort = [&udpListener](){std::stringstream ss; ss << udpListener->getListeningPort(); return ss.str();}();
           std::cout << udpListener->getListeningIpAddr() << ":" << udpListener->getListeningPort() << " ";
           udpListener->setNewConnectionCallback(std::bind(&ServerGame::joinGame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+          udpListener->setRecvFromSize(4096);
           _net->registerListener(udpListener);
           _udpListener.push_back(udpListener);
         }

@@ -22,10 +22,11 @@ ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
 void ClientGame::onRead()
 {
   const size_t headerSize = sizeof(uint16_t);
+  bool		incomplete = false;
   Network::Buffer buff;
   Packet::APacket::PacketType pack;
 
-  while (_readBuff.getLeftRead() >= headerSize)
+  while (_readBuff.getLeftRead() && !incomplete)
     {
       _readBuff.readBuffer(buff, headerSize);
       pack = Packet::APacket::toPacketType(buff);
@@ -40,9 +41,9 @@ void ClientGame::onRead()
                   _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
                 }
               catch (Packet::APacket::PackerParsingError& e)
-                {
-                  _readBuff.rollbackReadBuffer(buff.size() - 1);
-                }
+              {
+                incomplete = true;
+              }
             }
           catch (std::out_of_range& e)
             {

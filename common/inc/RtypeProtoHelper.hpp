@@ -30,12 +30,13 @@ protected:
   void onRead(size_t readSize) override
   {
     const size_t headerSize = sizeof(uint16_t);
+    bool		incomplete = false;
     Network::Buffer buff;
     Packet::APacket::PacketType pack;
 
     if (readSize == 0)
       return;
-    while (_readBuff.getLeftRead() >= headerSize)
+    while (_readBuff.getLeftRead() >= headerSize && !incomplete)
       {
         _readBuff.readBuffer(buff, headerSize);
         pack = Packet::APacket::toPacketType(buff);
@@ -51,7 +52,9 @@ protected:
                   }
                 catch (Packet::APacket::PackerParsingError& e)
                   {
-                    _readBuff.rollbackReadBuffer(buff.size() - 1);
+                    incomplete = true;
+                    std::cout << "RollBack of: " << buff.size() + headerSize << std::endl;
+                    _readBuff.rollbackReadBuffer(buff.size() + headerSize);
                   }
               }
             catch (std::out_of_range& e)
