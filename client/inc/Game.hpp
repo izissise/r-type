@@ -8,6 +8,7 @@
 # include "NetworkFactory.hpp"
 
 # include "Handshake.hpp"
+# include "ShortResponse.hpp"
 
 class Game : public Panel, public RtypeProtoHelper<Game>
 {
@@ -22,8 +23,11 @@ public:
 
 private:
   void  onDisconnet() override;
+  
+  std::size_t netShortResponse(const Network::Buffer &data);
 
   std::unique_ptr<Network::ANetwork>  _network;
+  bool                                _begin;
 };
 
 #endif
