@@ -157,10 +157,13 @@ size_t  ClientGame::netGetListPlayer(const Network::Buffer &data)
 
   nbUsed = cr.from_bytes(data);
   _player.clear();
-  _player = cr.getPlayerList();
+  auto tmpPlayers = cr.getPlayerList();
   std::cout << "Get Player = [";
-  for (auto& it : _player)
-    std::cout << it << ",";
+  for (auto& it : tmpPlayers)
+  {
+  	_player.push_back(it.name);
+    std::cout << it.name << ",";
+  }
   std::cout << "]" << std::endl;
   return nbUsed;
 }

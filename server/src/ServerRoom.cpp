@@ -6,7 +6,7 @@
 #include "Packet/GetListPlayer.hpp"
 
 ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
-  : _id(id), _name(name), _nbPMax(nbPMax), _started(false);
+  : _id(id), _name(name), _nbPMax(nbPMax), _started(false)
 {
 }
 
@@ -44,13 +44,13 @@ void ServerRoom::sendPlayerList() const
     std::vector<Packet::PlayerClient> tmp;
     for (auto& i : _clients)
       {
-        tmp.push_back(i->getLogin());
+        tmp.push_back({i->getLogin(), 0});
       }
     return tmp;
   }()));
 }
 
-void ServerRoom::tryLaunchGame(Server& server) const
+void ServerRoom::tryLaunchGame(Server& server)
 {
   bool ok = true;
   for (auto& i : _clients)

@@ -26,7 +26,7 @@ void ClientGame::sendPacket(const Packet::APacket& pack)
 void ClientGame::onRead()
 {
   const size_t headerSize = sizeof(uint16_t);
-  bool		incomplete = false;
+  bool		   incomplete = false;
   Network::Buffer buff;
   Packet::APacket::PacketType pack;
 
@@ -80,7 +80,8 @@ size_t ClientGame::netHandshake(const Network::Buffer& data)
 
   _login = hand.getLogin();
   _protoVersion = hand.getProtocolVersion();
-  std::cout << _login << " " << _protoVersion << std::endl;
+  _playerId = hand.getPlayerId();
+  std::cout << _login << " " << _protoVersion << " " << _playerId << std::endl;
   Packet::ShortResponse rep(0);
   if (_protoVersion == PROTOCOLE_VERSION)
     rep = {1};

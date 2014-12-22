@@ -26,7 +26,7 @@ public:
   bool addPlayer(const std::shared_ptr<ClientLobby>& p);
   void removePlayer(const std::shared_ptr<ClientLobby>& p);
   void sendPlayerList() const;
-  void tryLaunchGame(Server& server) const;
+  void tryLaunchGame(Server& server);
 
 protected:
   std::vector<std::shared_ptr<ClientLobby>>   _clients;

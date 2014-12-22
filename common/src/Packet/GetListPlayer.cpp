@@ -25,8 +25,9 @@ namespace Packet {
     fill_bytes(ret, static_cast<uint16_t>(_list.size()));
     for (auto& it : _list)
     {
-      fill_bytes(ret, static_cast<uint16_t>(it.length()));
-      ret += it;
+      fill_bytes(ret, static_cast<uint16_t>(it.name.length()));
+      ret += it.name;
+      fill_bytes(ret, it.id);
     }
     return (ret);
   }
@@ -46,14 +47,14 @@ namespace Packet {
 
       get_bytes(bytes, pos, nameSize);
       for (; pos < bytes.length() && size < nameSize; ++pos, ++size)
-        tmp += bytes[pos];
+        tmp.name += bytes[pos];
       if (size != nameSize)
         throw APacket::PackerParsingError("The size of the player list is not right");
+	  get_bytes(bytes, pos, tmp.id);
       _list.push_back(tmp);
     }
     if (_list.size() != listSize)
       throw APacket::PackerParsingError("The size of the player is not correct");
     return pos;
   }
-
 };

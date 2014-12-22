@@ -6,7 +6,10 @@
 # include "APacket.hpp"
 
 namespace Packet {
-  typedef std::string PlayerClient;
+  typedef struct {
+    std::string name;
+    uint16_t    id;
+  } PlayerClient;
 
   class GetListPlayer: public APacket
   {

@@ -8,8 +8,9 @@ namespace Packet {
 
   }
 
-  Handshake::Handshake(const std::string &login)
-  : APacket(PacketType::HANDSHAKE), _protocolVersion(PROTOCOLE_VERSION), _login(login)
+  Handshake::Handshake(const std::string &login, uint16_t id)
+  : APacket(PacketType::HANDSHAKE), _protocolVersion(PROTOCOLE_VERSION),
+    _login(login), _playerId(id)
   {
 
   }
@@ -20,6 +21,7 @@ namespace Packet {
     fill_bytes(ret, _protocolVersion);
     fill_bytes(ret, static_cast<uint16_t>(_login.length()));
     ret += _login;
+    fill_bytes(ret, _playerId);
     return (ret);
   }
 
@@ -34,6 +36,7 @@ namespace Packet {
       _login += bytes[pos];
     if (_login.length() != loginLength)
       throw (APacket::PackerParsingError("Parse Failed: the login size is wrong"));
+	get_bytes(bytes, pos, _playerId);
     return pos;
   }
 

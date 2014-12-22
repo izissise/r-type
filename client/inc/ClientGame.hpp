@@ -71,7 +71,7 @@ private:
   std::map<Panel::PanelId, std::shared_ptr<Panel>>        _panel;
   std::unique_ptr<Network::ANetwork>                      _network;
   std::vector<t_room>                                     _list;
-  std::vector<Packet::PlayerClient>                       _player;
+  std::vector<std::string>    		                      _player;
   std::vector<std::string>                                _chat;
   std::string                                             _login;
   std::shared_ptr<Game>                                   _game;

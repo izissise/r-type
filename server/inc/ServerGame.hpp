@@ -8,6 +8,7 @@
 
 #include "ClientGame.hpp"
 #include "ServerRoom.hpp"
+#include "Packet/APacket.hpp"
 #include "NetworkFactory.hpp"
 
 class ServerGame
@@ -20,6 +21,8 @@ public:
 
   const std::string& listeningPort() const {return _listeningPort;};
 
+  void broadcastPacket(const Packet::APacket& pack) const;
+  void broadcastPacketToOther(const Packet::APacket& pack, const std::shared_ptr<ClientGame>& sender) const;
 protected:
   void joinGame(const std::weak_ptr<Network::AListenSocket>& that,
                 const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data);

@@ -12,10 +12,11 @@ namespace Packet {
   {
   public:
     Handshake();
-    Handshake(const std::string &);
+    Handshake(const std::string& name, uint16_t id = 0);
 
     uint32_t getProtocolVersion() const;
     const std::string &getLogin() const;
+    uint16_t getPlayerId() const {return _playerId;};
 
     std::string to_bytesNoHeader() const override;
     size_t from_bytes(const std::string &bytes) override;
@@ -23,6 +24,7 @@ namespace Packet {
   private:
     uint32_t      _protocolVersion;
     std::string   _login;
+    uint16_t	  _playerId;
   };
 };
 

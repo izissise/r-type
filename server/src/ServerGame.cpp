@@ -50,4 +50,23 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
 
   _clients.push_back(cg);
   std::cout << "New gameClient: " << id->ip << ":" << id->port << std::endl;
+ // broadcastPacket(Packet::GetListPlayer())
 }
+
+void ServerGame::broadcastPacket(const Packet::APacket& pack) const
+{
+  for (auto& i : _clients)
+    {
+      i->sendPacket(pack);
+    }
+}
+
+void ServerGame::broadcastPacketToOther(const Packet::APacket& pack, const std::shared_ptr<ClientGame>& sender) const
+{
+  for (auto& i : _clients)
+    {
+      if (i != sender)
+        i->sendPacket(pack);
+    }
+}
+
