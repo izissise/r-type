@@ -8,7 +8,7 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
 };
 
 Game::Game(const sf::FloatRect &rect)
-: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _player({0, 0}, {1, 1}), _scrollSpeed(1)
+: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _player({0, 0}, {1, 1}), _scrollSpeed(5)
 {
   auto playerTexture = RessourceManager::instance().getTexture("../assets/spaceShip.gif");
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
@@ -66,7 +66,8 @@ void  Game::update(const sf::Event &event, float timeElapsed)
     movePlayer(0, _player.getSpeed().y * y * timeElapsed);
   if (x != 0)
     movePlayer(1, _player.getSpeed().x * x * timeElapsed);
-  if (event.type == sf::Event::JoystickButtonPressed && event.joystickButton.button == 11)
+  if ((event.type == sf::Event::JoystickButtonPressed && event.joystickButton.button == 11)
+       || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space))
     std::cout << "Fire" << std::endl;
   if (event.type == sf::Event::KeyPressed)
   {

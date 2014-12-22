@@ -18,6 +18,11 @@ ClientGame::ClientGame()
 
   if (icon.loadFromFile("../assets/icon.png"))
     _win.setIcon(icon.getSize().x , icon.getSize().y, icon.getPixelsPtr());
+  if (_music.openFromFile("../assets/menu.ogg"))
+  {
+    _music.play();
+    _music.setLoop(true);
+  }
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
   createListPanel();
@@ -171,6 +176,8 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
   ss << rep.getPort();
   if (_game->connect(rep.getIp(), ss.str(), _login))
     _currentPanel = Panel::PanelId::GAMEPANEL;
+  if (_music.getStatus() == sf::SoundSource::Playing)
+    _music.stop();
   return nbUsed;
 }
 

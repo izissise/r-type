@@ -2,6 +2,7 @@
 # define _CLIENTGAME_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <SFML/Audio.hpp>
 # include <algorithm>
 # include <iostream>
 # include <thread>
@@ -74,6 +75,7 @@ private:
   std::vector<std::string>                                _chat;
   std::string                                             _login;
   std::shared_ptr<Game>                                   _game;
+  sf::Music                                               _music;
 };
 
 #endif
