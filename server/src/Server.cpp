@@ -81,9 +81,9 @@ void Server::unregisterClient(const std::shared_ptr<ClientLobby>& cli)
 
 void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 {
-  std::shared_ptr<Network::AListenSocket> listener = that.lock();
+  auto listener = that.lock();
   std::shared_ptr<Network::ABasicSocket> nClientSock = listener->acceptClient();
-  std::shared_ptr<ClientLobby> nclient(new ClientLobby(nClientSock, *this));
+  auto nclient = std::make_shared<ClientLobby>(nClientSock, *this);
 
   _clients.push_back(nclient);
   _net->registerClient(nClientSock);
@@ -92,7 +92,7 @@ void Server::acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that)
 
 uint16_t Server::createNewGame(const ServerRoom& gameInfo)
 {
-  std::shared_ptr<ServerGame> game(new ServerGame(gameInfo));
+  auto game = std::make_shared<ServerGame>(gameInfo);
 
   _games.push_back(game);
   _threadPool.addTask(&ServerGame::run, game);

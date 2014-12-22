@@ -44,7 +44,7 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
                           const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data)
 {
   auto listener = that.lock();
-  std::shared_ptr<ClientGame> cg(new ClientGame(id, that));
+  auto cg = std::make_shared<ClientGame>(id, that);
   cg->readData(data);
 
   _clients.push_back(cg);
