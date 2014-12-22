@@ -22,7 +22,7 @@ public:
   Panel(const sf::FloatRect &rect, bool hide = false);
   virtual ~Panel() {};
 
-  virtual void  update(const sf::Event &);
+  virtual void  update(const sf::Event &, float timeElapsed);
   virtual void  draw(sf::RenderWindow &);
   
   virtual void  add(const std::shared_ptr<ADrawable> &ptr);

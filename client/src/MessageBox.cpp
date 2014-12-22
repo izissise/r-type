@@ -14,11 +14,11 @@ MessageBox::~MessageBox()
   
 }
 
-void  MessageBox::update(const sf::Event &event)
+void  MessageBox::update(const sf::Event &event, float timeElapsed)
 {
   updateEntry();
   for (auto &it : _text)
-    it.update(event);
+    it.update(event, timeElapsed);
   if (event.type == sf::Event::MouseWheelMoved
       && event.mouseWheel.x >= _pos.x && event.mouseWheel.x < _pos.x + _size.x
       && event.mouseWheel.y >= _pos.y && event.mouseWheel.y < _pos.y + _size.y)

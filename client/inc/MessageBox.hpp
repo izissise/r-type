@@ -12,7 +12,7 @@ public:
   MessageBox(const sf::FloatRect &pos, std::vector<std::string> &vec, bool focus = false);
   ~MessageBox();
   
-  virtual void  update(const sf::Event &);
+  virtual void  update(const sf::Event &, float timeElapsed);
   virtual void  draw(sf::RenderWindow &);
   
 private:

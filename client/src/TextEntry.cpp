@@ -82,7 +82,7 @@ void  TextEntry::draw(sf::RenderWindow &win)
   win.setView(win.getDefaultView());
 }
 
-void  TextEntry::update(const sf::Event &event)
+void  TextEntry::update(const sf::Event &event, float)
 {
   if (_use && _first)
     _first = false;

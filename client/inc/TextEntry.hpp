@@ -27,7 +27,7 @@ public:
   TextEntry &operator+=(const std::string &str);
   
   void  draw(sf::RenderWindow &win);
-  void  update(const sf::Event &event);
+  void  update(const sf::Event &event, float timeElapsed);
 
 private:
   bool                        _use;

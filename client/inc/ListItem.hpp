@@ -11,7 +11,7 @@ public:
   ListItem(const sf::Vector2f &size, const std::shared_ptr<Text> &name, const std::shared_ptr<Text> player, const std::shared_ptr<Button> &entry);
   ~ListItem();
   
-  virtual void update(const sf::Event &);
+  virtual void update(const sf::Event &, float timeElapsed);
   virtual void draw(sf::RenderWindow &win);
 
 private:

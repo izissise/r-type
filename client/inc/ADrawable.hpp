@@ -9,7 +9,7 @@ public:
   ADrawable(bool hide, const sf::Vector2f &pos, const sf::Vector2f &size);
   virtual ~ADrawable() { };
 
-  virtual void update(const sf::Event &) = 0;
+  virtual void update(const sf::Event &, float) = 0;
   virtual void draw(sf::RenderWindow &win) = 0;
   
   void  setHide(bool hide);
