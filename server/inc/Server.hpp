@@ -37,10 +37,15 @@ public:
   void  broadcastRoomList() const;
   uint16_t createNewGame(const ServerRoom& gameInfo);
 
+  void setUdpPortRange(const std::string& portRange);
+  void setUdpPortRange(std::tuple<uint16_t, uint16_t> portRange) {std::swap(_udpPortRange, portRange);};
+  const std::tuple<uint16_t, uint16_t>& getUdpPortRang() const {return _udpPortRange;};
+
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
 
 protected:
+  std::tuple<uint16_t, uint16_t> 					    _udpPortRange;
   Lobby 						          				_lobby;
   std::unique_ptr<Network::ANetwork>      				_net;
   std::deque<std::shared_ptr<Network::AListenSocket>>	_lobbyListener;

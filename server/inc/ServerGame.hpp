@@ -13,7 +13,7 @@
 class ServerGame
 {
 public:
-  ServerGame(const ServerRoom& gameInfo);
+  ServerGame(const ServerRoom& gameInfo, const std::string& port);
   virtual ~ServerGame() = default;
 
   void run();

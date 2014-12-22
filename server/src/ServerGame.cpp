@@ -1,15 +1,16 @@
 #include "ServerGame.hpp"
 
 #include <iostream>
+#include <tuple>
 #include <sstream>
 
 #include "ClientLobby.hpp"
 
-ServerGame::ServerGame(const ServerRoom& gameInfo)
+ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
   : _runGame(true),
     _net(Network::NetworkFactory::createNetwork())
 {
-  _listeningPort = "";
+  _listeningPort = port;
   std::cout << "New game on: ";
   for (auto& i : gameInfo.getPlayerList())
     {
@@ -17,8 +18,8 @@ ServerGame::ServerGame(const ServerRoom& gameInfo)
       try {
           std::shared_ptr<Network::AListenSocket> udpListener(Network::NetworkFactory::createListenSocket(addr,
               (_listeningPort == "") ? "" : _listeningPort, Network::ASocket::SockType::UDP, true));
-              if (_listeningPort == "")
-			  _listeningPort = [&udpListener](){std::stringstream ss; ss << udpListener->getListeningPort(); return ss.str();}();
+          if (_listeningPort == "")
+            _listeningPort = [&udpListener]() {std::stringstream ss; ss << udpListener->getListeningPort(); return ss.str();}();
           std::cout << udpListener->getListeningIpAddr() << ":" << udpListener->getListeningPort() << " ";
           udpListener->setNewConnectionCallback(std::bind(&ServerGame::joinGame, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
           udpListener->setRecvFromSize(4096);
