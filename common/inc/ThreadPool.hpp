@@ -5,33 +5,47 @@
 #include <thread>
 #include <queue>
 #include <mutex>
+#include <future>
+#include <type_traits>
 #include <condition_variable>
 
 class ThreadPool
 {
-private:
-    std::vector<std::thread> _threads;
-    std::queue<std::function<void(void)> > _tasks;
-    std::condition_variable _condition;
-    std::mutex _mutex;
 
-    int _stop;
-
-    void ThreadLoop();
 public:
-    ThreadPool(int nbThread);
-    ~ThreadPool();
+  ThreadPool(size_t nbThread);
+  ~ThreadPool();
 
-    template <class R1, typename ... Args>
-    void addTask(R1 function, Args&& ... args) {
-        addTask(std::bind(std::forward<R1>(function), std::forward<Args>(args) ...));
-    }
+  template <class FUNC, typename ... Args>
+  std::future<typename std::result_of<FUNC(Args...)>::type> addTask(FUNC function, Args&& ... args)
+  {
+    using returnType = typename std::result_of<FUNC(Args...)>::type;
+    auto task = std::make_shared<std::packaged_task<returnType()>>
+                (std::bind(std::forward<FUNC>(function), std::forward<Args>(args)...));
+    std::future<returnType> futureReturn = task->get_future();
 
-    template <class R1>
-    void addTask(R1 function) {
-        _tasks.emplace(function);
-        _condition.notify_one();
+    {
+      std::unique_lock<std::mutex> lock(_mutex);
+      if (_stop)
+        throw std::runtime_error("addTask on stopped ThreadPool.");
+      _tasks.emplace([task]()
+      {
+        (*task)();
+      });
     }
+    _condition.notify_one();
+    return futureReturn;
+  };
+
+private:
+  void ThreadLoop();
+
+private:
+  std::vector<std::thread> _threads;
+  std::queue<std::function<void()>> _tasks;
+  std::condition_variable _condition;
+  std::mutex _mutex;
+  bool _stop;
 };
 
 #endif /* _THREAD_POOL_HPP_ */
