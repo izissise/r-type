@@ -30,9 +30,10 @@ public:
 
 protected:
   std::vector<std::shared_ptr<ClientLobby>>   _clients;
-  size_t								 _id;
-  std::string 						     _name;
-  size_t								 _nbPMax;
+  size_t								 	  _id;
+  std::string 						          _name;
+  size_t								      _nbPMax;
+  bool										  _started;
 };
 
 #endif // SERVERROOM_H

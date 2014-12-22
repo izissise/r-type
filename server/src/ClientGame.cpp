@@ -16,7 +16,11 @@ ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
                        const std::weak_ptr<Network::AListenSocket>& listener)
   : IdentityClientHelper(id, listener)
 {
+}
 
+void ClientGame::sendPacket(const Packet::APacket& pack)
+{
+  _writeBuff.writeBuffer(pack);
 }
 
 void ClientGame::onRead()
@@ -41,9 +45,9 @@ void ClientGame::onRead()
                   _readBuff.rollbackReadBuffer(buff.size() - nbUsed);
                 }
               catch (Packet::APacket::PackerParsingError& e)
-              {
-                incomplete = true;
-              }
+                {
+                  incomplete = true;
+                }
             }
           catch (std::out_of_range& e)
             {

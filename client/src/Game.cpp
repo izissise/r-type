@@ -13,7 +13,7 @@ Game::Game(const sf::FloatRect &rect)
   auto playerTexture = RessourceManager::instance().getTexture("../assets/spaceShip.gif");
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
   std::shared_ptr<sf::Sprite> playerSprite(new sf::Sprite(*playerTexture));
-  
+
   playerSprite->setTextureRect(sf::IntRect(66, 0, 33, 16));
   _image = std::shared_ptr<Image>(new Image(playerSprite, sf::FloatRect(0, 0, 66, 32)));
   _background = std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*background)),
@@ -23,7 +23,7 @@ Game::Game(const sf::FloatRect &rect)
 void  Game::movePlayer(int axis, float speed)
 {
   auto pos = _image->getPosition();
-  
+
   if (axis == 1)
     pos.x += speed;
   else
@@ -37,7 +37,7 @@ void  Game::draw(sf::RenderWindow &win)
   if (_background->getPosition().x + _background->getSize().x < 1600)
   {
     auto pos = _background->getPosition();
-    
+
     _background->setPosition({pos.x + _background->getSize().x, pos.y});
     _background->draw(win);
     _background->setPosition(pos);
@@ -57,8 +57,8 @@ void  Game::update(float timeElapsed)
 void  Game::update(const sf::Event &event, float timeElapsed)
 {
   float x = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-  float y =sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-  
+  float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+
   if (isConnected())
     _network->poll();
 //  Panel::update(event, timeElapsed);

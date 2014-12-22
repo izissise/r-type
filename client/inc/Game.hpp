@@ -22,14 +22,14 @@ public:
   Game(const sf::FloatRect &rect);
   ~Game() = default;
 
-  void  update(float );
-  void  update(const sf::Event &, float ) override;
+  void  update(float);
+  void  update(const sf::Event &, float) override;
   void  draw(sf::RenderWindow &win) override;
   bool  connect(const std::string &ip, const std::string &port, const std::string &login);
 
 private:
   void  onDisconnet() override;
-  
+
   std::size_t netShortResponse(const Network::Buffer &data);
   void  movePlayer(int axis, float speed);
 

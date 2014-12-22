@@ -6,14 +6,14 @@
 #include "Packet/GetListPlayer.hpp"
 
 ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
-  : _id(id), _name(name), _nbPMax(nbPMax)
+  : _id(id), _name(name), _nbPMax(nbPMax), _started(false);
 {
 }
 
 
 bool ServerRoom::addPlayer(const std::shared_ptr<ClientLobby>& p)
 {
-  if (getNbPlayers() < _nbPMax)
+  if (getNbPlayers() < _nbPMax && !_started)
     {
       _clients.push_back(p);
       return true;
@@ -62,6 +62,7 @@ void ServerRoom::tryLaunchGame(Server& server) const
     {
       size_t id = 0;
       uint16_t port = server.createNewGame(*this);
+      _started = true;
       for (auto& i : _clients)
         {
           i->startGame(port, id);
