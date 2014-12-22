@@ -1,4 +1,4 @@
-#include "ShortResponse.hpp"
+#include "Packet/ShortResponse.hpp"
 
 namespace Packet {
   ShortResponse::ShortResponse()

@@ -7,7 +7,7 @@
 
 #define PROTOCOLEVERSION 0x01000000
 
-#include "APacket.hpp"
+#include "Packet/APacket.hpp"
 #include "ABasicSocket.hpp"
 #include "RingBuffer.hpp"
 #include "RtypeProtoHelper.hpp"

@@ -1,4 +1,4 @@
-#include "StartGame.hpp"
+#include "Packet/StartGame.hpp"
 
 namespace Packet {
 StartGame::StartGame()

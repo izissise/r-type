@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "ClientLobby.hpp"
-#include "APacket.hpp"
+#include "Packet/APacket.hpp"
 
 class ServerRoom
 {

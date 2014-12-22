@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "GetListRoom.hpp"
+#include "Packet/GetListRoom.hpp"
 
 Server::Server(const std::vector<std::string>& args)
   : _net(Network::NetworkFactory::createNetwork()),

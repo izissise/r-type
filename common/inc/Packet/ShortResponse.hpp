@@ -1,7 +1,7 @@
 #ifndef _SHORTRESPONSE_HPP_
 # define _SHORTRESPONSE_HPP_
 
-# include "APacket.hpp"
+# include "Packet/APacket.hpp"
 
 namespace Packet {
   class ShortResponse: public APacket
