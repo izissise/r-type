@@ -3,8 +3,8 @@
 #include <initializer_list>
 #include <type_traits>
 
-#include "Handshake.hpp"
-#include "ShortResponse.hpp"
+#include "Packet/Handshake.hpp"
+#include "Packet/ShortResponse.hpp"
 
 std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> ClientGame::_netWorkBinds =
 {

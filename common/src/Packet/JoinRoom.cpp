@@ -1,4 +1,4 @@
-#include "JoinRoom.hpp"
+#include "Packet/JoinRoom.hpp"
 
 namespace Packet {
   JoinRoom::JoinRoom()

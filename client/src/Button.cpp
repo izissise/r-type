@@ -26,7 +26,7 @@ Button::~Button()
   
 }
 
-void  Button::update(const sf::Event &event)
+void  Button::update(const sf::Event &event, float)
 {
   switch (event.type) {
     case sf::Event::MouseButtonPressed:

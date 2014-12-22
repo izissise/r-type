@@ -1,4 +1,4 @@
-#include "CreateRoom.hpp"
+#include "Packet/CreateRoom.hpp"
 
 namespace Packet {
   CreateRoom::CreateRoom()

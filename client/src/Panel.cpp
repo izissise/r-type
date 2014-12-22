@@ -6,11 +6,11 @@ Panel::Panel(const sf::FloatRect &rect, bool hide)
   
 }
 
-void Panel::update(const sf::Event &event)
+void Panel::update(const sf::Event &event, float timeElapsed)
 {
   for (auto it : _display)
     if (!it->isHidden())
-      it->update(event);
+      it->update(event, timeElapsed);
 }
 
 void Panel::draw(sf::RenderWindow &win)

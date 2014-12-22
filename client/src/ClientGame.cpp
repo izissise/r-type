@@ -18,6 +18,11 @@ ClientGame::ClientGame()
 
   if (icon.loadFromFile("../assets/icon.png"))
     _win.setIcon(icon.getSize().x , icon.getSize().y, icon.getPixelsPtr());
+  if (_music.openFromFile("../assets/menu.ogg"))
+  {
+    _music.play();
+    _music.setLoop(true);
+  }
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
   createListPanel();
@@ -33,16 +38,17 @@ ClientGame::~ClientGame()
 
 void ClientGame::run()
 {
+  std::chrono::duration<double, std::milli> t(0);
   while(!_done)
   {
     auto t_start = std::chrono::high_resolution_clock::now();
     double fps = 1000 / 60;
 
-    if (!update())
+    if (!update(t.count()))
       _done = true;
     draw();
     auto t_end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> t = t_end - t_start;
+    t = t_end - t_start;
     if (t.count() < fps)
       std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>(fps - t.count())) );
   }
@@ -58,7 +64,7 @@ void ClientGame::onDisconnet()
   _isLoading = false;
 }
 
-bool  ClientGame::update()
+bool  ClientGame::update(float timeElapsed)
 {
   sf::Event event;
 
@@ -69,8 +75,10 @@ bool  ClientGame::update()
     if (event.type == sf::Event::Closed)
       return (false);
     if (!_isLoading)
-      _panel[_currentPanel]->update(event);
+      _panel[_currentPanel]->update(event, timeElapsed);
   }
+  if (_currentPanel == Panel::PanelId::GAMEPANEL)
+    std::dynamic_pointer_cast<Game>(_panel[_currentPanel])->update(timeElapsed);
   return (true);
 }
 
@@ -168,6 +176,8 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
   ss << rep.getPort();
   if (_game->connect(rep.getIp(), ss.str(), _login))
     _currentPanel = Panel::PanelId::GAMEPANEL;
+  if (_music.getStatus() == sf::SoundSource::Playing)
+    _music.stop();
   return nbUsed;
 }
 

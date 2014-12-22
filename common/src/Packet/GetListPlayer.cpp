@@ -1,4 +1,4 @@
-#include "GetListPlayer.hpp"
+#include "Packet/GetListPlayer.hpp"
 
 namespace Packet {
   GetListPlayer::GetListPlayer()

@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "ClientHelper.hpp"
-#include "APacket.hpp"
+#include "Packet/APacket.hpp"
 
 class ClientGame : public Network::IdentityClientHelper, public std::enable_shared_from_this<ClientGame>
 {

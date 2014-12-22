@@ -23,7 +23,7 @@ public:
          const std::shared_ptr<sf::Sprite> &clickedTexture);
   ~Button();
   
-  void  update(const sf::Event &event);
+  void  update(const sf::Event &event, float timeElapsed);
   void  draw(sf::RenderWindow &win);
   
   bool  isHover() const;

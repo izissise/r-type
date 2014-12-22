@@ -5,14 +5,14 @@
 
 #include "Server.hpp"
 
-#include "Handshake.hpp"
-#include "CreateRoom.hpp"
-#include "AskListRoom.hpp"
-#include "GetListRoom.hpp"
-#include "ShortResponse.hpp"
-#include "JoinRoom.hpp"
-#include "Message.hpp"
-#include "StartGame.hpp"
+#include "Packet/Handshake.hpp"
+#include "Packet/CreateRoom.hpp"
+#include "Packet/AskListRoom.hpp"
+#include "Packet/GetListRoom.hpp"
+#include "Packet/ShortResponse.hpp"
+#include "Packet/JoinRoom.hpp"
+#include "Packet/Message.hpp"
+#include "Packet/StartGame.hpp"
 
 template<>
 std::map<Packet::APacket::PacketType, size_t (ClientLobby::*)(const Network::Buffer&)> RtypeProtoHelper<ClientLobby>::_netWorkBinds =

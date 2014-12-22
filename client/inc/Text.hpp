@@ -21,7 +21,7 @@ public:
   const std::string getString() const;
   const sf::FloatRect getLocalBounds() const;
   
-  virtual void update(const sf::Event &);
+  virtual void update(const sf::Event &, float timeElapsed);
   virtual void draw(sf::RenderWindow &win);
 
 private:

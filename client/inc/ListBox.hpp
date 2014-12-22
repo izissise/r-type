@@ -12,7 +12,7 @@ public:
   ListBox(const sf::FloatRect &pos, std::vector<t_room> &vec, std::function<void (uint32_t)> func);
   ~ListBox();
 
-  virtual void  update(const sf::Event &);
+  virtual void  update(const sf::Event &, float timeElapsed);
   virtual void  draw(sf::RenderWindow &);
 
 private:

@@ -1,4 +1,4 @@
-#include "Message.hpp"
+#include "Packet/Message.hpp"
 
 namespace Packet {
   Message::Message()

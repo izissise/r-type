@@ -11,11 +11,11 @@ ListItem::~ListItem()
   
 }
 
-void ListItem::update(const sf::Event &event)
+void ListItem::update(const sf::Event &event, float timeElapsed)
 {
-  _entry->update(event);
-  _name->update(event);
-  _player->update(event);
+  _entry->update(event, timeElapsed);
+  _name->update(event, timeElapsed);
+  _player->update(event, timeElapsed);
 }
 
 void ListItem::draw(sf::RenderWindow &win)

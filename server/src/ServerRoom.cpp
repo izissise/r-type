@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "GetListPlayer.hpp"
+#include "Packet/GetListPlayer.hpp"
 
 ServerRoom::ServerRoom(const std::string& name, size_t id, size_t nbPMax)
   : _id(id), _name(name), _nbPMax(nbPMax)

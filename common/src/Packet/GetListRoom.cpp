@@ -1,4 +1,4 @@
-#include "GetListRoom.hpp"
+#include "Packet/GetListRoom.hpp"
 
 namespace Packet {
   GetListRoom::GetListRoom()

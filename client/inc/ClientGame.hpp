@@ -2,6 +2,7 @@
 # define _CLIENTGAME_HPP_
 
 # include <SFML/Graphics.hpp>
+# include <SFML/Audio.hpp>
 # include <algorithm>
 # include <iostream>
 # include <thread>
@@ -15,21 +16,21 @@
 # include "Image.hpp"
 # include "RessourceManager.hpp"
 # include "NetworkFactory.hpp"
-# include "Handshake.hpp"
 # include "RtypeProtoHelper.hpp"
 # include "ListBox.hpp"
 # include "Room.hpp"
 # include "MessageBox.hpp"
 # include "Game.hpp"
 
-# include "ShortResponse.hpp"
-# include "GetListRoom.hpp"
-# include "AskListRoom.hpp"
-# include "CreateRoom.hpp"
-# include "JoinRoom.hpp"
-# include "GetListPlayer.hpp"
-# include "StartGame.hpp"
-# include "Message.hpp"
+# include "Packet/Handshake.hpp"
+# include "Packet/ShortResponse.hpp"
+# include "Packet/GetListRoom.hpp"
+# include "Packet/AskListRoom.hpp"
+# include "Packet/CreateRoom.hpp"
+# include "Packet/JoinRoom.hpp"
+# include "Packet/GetListPlayer.hpp"
+# include "Packet/StartGame.hpp"
+# include "Packet/Message.hpp"
 
 # define DEFAULTPORT "8000"
 
@@ -42,7 +43,7 @@ public:
   ~ClientGame();
 
   void  run();
-  bool  update();
+  bool  update(float timeElapsed);
   void  draw();
 
 protected:
@@ -74,6 +75,7 @@ private:
   std::vector<std::string>                                _chat;
   std::string                                             _login;
   std::shared_ptr<Game>                                   _game;
+  sf::Music                                               _music;
 };
 
 #endif
