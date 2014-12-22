@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "ClientLobby.hpp"
+#include "Packet/GetListPlayer.hpp"
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
   : _runGame(true),
@@ -50,7 +51,10 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
 
   _clients.push_back(cg);
   std::cout << "New gameClient: " << id->ip << ":" << id->port << std::endl;
- // broadcastPacket(Packet::GetListPlayer())
+  std::vector<Packet::PlayerClient> tmpList;
+  for (auto& i : _clients)
+    tmpList.push_back({i->getLogin(), static_cast<uint16_t>(i->getId())});
+  broadcastPacket(Packet::GetListPlayer());
 }
 
 void ServerGame::broadcastPacket(const Packet::APacket& pack) const

@@ -20,6 +20,9 @@ public:
 
   void sendPacket(const Packet::APacket& pack);
 
+  const std::string& getLogin() const {return _login;};
+  size_t getId() const {return _playerId;};
+
 protected:
   void onRead() override;
 
