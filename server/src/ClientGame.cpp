@@ -21,6 +21,7 @@ ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
 void ClientGame::sendPacket(const Packet::APacket& pack)
 {
   _writeBuff.writeBuffer(pack);
+  writeData();
 }
 
 void ClientGame::onRead()
