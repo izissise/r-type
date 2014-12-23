@@ -7,7 +7,7 @@ template<typename T>
 class IDLLoader
 {
 public:
-	virtual T GetInstance(void) = 0;
+	virtual T *GetInstance(void) = 0;
 
 protected:
 private:
