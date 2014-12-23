@@ -175,9 +175,9 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
   std::stringstream ss("");
 
   nbUsed = rep.from_bytes(data);
-  std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << std::endl;
+  std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << " | Id = " << rep.getPlayerId() << std::endl;
   ss << rep.getPort();
-  if (_game->connect(rep.getIp(), ss.str(), _login))
+  if (_game->connect(rep.getIp(), ss.str(), _login, rep.getPlayerId()))
     _currentPanel = Panel::PanelId::GAMEPANEL;
   if (_music.getStatus() == sf::SoundSource::Playing)
     _music.stop();

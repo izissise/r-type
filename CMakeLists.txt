@@ -7,6 +7,7 @@ set(NAME_CLIENT "client")
 set(NAME_SERVER "server")
 set(TEST_EXEC "UnitTester")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build")
 set(INCLUDE_DIRECTORY "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc/"
 					  "${PROJECT_SOURCE_DIR}/${NAME_DLL}/inc/"
 					  "${PROJECT_SOURCE_DIR}/${NAME_CLIENT}/inc/"
