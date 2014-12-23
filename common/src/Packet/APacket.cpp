@@ -53,7 +53,7 @@ Packet::APacket::PacketType APacket::toPacketType(uint16_t p)
 Packet::APacket::PacketType APacket::toPacketType(const std::string& buff)
 {
   size_t i;
-  uint16_t res;
+  uint16_t res = 0;
 
   for (i = 0; i < sizeof(res) && i != buff.size(); ++i)
     res = ((res << 8) | buff[i]);

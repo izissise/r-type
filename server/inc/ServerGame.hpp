@@ -32,6 +32,7 @@ protected:
 
 protected:
   bool									               _runGame;
+  bool												   _started;
   std::unique_ptr<Network::ANetwork>       			   _net;
   std::vector<std::shared_ptr<Network::AListenSocket>> _udpListener;
   std::vector<std::shared_ptr<ClientGame>>             _clients;
