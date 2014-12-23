@@ -14,7 +14,7 @@ private:
 	std::map<std::string, DLLoader<T>> modules;
 	DirHandler	*dirhandler;
 
-	bool LoadFromRep(const std::string &rep)					//ret: past the path and name of the repertory where are the monster 's libs.
+	bool LoadFromRep(const std::string &rep)					//ret: past the path and name of the repertory where are the monster 's libs : "../Debug"
 	{
 		std::list<std::string>	list;
 

@@ -11,12 +11,12 @@ class DLLoader //: public IDLLoader<T>
 {
 private:
 	void	*_handle;
-	T		_obj;
+	T		*_obj;
 
 public:
 	DLLoader(const std::string &name)
 	{
-		T	(*fct)();
+		T	*(*fct)();
 		std::string	lib;
 
 		this->_handle = dlopen(lib.c_str(), RTLD_LAZY);
@@ -24,7 +24,7 @@ public:
 			std::cout << "DLLoader ERROR : can't load " << name << std::endl;
 		else
 		{
-			fct = reinterpret_cast<T (*)()> (dlsym(this->_handle, ""));
+			fct = reinterpret_cast<T *(*)()> (dlsym(this->_handle, "Create"));
 			if (fct == NULL)
 				std::cout << "DLLoader ERROR : can't init obj" << std::endl;
 		}

@@ -15,7 +15,7 @@ int					Monsters::GetLife(void) const
 	return this->life;
 }
 
-extern "C" IMonsters*	Create()
+extern "C" EXPORT IMonsters*	Create()
 {
 	return (new Monsters());
 }

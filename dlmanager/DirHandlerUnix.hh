@@ -6,13 +6,13 @@
 
 static class DirHandler : public IDirHandler
 {
-	IDirHandler	*instance = NULL;
+	static DirHandler	*instance;
 public:
 	DirHandler() {}
 	~DirHandler() {}
-	IDirHandler						*GetInstance();
-	const std::list<std::string>	&GetFilesFromDir(const std::string &dir) const;
-	const std::list<std::string>	&GetLibsFromDir(const std::string &dir) const;
+	static DirHandler		*GetInstance();
+	std::list<std::string>	GetFilesFromDir(const std::string &dir) const;
+	std::list<std::string>	GetLibsFromDir(const std::string &dir) const;
 
 private:
 };

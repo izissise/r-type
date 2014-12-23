@@ -3,6 +3,12 @@
 
 # include	"IMonsters.hh"
 
+# ifdef _WIN32
+#  define	EXPORT _declspec(dllexport)
+# else
+#  define	EXPORT
+#endif
+
 class Monsters : public IMonsters
 {
 public:
