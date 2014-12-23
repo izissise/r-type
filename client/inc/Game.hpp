@@ -26,7 +26,7 @@ struct t_player
 
 class Game : public Panel, public RtypeProtoHelper<Game>
 {
-  friend RtypeProtoHelper;
+  friend RtypeProtoHelper<Game>;
 
 public:
   Game(const sf::FloatRect &rect);

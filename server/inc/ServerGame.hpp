@@ -13,6 +13,9 @@
 
 class ServerGame
 {
+private:
+	static std::chrono::duration<double> _timeBeforeStart;
+
 public:
   ServerGame(const ServerRoom& gameInfo, const std::string& port);
   virtual ~ServerGame() = default;
@@ -29,6 +32,7 @@ protected:
 
 protected:
   bool									               _runGame;
+  bool												   _started;
   std::unique_ptr<Network::ANetwork>       			   _net;
   std::vector<std::shared_ptr<Network::AListenSocket>> _udpListener;
   std::vector<std::shared_ptr<ClientGame>>             _clients;

@@ -36,7 +36,7 @@
 
 class ClientGame: public RtypeProtoHelper<ClientGame>
 {
-  friend RtypeProtoHelper;
+  friend RtypeProtoHelper<ClientGame>;
 
 public:
   ClientGame();

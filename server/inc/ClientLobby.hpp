@@ -16,7 +16,7 @@ class Server;
 
 class ClientLobby : public RtypeProtoHelper<ClientLobby>, public std::enable_shared_from_this<ClientLobby>
 {
-  friend RtypeProtoHelper;
+ friend RtypeProtoHelper<ClientLobby>;
 
 public:
   ClientLobby(const std::shared_ptr<Network::ABasicSocket>& sock, Server& serv);

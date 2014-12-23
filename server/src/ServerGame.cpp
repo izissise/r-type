@@ -6,10 +6,14 @@
 
 #include "ClientLobby.hpp"
 #include "Packet/GetListPlayer.hpp"
+#include "Packet/StartGame.hpp"
+#include "Packet/ShortResponse.hpp"
+
+std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
-  : _runGame(true),
-    _net(Network::NetworkFactory::createNetwork())
+  : _runGame(true), _started(false),
+  _net(Network::NetworkFactory::createNetwork())
 {
   _listeningPort = port;
   std::cout << "New game on: ";
@@ -28,18 +32,33 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
           _udpListener.push_back(udpListener);
         }
       catch (Network::Error& e)
-        { }
+        {}
     }
   std::cout << std::endl;
 }
 
 void ServerGame::run()
 {
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
   while (_runGame)
     {
       _net->poll();
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      if (!_started)
+        {
+          end = std::chrono::system_clock::now();
+          std::chrono::duration<double> elapsedSeconds = end - start;
+          if (elapsedSeconds > _timeBeforeStart)
+            {
+              broadcastPacket(Packet::StartGame("", 0, 0));
+              _started = true;
+            }
+        }
     }
+  end = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsedSeconds = end - start;
+  std::cout << "Game finished, time: " << elapsedSeconds.count() << "s." << std::endl;
 }
 
 void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
@@ -47,14 +66,22 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
 {
   auto listener = that.lock();
   auto cg = std::make_shared<ClientGame>(id, that);
-  cg->readData(data);
+  if (!_started)
+    {
+      cg->readData(data);
 
-  _clients.push_back(cg);
-  std::cout << "New gameClient: " << id->ip << ":" << id->port << std::endl;
-  std::vector<Packet::PlayerClient> tmpList;
-  for (auto& i : _clients)
-    tmpList.push_back({i->getLogin(), static_cast<uint16_t>(i->getId())});
-  broadcastPacket(Packet::GetListPlayer(tmpList));
+      _clients.push_back(cg);
+      std::cout << "New gameClient: " << id->ip << ":" << id->port << std::endl;
+      std::vector<Packet::PlayerClient> tmpList;
+      for (auto& i : _clients)
+        tmpList.push_back({i->getLogin(), static_cast<uint16_t>(i->getId())});
+      broadcastPacket(Packet::GetListPlayer(tmpList));
+    }
+  else
+    {
+      cg->sendPacket(Packet::ShortResponse(0));
+      cg->readData(data);
+    }
 }
 
 void ServerGame::broadcastPacket(const Packet::APacket& pack) const
