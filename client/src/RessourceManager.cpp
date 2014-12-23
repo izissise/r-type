@@ -34,4 +34,14 @@ std::shared_ptr<sf::Texture>  &RessourceManager::getTexture(const std::string &k
   }
 }
 
+void  RessourceManager::save(const std::shared_ptr<sf::Texture> &ptr)
+{
+  _saveTexture.push_back(std::shared_ptr<sf::Texture>(ptr));
+}
+
+void  RessourceManager::save(const std::shared_ptr<sf::Image> &ptr)
+{
+  _saveImage.push_back(std::shared_ptr<sf::Image>(ptr));
+}
+
 

@@ -7,6 +7,7 @@
 
 class Player : public AEntity
 {
+public:
   enum class Animation{
     DOWN = 0,
     MIDDOWN = 1,

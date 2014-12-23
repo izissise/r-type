@@ -54,7 +54,7 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
   std::vector<Packet::PlayerClient> tmpList;
   for (auto& i : _clients)
     tmpList.push_back({i->getLogin(), static_cast<uint16_t>(i->getId())});
-  broadcastPacket(Packet::GetListPlayer());
+  broadcastPacket(Packet::GetListPlayer(tmpList));
 }
 
 void ServerGame::broadcastPacket(const Packet::APacket& pack) const
