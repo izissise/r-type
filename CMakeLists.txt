@@ -73,7 +73,7 @@ OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 # Build it here in ${CMAKE_CURRENT_BINARY_DIR}/network
 set(NetworkLib_DIR "${CMAKE_CURRENT_BINARY_DIR}/network")
 file(MAKE_DIRECTORY ${NetworkLib_DIR})
-execute_process(COMMAND ${CMAKE_COMMAND} "${PROJECT_SOURCE_DIR}/network" "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" WORKING_DIRECTORY "${NetworkLib_DIR}")
+execute_process(COMMAND ${CMAKE_COMMAND} "${PROJECT_SOURCE_DIR}/network" "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" "-G" "${CMAKE_GENERATOR}" WORKING_DIRECTORY "${NetworkLib_DIR}")
 execute_process(COMMAND ${CMAKE_COMMAND} "--build" "${NetworkLib_DIR}" WORKING_DIRECTORY "${NetworkLib_DIR}")
 find_package(NetworkLib REQUIRED)
 
