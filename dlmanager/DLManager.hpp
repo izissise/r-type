@@ -7,14 +7,14 @@
 # include	"DirHandlerWin.hh"
 # include	<map>
 
-template<typename T>
+template<typename T>											//T: IMonsters
 class DLManager
 {
 private:
 	std::map<std::string, DLLoader<T>> modules;
 	DirHandler	*dirhandler;
 
-	bool LoadFromRep(const std::string &rep)
+	bool LoadFromRep(const std::string &rep)					//ret: past the path and name of the repertory where are the monster 's libs.
 	{
 		std::list<std::string>	list;
 
@@ -48,7 +48,7 @@ public:
 			this->modules.clear();
 	}
 
-	const T	&GetInstance(const std::string &name)
+	const T	&GetInstance(const std::string &name)				//name: is the name of the lib monster
 	{
 		return this->modules[name].GetInstance();
 	}
