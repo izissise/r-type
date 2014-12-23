@@ -6,6 +6,9 @@
 
 #include "ClientLobby.hpp"
 #include "Packet/GetListPlayer.hpp"
+#include "Packet/StartGame.hpp"
+
+std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
   : _runGame(true),
@@ -35,11 +38,27 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
 
 void ServerGame::run()
 {
+  bool started = false;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
   while (_runGame)
     {
       _net->poll();
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      if (!started)
+        {
+          end = std::chrono::system_clock::now();
+          std::chrono::duration<double> elapsedSeconds = end - start;
+          if (elapsedSeconds > _timeBeforeStart)
+            {
+              broadcastPacket(Packet::StartGame("", 0, 0));
+              started = true;
+            }
+        }
     }
+  end = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsedSeconds = end - start;
+  std::cout << "Game finished, time: " << elapsedSeconds.count() << "s." << std::endl;
 }
 
 void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,

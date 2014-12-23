@@ -13,6 +13,9 @@
 
 class ServerGame
 {
+private:
+	static std::chrono::duration<double> _timeBeforeStart;
+
 public:
   ServerGame(const ServerRoom& gameInfo, const std::string& port);
   virtual ~ServerGame() = default;
