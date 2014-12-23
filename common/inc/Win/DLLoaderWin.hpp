@@ -3,7 +3,7 @@
 # ifndef	DLLOADERWIN_HPP_
 # define	DLLOADERWIN_HPP_
 
-# include	"IDLLoader.hh"
+# include	"IDLLoader.hpp"
 # include	<windows.h>
 # include	<iostream>
 

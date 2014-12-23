@@ -2,7 +2,7 @@
 # ifndef	DIRHANDLERUNIX_HH_
 # define	DIRHANDLERUNIX_HH_
 
-# include	"IDirHandler.hh"
+# include	"IDirHandler.hpp"
 
 static class DirHandler : public IDirHandler
 {

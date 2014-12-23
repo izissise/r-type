@@ -1,5 +1,4 @@
-#ifdef __unix__
-# include	"DirHandlerUnix.hh"
+#include "Unix/DirHandlerUnix.hpp"
 
 DirHandler	*DirHandler::instance = NULL;
 
@@ -13,15 +12,13 @@ DirHandler				*DirHandler::GetInstance()
 std::list<std::string>	DirHandler::GetFilesFromDir(const std::string &dir) const
 {
 	std::list<std::string>	list;
-	
+
 	return (list);
 }
 
 std::list<std::string>	DirHandler::GetLibsFromDir(const std::string &dir) const
 {
 	std::list<std::string>	list;
-	
+
 	return (list);
 }
-
-#endif // __unix__

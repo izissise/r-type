@@ -1,11 +1,12 @@
 #ifndef DLMANAGER_HPP_
-# define	DLMANAGER_HPP_
+# define DLMANAGER_HPP_
+
+# include	<map>
 
 # include	"DLLoaderUnix.hpp"
 # include	"DLLoaderWin.hpp"
-# include	"DirHandlerUnix.hh"
-# include	"DirHandlerWin.hh"
-# include	<map>
+# include	"DirHandlerUnix.hpp"
+# include	"DirHandlerWin.hpp"
 
 template<typename T>											//T: IMonsters
 class DLManager

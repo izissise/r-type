@@ -3,7 +3,7 @@
 # ifndef	DLLOADERUNIX_HPP_
 # define	DLLOADERUNIX_HPP_
 
-# include	"IDLLoader.hh"
+# include	"IDLLoader.hpp"
 # include	<dlfcn.h>
 
 template<typename T>

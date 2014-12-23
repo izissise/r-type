@@ -1,11 +1,12 @@
-#ifdef _WIN32
-# include	"DirHandlerWin.hh"
-# include	<windows.h>
-# include	<iostream>
+#include	<iostream>
+
+#include	<windows.h>
+
+#include	"DirHandlerWin.hpp"
 
 DirHandler	*DirHandler::instance = NULL;
 
-DirHandler				*DirHandler::GetInstance()
+DirHandler *DirHandler::GetInstance()
 {
 	if (instance == NULL)
 		instance = new DirHandler();
@@ -68,5 +69,3 @@ std::list<std::string>	DirHandler::GetLibsFromDir(const std::string &dir) const
 	}
 	return (list);
 }
-
-#endif // _WIN32

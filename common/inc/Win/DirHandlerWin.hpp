@@ -1,8 +1,7 @@
-#ifdef _WIN32
-# ifndef	DIRHANDLERWIN_HH_
-# define	DIRHANDLERWIN_HH_
+#ifndef	DIRHANDLERWIN_HH_
+# define DIRHANDLERWIN_HH_
 
-# include	"IDirHandler.hh"
+# include "IDirHandler.hpp"
 
 class DirHandler : public IDirHandler
 {
@@ -13,9 +12,7 @@ public:
 	static DirHandler		*GetInstance();
 	std::list<std::string>	GetFilesFromDir(const std::string &dir) const;
 	std::list<std::string>	GetLibsFromDir(const std::string &dir) const;
-
 private:
 };
 
-# endif
-#endif // _WIN32
+#endif
