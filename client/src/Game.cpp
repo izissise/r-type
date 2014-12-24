@@ -1,3 +1,4 @@
+#include <Packet/StartGame.hpp>
 #include "UDPConnectionProblem.hpp"
 #include "Game.hpp"
 
@@ -167,7 +168,7 @@ std::size_t  Game::netGetListPlayer(const Network::Buffer &data)
 
 std::size_t  Game::netStartGame(const Network::Buffer &data)
 {
-  Packet::GetListPlayer  rep;
+  Packet::StartGame  rep;
   size_t  nbUsed;
 
   nbUsed = rep.from_bytes(data);
