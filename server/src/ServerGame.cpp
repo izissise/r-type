@@ -13,7 +13,7 @@ std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
   : _runGame(true), _started(false),
-  _net(Network::NetworkFactory::createNetwork())
+    _net(Network::NetworkFactory::createNetwork())
 {
   _listeningPort = port;
   std::cout << "New game on: ";
@@ -78,10 +78,7 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
       broadcastPacket(Packet::GetListPlayer(tmpList));
     }
   else
-    {
-      cg->sendPacket(Packet::ShortResponse(0));
-      cg->readData(data);
-    }
+    cg->sendPacket(Packet::ShortResponse(0));
 }
 
 void ServerGame::broadcastPacket(const Packet::APacket& pack) const
