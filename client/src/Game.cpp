@@ -6,6 +6,7 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
 {
   { Packet::APacket::PacketType::SHORTRESPONSE, &Game::netShortResponse },
   { Packet::APacket::PacketType::GETLISTPLAYER, &Game::netGetListPlayer },
+        { Packet::APacket::PacketType::STARTGAME, &Game::netStartGame }
 };
 
 Game::Game(const sf::FloatRect &rect)
@@ -40,51 +41,68 @@ void  Game::draw(sf::RenderWindow &win)
     _background->setPosition(pos);
   }
   _background->draw(win);
-  for (auto &it : _players)
+  for (auto &it : _players) {
+    it.second->image->setCurrentAnim(static_cast<uint8_t >(it.second->player.getAnim()));
     it.second->image->draw(win);
+  }
 }
 
 void  Game::update(float timeElapsed)
 {
-  auto pos = sf::Vector2f(_background->getPosition().x - (_scrollSpeed * timeElapsed), _background->getPosition().y);
-  if (pos.x <= -_background->getSize().x)
-    pos.x = 0;
-  _background->setPosition(pos);
+  if (_begin) {
+    auto pos = sf::Vector2f(_background->getPosition().x - (_scrollSpeed * timeElapsed), _background->getPosition().y);
+    if (pos.x <= -_background->getSize().x)
+      pos.x = 0;
+    _background->setPosition(pos);
+  }
 }
 
 void  Game::update(const sf::Event &event, float timeElapsed)
 {
-  float x = sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100;
-  float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100;
-
   if (isConnected())
     _network->poll();
-  if (y != 0)
-    movePlayer(0, _players[_playerId]->player.getSpeed().y * y * timeElapsed, _playerId);
-  if (x != 0)
-    movePlayer(1, _players[_playerId]->player.getSpeed().x * x * timeElapsed, _playerId);
-  if ((event.type == sf::Event::JoystickButtonPressed && event.joystickButton.button == 11)
-       || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space))
-    std::cout << "Fire" << std::endl;
-  if (event.type == sf::Event::KeyPressed)
-  {
-    switch (event.key.code)
-    {
-      case sf::Keyboard::Up :
-        movePlayer(0, -_players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
-        break;
-      case sf::Keyboard::Down :
-        movePlayer(0, _players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
-        break;
-      case sf::Keyboard::Left :
-        movePlayer(1, -_players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
-        break;
-      case sf::Keyboard::Right :
-        movePlayer(1, _players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
-        break;
-      default:
-        break;
+  if (_begin) {
+    float x = sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100;
+    float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100;
+
+    if (y != 0)
+      movePlayer(0, _players[_playerId]->player.getSpeed().y * y * timeElapsed, _playerId);
+    if (x != 0)
+      movePlayer(1, _players[_playerId]->player.getSpeed().x * x * timeElapsed, _playerId);
+    if ((event.type == sf::Event::JoystickButtonPressed && event.joystickButton.button == 11)
+            || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space))
+      std::cout << "Fire" << std::endl;
+    if (event.type == sf::Event::KeyPressed) {
+      switch (event.key.code) {
+        case sf::Keyboard::Up :
+          movePlayer(0, -_players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
+              if (_players[_playerId]->player.getAnim() == Player::Animation::NORMAL)
+                _players[_playerId]->player.setAnim(Player::Animation::MIDUP);
+              else if (_players[_playerId]->player.getAnim() == Player::Animation::MIDUP)
+                _players[_playerId]->player.setAnim(Player::Animation::UP);
+              break;
+        case sf::Keyboard::Down :
+          movePlayer(0, _players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
+              if (_players[_playerId]->player.getAnim() == Player::Animation::NORMAL)
+                _players[_playerId]->player.setAnim(Player::Animation::MIDDOWN);
+              else if (_players[_playerId]->player.getAnim() == Player::Animation::MIDDOWN)
+                _players[_playerId]->player.setAnim(Player::Animation::DOWN);
+              break;
+        case sf::Keyboard::Left :
+          movePlayer(1, -_players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
+              _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
+              break;
+        case sf::Keyboard::Right :
+          movePlayer(1, _players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
+              _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
+              break;
+        default:
+          _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
+              break;
+      }
     }
+    else
+      _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
   }
 }
 
@@ -119,7 +137,6 @@ std::size_t  Game::netShortResponse(const Network::Buffer &data)
   if (rep.getResponse() == 1)
   {
     std::cout << "Connection Accepted" << std::endl;
-    _begin = true;
   }
   else
     throw UDPConnectionProblem("Rejected By the server");
@@ -135,14 +152,26 @@ std::size_t  Game::netGetListPlayer(const Network::Buffer &data)
   std::cout << "UDP Get Player = [";
   for (auto &it : rep.getPlayerList())
   {
-    std::cout << it.name << ",";
+    std::cout << it.name;
     try {
       _players.at(it.id);
     } catch (std::exception &e) {
+      std::cout << "(create id = " << it.id << ")";
       createPlayer(it.id);
     }
+    std::cout << ", ";
   }
   std::cout << "]" << std::endl;
+  return nbUsed;
+}
+
+std::size_t  Game::netStartGame(const Network::Buffer &data)
+{
+  Packet::GetListPlayer  rep;
+  size_t  nbUsed;
+
+  nbUsed = rep.from_bytes(data);
+  _begin = true;
   return nbUsed;
 }
 
@@ -152,7 +181,7 @@ void  Game::createPlayer(uint16_t playerId)
   
   if (!playerTexture->loadFromFile("../assets/spaceShip.gif", {0, playerId * 16, 166, 16}))
     throw std::runtime_error("../assets/spaceShip.gif cannot be found");
-  std::shared_ptr<t_player>  ptr(new t_player({0, static_cast<float>(playerId * 32)}, {1, 1}));
+  std::shared_ptr<t_player>  ptr(new t_player({0, static_cast<float>(playerId * 32)}, {100, 100}));
   
   RessourceManager::instance().save(playerTexture);
   ptr->image = std::shared_ptr<AnimatedSprites>(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 66, 32), 5,

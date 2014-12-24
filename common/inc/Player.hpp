@@ -28,11 +28,15 @@ public:
 
   uint16_t  getScore() const;
   void  setScore(uint16_t score);
+
+  Animation getAnim() const;
+  void  setAnim(Animation nb);
   
 private:
   Vector<float> _speed;
   uint8_t       _life;
   uint16_t      _score;
+  Animation     _currentAnim;
 };
 
 #endif

@@ -42,6 +42,7 @@ private:
 
   std::size_t netShortResponse(const Network::Buffer &data);
   std::size_t netGetListPlayer(const Network::Buffer &data);
+  std::size_t netStartGame(const Network::Buffer &data);
 
   void  movePlayer(int axis, float speed, uint16_t playerId);
   void  createPlayer(uint16_t playerId);
