@@ -1,0 +1,9 @@
+#ifndef _RTYPECONFIG_H_
+# define _RTYPECONFIG_H_
+
+# define @BUILDTARGET@
+# ifdef APPLE
+#  define UNIX
+# endif
+
+#endif

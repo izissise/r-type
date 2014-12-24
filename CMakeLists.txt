@@ -68,6 +68,14 @@ OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "common/inc/Config.h.in"
+  "common/inc/RTypeConfig.h"
+)
+
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/common/inc")
 
 # NetworkLib
 # Build it here in ${CMAKE_CURRENT_BINARY_DIR}/network
@@ -79,9 +87,10 @@ find_package(NetworkLib REQUIRED)
 
 # All source files using globs
 file(
-  GLOB_RECURSE
+  GLOB
   lib_source_files
   ${NAME_LIB}/src/*
+  ${NAME_LIB}/src/Packet/*
 )
 
 file(
@@ -114,7 +123,26 @@ file(
   ${NAME_SERVER}/inc/*
 )
 
-include_directories("${NETWORKLIB_INCLUDE_DIRS}")
+if (WIN32)
+ set(BUILDTARGET "WIN32")
+ file(
+   GLOB
+   lib_source_files_win
+   ${NAME_LIB}/src/Win/*
+ )
+ set(lib_source_files ${lib_source_files} ${lib_source_files_win})
+elseif(UNIX)
+ set(BUILDTARGET "UNIX")
+ file(
+   GLOB
+   lib_source_files_unix
+   ${NAME_LIB}/src/Unix/*
+ )
+ set(lib_source_files ${lib_source_files} ${lib_source_files_unix})
+ if(APPLE)
+  set(BUILDTARGET "APPLE")
+ endif()
+endif()
 
 add_library(
 # executable name
@@ -124,6 +152,7 @@ add_library(
   ${lib_include_files}
 )
 
+include_directories("${NETWORKLIB_INCLUDE_DIRS}")
 set_property(TARGET ${NAME_LIB} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
 
 target_link_libraries(${NAME_LIB} NETWORKLIB_network)

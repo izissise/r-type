@@ -2,7 +2,7 @@
 
 DirHandler	*DirHandler::instance = NULL;
 
-DirHandler				*DirHandler::GetInstance()
+DirHandler *DirHandler::GetInstance()
 {
 	if (instance == NULL)
 		instance = new DirHandler();

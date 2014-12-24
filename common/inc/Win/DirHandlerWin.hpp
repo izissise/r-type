@@ -1,6 +1,11 @@
 #ifndef	DIRHANDLERWIN_HH_
 # define DIRHANDLERWIN_HH_
 
+# include <list>
+# include <string>
+
+# include <windows.h>
+
 # include "IDirHandler.hpp"
 
 class DirHandler : public IDirHandler

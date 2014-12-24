@@ -1,10 +1,6 @@
-#include	<iostream>
+#include "Win/DirHandlerWin.hpp"
 
-#include	<windows.h>
-
-#include	"DirHandlerWin.hpp"
-
-DirHandler	*DirHandler::instance = NULL;
+DirHandler *DirHandler::instance = NULL;
 
 DirHandler *DirHandler::GetInstance()
 {
