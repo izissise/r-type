@@ -1,6 +1,26 @@
 #include "Win/DirHandlerWin.hpp"
 
-std::list<std::string> DirHandler::GetFilesFromDir(const std::string &dir) const
+#include <memory>
+
+namespace FileSystem
+{
+namespace Win
+{
+
+std::string FSHandler::currentPath() const
+{
+  size_t buffSize = GetCurrentDirectory(0, nullptr);
+  if (buffSize == 0)
+    throw FileSystemError("currentPath: Unknown error");
+  std::unique_ptr<char[]> buff(new char[buffSize]);
+  buffSize = GetCurrentDirectory(buffSize, buff.get());
+  if (buffSize == 0)
+    throw FileSystemError("currentPath: Unknown error");
+  return std::string(buff.get());
+}
+
+
+std::list<std::string> DirHandler::listDir(const std::string &dir) const
 {
   std::list<std::string> list;
   WIN32_FIND_DATA ffd;
@@ -8,20 +28,18 @@ std::list<std::string> DirHandler::GetFilesFromDir(const std::string &dir) const
 
   hfind = FindFirstFile(dir.c_str(), &ffd);
   if (hfind == INVALID_HANDLE_VALUE)
-    std::cout << "" << std::endl;
-  else
+    throw FileSystemError(dir + ": can't open directory");
+  while (hfind != INVALID_HANDLE_VALUE)
     {
-      while (hfind != INVALID_HANDLE_VALUE)
+      list.push_back(ffd.cFileName);
+      if (!FindNextFile(hfind, &ffd))
         {
-          std::string	name = ffd.cFileName;
-
-          list.push_back(name);
-          if (!FindNextFile(hfind, &ffd))
-            {
-              FindClose(hfind);
-              hfind = INVALID_HANDLE_VALUE;
-            }
+          FindClose(hfind);
+          hfind = INVALID_HANDLE_VALUE;
         }
     }
   return list;
 }
+
+};
+};

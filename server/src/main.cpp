@@ -5,17 +5,19 @@
 
 #include "Server.hpp"
 
-#include "FSFactory.hpp"
+//#include "FSFactory.hpp"
 
 int main(int ac, char *av[])
 {
   std::vector<std::string> args;
 
-  FileSystem::AFSHandler& fs = FileSystem::FSFactory::retrieveFSHandler();
+ /* FileSystem::AFSHandler& fs = FileSystem::FSFactory::retrieveFSHandler();
   std::cout << "CurDir: " << fs.currentPath() << std::endl;
   for (auto i : fs.listDir("."))
   {
-
+  	std::cout << i << ", " << fs.fileExtension(i) << ", " << fs.fileName(i) << ", " << fs.filePath(i) << std::endl;
+  }
+*/
   for (int acc = 0; acc < ac; ++acc)
     args.push_back(av[acc]);
   try {
