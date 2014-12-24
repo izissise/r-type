@@ -68,13 +68,6 @@ OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-  "common/inc/Config.h.in"
-  "common/inc/RTypeConfig.h"
-)
-
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/common/inc")
 
 # NetworkLib
@@ -144,6 +137,13 @@ elseif(UNIX)
   set(BUILDTARGET "APPLE")
  endif()
 endif()
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "common/inc/Config.h.in"
+  "common/inc/RTypeConfig.h"
+)
 
 add_library(
 # executable name

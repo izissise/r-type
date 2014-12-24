@@ -6,7 +6,8 @@
 class UDPConnectionProblem : public std::runtime_error
 {
 public:
-  UDPConnectionProblem(const std::string &w);
+  UDPConnectionProblem(const std::string &w) throw();
+  virtual ~UDPConnectionProblem() throw() {};
 };
 
 #endif
