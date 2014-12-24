@@ -12,7 +12,6 @@ public:
 	static DirHandler		*GetInstance();
 	std::list<std::string>	GetFilesFromDir(const std::string&dir) const;
 	std::list<std::string>	GetLibsFromDir(const std::string &dir) const;
-
 };
 
 #endif

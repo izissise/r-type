@@ -19,7 +19,7 @@ private:
 	{
 		std::list<std::string>	list;
 
-		list = this->dirhandler->GetLibsFromDir(rep);
+		list = dirhandler->GetLibsFromDir(rep);
 		if (list.empty())
 		{
 			std::cout << "List empty" << std::endl;
@@ -31,7 +31,7 @@ private:
 		{
 			std::string name = (*it);
 			DLLoader<T>	load = DLLoader<T>(name);
-			this->modules.insert(std::pair<std::string, DLLoader<T>>(name, load));
+			modules.insert(std::pair<std::string, DLLoader<T>>(name, load));
 		}
 		return true;
 	}
@@ -39,19 +39,19 @@ private:
 public:
 	DLManager(const std::string &rep)
 	{
-		this->dirhandler = dirhandler->GetInstance();
-		this->LoadFromRep(rep);
+		dirhandler = dirhandler->GetInstance();
+		LoadFromRep(rep);
 	}
 
 	~DLManager()
 	{
-		if (!this->modules.empty())
-			this->modules.clear();
+		if (!modules.empty())
+			modules.clear();
 	}
 
 	const T	&GetInstance(const std::string &name)				//name: is the name of the lib monster
 	{
-		return this->modules[name].GetInstance();
+		return modules[name].GetInstance();
 	}
 
 protected:

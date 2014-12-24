@@ -19,27 +19,27 @@ public:
 		T	*(*fct)();
 		std::string	lib;
 
-		this->_handle = dlopen(lib.c_str(), RTLD_LAZY);
-		if (this->_handle == NULL)
+		_handle = dlopen(lib.c_str(), RTLD_LAZY);
+		if (_handle == NULL)
 			std::cout << "DLLoader ERROR : can't load " << name << std::endl;
 		else
 		{
-			fct = reinterpret_cast<T *(*)()> (dlsym(this->_handle, "Create"));
+			fct = reinterpret_cast<T *(*)()> (dlsym(_handle, "Create"));
 			if (fct == NULL)
 				std::cout << "DLLoader ERROR : can't init obj" << std::endl;
 		}
-		this->_obj = fct();
+		_obj = fct();
 	}
 
 	~DLLoader()
 	{
-		if (this->_handle)
-			close(this->_handle);
+		if (_handle)
+			close(_handle);
 	}
 
 	const T	&GetInstance()
 	{
-		return this->_obj;
+		return _obj;
 	}
 
 protected:

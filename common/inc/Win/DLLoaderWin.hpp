@@ -20,28 +20,28 @@ public:
 		T *(*fct)() = NULL;
 		std::string	lib = name;
 
-		this->_handle = LoadLibrary(lib.c_str());
-		if (this->_handle == NULL)
+		_handle = LoadLibrary(lib.c_str());
+		if (_handle == NULL)
 			std::cout << "DLLoader ERROR : can't load " << name << std::endl;
 		else
 		{
-			fct = (T *(*)())(GetProcAddress((HMODULE)this->_handle, "Create"));
+			fct = (T *(*)())(GetProcAddress((HMODULE)_handle, "Create"));
 			if (fct == NULL)
 				std::cout << "DLLoader ERROR[" << GetLastError() << "] : can't init obj" << std::endl;
 
 		}
-		this->_obj = fct();
+		_obj = fct();
 	}
 
 	~DLLoader()
 	{
-		if (this->_handle)
-			FreeLibrary(this->_handle);
+		if (_handle)
+			FreeLibrary(_handle);
 	}
 
 	const T	*GetInstance()
 	{
-		return (this->_obj);
+		return (_obj);
 	}
 
 protected:
