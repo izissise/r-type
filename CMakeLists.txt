@@ -139,6 +139,7 @@ elseif(UNIX)
    ${NAME_LIB}/src/Unix/*
  )
  set(lib_source_files ${lib_source_files} ${lib_source_files_unix})
+ find_package(DL REQUIRED)
  if(APPLE)
   set(BUILDTARGET "APPLE")
  endif()
