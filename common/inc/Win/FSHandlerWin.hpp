@@ -12,11 +12,11 @@ namespace FileSystem
 {
 namespace Win
 {
-class DirHandler : public AFSHandler
+class FSHandler : public AFSHandler
 {
 public:
-  DirHandler() = default;
-  ~DirHandler() = default;
+  FSHandler() = default;
+  virtual ~FSHandler() = default;
   std::string currentPath() const override;
   std::list<std::string> listDir(const std::string& dir) const override;
 };

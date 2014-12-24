@@ -1,4 +1,4 @@
-#include "Win/DirHandlerWin.hpp"
+#include "Win/FSHandlerWin.hpp"
 
 #include <memory>
 
@@ -20,7 +20,7 @@ std::string FSHandler::currentPath() const
 }
 
 
-std::list<std::string> DirHandler::listDir(const std::string &dir) const
+std::list<std::string> FSHandler::listDir(const std::string &dir) const
 {
   std::list<std::string> list;
   WIN32_FIND_DATA ffd;
