@@ -153,6 +153,11 @@ add_library(
   ${lib_include_files}
 )
 
+if (UNIX)
+ target_link_libraries(${NAME_LIB} ${DL_LIBRARIES})
+ include_directories(${DL_INCLUDE_DIR})
+endif()
+
 include_directories("${NETWORKLIB_INCLUDE_DIRS}")
 set_property(TARGET ${NAME_LIB} APPEND PROPERTY INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/${NAME_LIB}/inc")
 

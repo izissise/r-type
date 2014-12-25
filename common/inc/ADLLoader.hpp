@@ -1,5 +1,5 @@
-#ifndef IDLLOADER_HPP_INCLUDED
-# define IDLLOADER_HPP_INCLUDED
+#ifndef ADLLOADER_HPP_INCLUDED
+# define ADLLOADER_HPP_INCLUDED
 
 # include <memory>
 
@@ -11,16 +11,16 @@ class ADLLoader
 {
 public:
   ADLLoader(const std::string& libPath, const std::string& symbolName)
-    : _libname(libPath), _symbolname(symbolName)
+    : _libName(libPath), _symbolName(symbolName)
   {};
   virtual ~ADLLoader() = default;
 
   //template<typename ... Args>
-  virtual std::unique_ptr<MODULE> callSymbol(/*Args&& ... args*/) const = 0;
+  virtual std::unique_ptr<MODULE> callSymbol(/*Args&& ... args*/) = 0;
 
 protected:
-  std::string _libname;
-  std::string _symbolname;
+  std::string _libName;
+  std::string _symbolName;
 };
 };
 

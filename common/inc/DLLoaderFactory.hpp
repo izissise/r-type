@@ -22,13 +22,13 @@ public:
   ~DLLoaderFactory() = delete;
 
   template<typename MODULE>
-  static std::unique_ptr<DynamicLibrary::ADLLoader>(const std::string& libPath, const std::string& symbolName)
+  static std::unique_ptr<DynamicLibrary::ADLLoader<MODULE>> createLoader(const std::string& libPath, const std::string& symbolName)
   {
 #ifdef UNIX
-    return std::unique_ptr<Unix::DLLoader>(new Unix::DLLoader(libPath, symbolName));
+    return std::unique_ptr<Unix::DLLoader<MODULE>>(new Unix::DLLoader<MODULE>(libPath, symbolName));
 #endif
 #ifdef WIN32
-    return std::unique_ptr<Win::DLLoader>(new Win::DLLoader(libPath, symbolName));
+    return std::unique_ptr<Win::DLLoader<MODULE>>(new Win::DLLoader<MODULE>(libPath, symbolName));
 #endif
   };
 };
