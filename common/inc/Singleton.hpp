@@ -16,11 +16,11 @@ public:
   Singleton(const Singleton&) = delete;
   Singleton& operator=(const Singleton&) = delete;
 
-  template<typename... Args>
+  template<typename IMPL = SingleClass, typename... Args>
   static SingleClass& instance(Args&&... args)
   {
     std::call_once(get_once_flag(), [](Args && ... arg) {
-      _instance.reset(new SingleClass(std::forward<Args>(arg)...));
+      _instance.reset(new IMPL(std::forward<Args>(arg)...));
     }, std::forward<Args>(args)...);
     return *(_instance.get());
   };

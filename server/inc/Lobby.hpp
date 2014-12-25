@@ -26,7 +26,7 @@ public:
   void leaveRoom(const std::shared_ptr<ClientLobby>& cli, size_t roomId);
 
 private:
-  size_t					   _roomId;
+  size_t 				   _roomId;
   std::map<size_t, ServerRoom> _rooms;
 };
 
