@@ -1,9 +1,9 @@
-#ifndef IMONSTERS_HH_
-# define IMONSTERS_HH_
+#ifndef AMONSTERS_HH_
+# define AMONSTERS_HH_
 
 # include <string>
 
-class IMonster
+class AMonster
 {
 public:
  virtual const std::string& getName() const = 0;
