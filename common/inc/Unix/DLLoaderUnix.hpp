@@ -19,7 +19,9 @@ class DLLoader : public ADLLoader<MODULE>
 public:
   DLLoader(const std::string& libPath, const std::string& symbolName)
     : ADLLoader<MODULE>(libPath, symbolName), _loaded(false), _handle(nullptr)
-  {};
+  {
+    loadLib();
+  };
 
   virtual ~DLLoader()
   {

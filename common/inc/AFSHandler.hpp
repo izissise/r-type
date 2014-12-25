@@ -32,19 +32,18 @@ public:
   {
     size_t found = path.find_last_of("/\\");
     if (found == std::string::npos)
-      return path;
+      return path.substr(0, path.find_last_of("."));
     if (found + 1 >= path.length())
       return "";
-    return path.substr(found + 1);
+    return path.substr(found + 1, path.find_last_of("."));
   };
 
   virtual std::string fileExtension(const std::string& path) const
   {
-    std::string file = fileName(path);
     size_t found = path.find_last_of(".");
     if (found == std::string::npos)
       return "";
-    return file.substr(found);
+    return path.substr(found);
   };
 
   virtual std::string currentPath() const = 0;

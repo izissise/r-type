@@ -16,7 +16,7 @@ std::string FSHandler::currentPath() const
   buffSize = GetCurrentDirectory(buffSize, buff.get());
   if (buffSize == 0)
     throw FileSystemError("currentPath: Unknown error");
-  return std::string(buff.get());
+  return std::string(buff.get()) + "\\";
 }
 
 

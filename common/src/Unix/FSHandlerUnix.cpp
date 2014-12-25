@@ -14,7 +14,7 @@ std::string FSHandler::currentPath() const
   res = getcwd(nullptr, 0);
   if (res == nullptr)
     throw FileSystemError(std::string("currentPath") + strerror(errno));
-  return res;
+  return std::string(res) + "/";
 }
 
 std::list<std::string> FSHandler::listDir(const std::string& dir) const
