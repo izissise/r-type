@@ -63,7 +63,7 @@ OPTION(BUILD_TESTS "Decide if the test suite shall be built or not." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TESTS_COVERAGE "Decide if a coverage report should be generated." ON "BUILD_TESTS" OFF)
 CMAKE_DEPENDENT_OPTION(VALGRIND_CHECK "Decide if valgrind should be executed with the test binary to check for memory leaks." ON "BUILD_TESTS" OFF)
 OPTION(CODE_METRICS "Decide if code's metrics should be generated." OFF)
-OPTION(CODE_CHECK 	"Decide if code should be checked for common errors." OFF)
+OPTION(CODE_CHECK   "Decide if code should be checked for common errors." OFF)
 OPTION(GENERATE_DOC "Decide if documentation should be generated." OFF)
 OPTION(BUILD_SERVER "Does the compilation will build the server ?." ON)
 OPTION(BUILD_CLIENT "Does the compilation will build the client ?." ON)
@@ -205,6 +205,11 @@ if (SFML_FOUND)
   include_directories("${SFML_INCLUDE_DIR}")
   target_link_libraries (${NAME_CLIENT} ${SFML_LIBRARIES})
 endif()
+
+
+#Compile Monsters
+add_subdirectory("monsters")
+
 
 # --- enable unit tests if desired ---
 if(BUILD_TESTS)

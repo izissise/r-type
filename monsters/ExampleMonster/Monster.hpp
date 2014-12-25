@@ -1,6 +1,8 @@
 #ifndef EXAMPLEMONSTERS_HH_
 # define EXAMPLEMONSTERS_HH_
 
+# include "RTypeConfig.h"
+
 # include "AMonster.hpp"
 
 # ifdef WIN32
@@ -8,6 +10,11 @@
 # else
 #  define EXPORT
 #endif
+
+extern "C"
+{
+EXPORT AMonster* createMonster();
+}
 
 class ExampleMonster : public AMonster
 {
