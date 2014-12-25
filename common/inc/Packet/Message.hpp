@@ -10,6 +10,8 @@ namespace Packet {
     Message();
     Message(const std::string &);
 
+    virtual ~Message() = default;
+
     const std::string &getMsg() const;
 
     virtual std::string to_bytesNoHeader() const override;

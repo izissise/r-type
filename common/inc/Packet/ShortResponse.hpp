@@ -10,6 +10,8 @@ namespace Packet {
     ShortResponse();
     ShortResponse(uint8_t response);
 
+    virtual ~ShortResponse() = default;
+
     uint8_t getResponse() const;
 
     std::string to_bytesNoHeader() const override;

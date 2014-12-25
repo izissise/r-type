@@ -10,6 +10,8 @@ namespace Packet {
     JoinRoom();
     JoinRoom(uint16_t idRoom);
 
+    virtual ~JoinRoom() = default;
+
     uint16_t getRoomId() const;
 
  std::string to_bytesNoHeader() const override;

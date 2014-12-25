@@ -18,6 +18,7 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
   Packet::APacket::PacketType::LEAVEROOM,
   Packet::APacket::PacketType::MESSAGE,
   Packet::APacket::PacketType::GETLISTPLAYER,
+  Packet::APacket::PacketType::NEWMONSTER,
   Packet::APacket::PacketType::UNKNOW
 };
 

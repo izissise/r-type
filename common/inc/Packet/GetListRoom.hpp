@@ -13,6 +13,8 @@ namespace Packet {
     GetListRoom();
     GetListRoom(const std::vector<t_room> &);
 
+    virtual ~GetListRoom() = default;
+
     const std::vector<t_room>  &getListRoom() const;
 
     std::string to_bytesNoHeader() const override;

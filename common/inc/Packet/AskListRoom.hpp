@@ -8,7 +8,8 @@ namespace Packet {
   {
   public:
     AskListRoom();
-    ~AskListRoom();
+
+    virtual ~AskListRoom() = default;
 
     std::string to_bytesNoHeader() const override;
     size_t from_bytes(const std::string &bytes) override;

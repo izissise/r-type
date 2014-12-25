@@ -8,12 +8,6 @@ namespace Packet {
 
   }
 
-  AskListRoom::~AskListRoom()
-  {
-
-  }
-
-
   std::string AskListRoom::to_bytesNoHeader() const
   {
     return ("");

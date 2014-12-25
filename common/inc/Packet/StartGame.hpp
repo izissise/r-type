@@ -10,6 +10,8 @@ namespace Packet {
     StartGame();
     StartGame(const std::string& ip, uint16_t port, uint16_t pId);
 
+    virtual ~StartGame() = default;
+
     const std::string &getIp() const {return _ip;};
     uint16_t getPort() const {return _port;};
     uint16_t getPlayerId() const {return _playerId;};
