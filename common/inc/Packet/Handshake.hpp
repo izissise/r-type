@@ -14,6 +14,8 @@ namespace Packet {
     Handshake();
     Handshake(const std::string& name, uint16_t id = 0);
 
+    virtual ~Handshake() = default;
+
     uint32_t getProtocolVersion() const;
     const std::string &getLogin() const;
     uint16_t getPlayerId() const {return _playerId;};

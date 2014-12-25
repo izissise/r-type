@@ -13,6 +13,8 @@ namespace Packet {
     CreateRoom();
     CreateRoom(const t_room &);
 
+    virtual ~CreateRoom() = default;
+
     const std::shared_ptr<t_room>  &getRoom() const;
 
     std::string to_bytesNoHeader() const override;
