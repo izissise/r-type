@@ -51,7 +51,7 @@ private:
 
     if (!_loaded)
       loadLib();
-    sym = GetProcAddress(static_cast<HMODULE>(_handle), symbolname);
+    sym = GetProcAddress(static_cast<HMODULE>(_handle), symbolname.c_str());
     if (sym == nullptr)
       throw std::runtime_error(std::string("Can't get symbol: ") + symbolname);
     return sym;
