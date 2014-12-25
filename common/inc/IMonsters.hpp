@@ -6,11 +6,9 @@
 class IMonsters
 {
 public:
- virtual const std::string &GetName(void) const = 0;
- virtual int     GetPower(void) const = 0;
- virtual int     GetLife(void) const = 0;
-
-private:
+ virtual const std::string& getName() const = 0;
+ virtual int getPower() const = 0;
+ virtual int getLife() const = 0;
 
 };
 

@@ -1,62 +1,45 @@
 #ifndef DLLOADERUNIX_HPP_
 # define DLLOADERUNIX_HPP_
 
+# include <exception>
+# include <stdexcept>
+# include <string>
+# include <iostream>
+
 # include <dlfcn.h>
 
-# include "IDLLoader.hpp"
+#include "ADLLoader.hpp"
 
-template<typename T>
-class DLLoader //: public IDLLoader<T>
+namespace DynamicLibrary {
+namespace Unix {
+
+template<typename MODULE>
+class DLLoader : public ADLLoader<MODULE>
 {
-private:
- void *_handle;
- T  *_obj;
-
 public:
- DLLoader(const std::string &name)
- {
-  T *(*fct)();
-  std::string lib;
+  DLLoader(const std::string& libPath, const std::string& symbolName);
+  virtual ~DLLoader();
 
-  _handle = dlopen(lib.c_str(), RTLD_LAZY);
-  if (_handle == NULL)
-   std::cout << "DLLoader ERROR : can't load " << name << std::endl;
-  else
-  {
-   fct = reinterpret_cast<T *(*)()> (dlsym(_handle, "Create"));
-   if (fct == NULL)
-    std::cout << "DLLoader ERROR : can't init obj" << std::endl;
-  }
-  _obj = fct();
- }
+  template<typename ... Args>
+  std::unique_ptr<MODULE> callSymbol(Args&& ... args) const override;
 
- ~DLLoader()
- {
-  if (_handle)
-   close(_handle);
- }
+private:
+  void* loadSym(const std::string& sym);
+  void  loadLib();
 
- const T &GetInstance()
- {
-  return _obj;
- }
-
-protected:
+private:
+  bool  _loaded;
+  void* _handle;
 };
 
-
-/*
-template<typename T>
-DLLoader<T>::DLLoader(const std::string& lib)
+template<typename MODULE>
+DLLoader<MODULE>::DLLoader(const std::string& libPath, const std::string& symbolName)
+  : ADLLoader<MODULE>(libPath, symbolName), _loaded(false), _handle(nullptr)
 {
-  _libname = std::string("./") + lib;
-  _handle = NULL;
-  _loaded = false;
-  _symbolname = "instance";
 }
 
-template<typename T>
-DLLoader<T>::~DLLoader()
+template<typename MODULE>
+DLLoader<MODULE>::~DLLoader()
 {
   char* err;
 
@@ -64,41 +47,42 @@ DLLoader<T>::~DLLoader()
     if (dlclose(_handle))
       {
         err = dlerror();
-        throw nFault(std::string("Can't close library: ") + err, false);
+        std::cerr << "Can't close library: " << err << std::endl;
       }
 }
 
-template<typename T>
-T DLLoader<T>::getInstance()
+template<typename MODULE>
+template<typename ... Args>
+std::unique_ptr<MODULE> DLLoader<MODULE>::callSymbol(Args&& ... args) const
 {
   void* sym;
-  T ret;
-  T (*func)();
+  MODULE ret;
+  MODULE (*func)(args...);
 
   sym = loadSym(_symbolname);
-  func = reinterpret_cast<T (*)()>(sym);
-  ret = NULL;
-  if (func != NULL)
+  func = reinterpret_cast<MODULE (*)(std::forward<Args>(args)...)>(sym);
+  ret = nullptr;
+  if (func != nullptr)
     ret = func();
-  return (ret);
+  return std::unique_ptr<MODULE>(ret);
 }
 
-template<typename T>
-void DLLoader<T>::loadLib()
+template<typename MODULE>
+void DLLoader<MODULE>::loadLib()
 {
   char* err;
 
   _handle = dlopen(_libname.c_str(), RTLD_LAZY);
-  if (_handle == NULL)
+  if (_handle == nullptr)
     {
       err = dlerror();
-      throw nFault(std::string("Can't load library: ") + err, false);
+      throw (std::string("Can't load library: ") + err);
     }
   _loaded = true;
 }
 
-template<typename T>
-void* DLLoader<T>::loadSym(const std::string& symbolname)
+template<typename MODULE>
+void* DLLoader<MODULE>::loadSym(const std::string& symbolname)
 {
   void* sym;
   char* err;
@@ -107,10 +91,12 @@ void* DLLoader<T>::loadSym(const std::string& symbolname)
     loadLib();
   dlerror();
   sym = dlsym(_handle, symbolname.c_str());
-  if (sym == NULL && (err = dlerror()) == NULL)
-    throw nFault(std::string("Can't get symbol: ") + err, false);
-  return (sym);
+  if (sym == nullptr && (err = dlerror()) == nullptr)
+    throw (std::string("Can't get symbol: ") + err);
+  return sym;
 }
-*/
+
+};
+};
 
 #endif
