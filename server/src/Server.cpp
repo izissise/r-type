@@ -6,7 +6,8 @@
 
 Server::Server(const std::vector<std::string>& args)
   : _net(Network::NetworkFactory::createNetwork()),
-    _threadPool(5)
+    _threadPool(5),
+    _dlMonsterManager("createMonster")
 {
   decltype(_udpPortRange) tmpPortRange = std::make_tuple(0, 0);
   std::swap(_udpPortRange, tmpPortRange);
@@ -69,6 +70,8 @@ Server::Server(const std::vector<std::string>& args)
       addListen("0.0.0.0", "8000");
       addListen("::1", "8000");
     }
+
+  _dlMonsterManager.loadAllInDirectory("monsters/");
 }
 
 void Server::run()

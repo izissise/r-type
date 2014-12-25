@@ -14,6 +14,9 @@
 #include "Packet/APacket.hpp"
 
 #include "ThreadPool.hpp"
+#include "DLLoaderFactory.hpp"
+#include "DLManager.hpp"
+#include "AMonster.hpp"
 
 #include "ClientLobby.hpp"
 #include "Lobby.hpp"
@@ -52,6 +55,7 @@ protected:
   std::deque<std::shared_ptr<ClientLobby>> 				_clients;
   ThreadPool							  				_threadPool;
   std::deque<std::shared_ptr<ServerGame>>				_games;
+  DynamicLibrary::DLManager<AMonster>					_dlMonsterManager;
 };
 
 #endif
