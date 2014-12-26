@@ -1,20 +1,20 @@
 #include <algorithm>
 #include <sstream>
-#include "MessageBox.hpp"
+#include "GameMessageBox.hpp"
 
-MessageBox::MessageBox(const sf::FloatRect &pos, const std::vector<std::string> &vec, bool focus)
+GameMessageBox::GameMessageBox(const sf::FloatRect &pos, const std::vector<std::string> &vec, bool focus)
 : ADrawable(false, {pos.left, pos.top}, {pos.width, pos.height}), _vec(vec), _focus(focus), _cam(_pos.y)
 {
   if (!_vec.empty())
     updateEntry();
 }
 
-MessageBox::~MessageBox()
+GameMessageBox::~GameMessageBox()
 {
 
 }
 
-void  MessageBox::update(const sf::Event &event, float timeElapsed)
+void  GameMessageBox::update(const sf::Event &event, float timeElapsed)
 {
   updateEntry();
   for (auto &it : _text)
@@ -30,7 +30,7 @@ void  MessageBox::update(const sf::Event &event, float timeElapsed)
   }
 }
 
-void  MessageBox::draw(sf::RenderWindow &win)
+void  GameMessageBox::draw(sf::RenderWindow &win)
 {
   float y = _cam;
 
@@ -50,7 +50,7 @@ void  MessageBox::draw(sf::RenderWindow &win)
   win.setView(win.getDefaultView());
 }
 
-void  MessageBox::updateEntry()
+void  GameMessageBox::updateEntry()
 {
   if (!isSame())
   {
@@ -68,7 +68,7 @@ void  MessageBox::updateEntry()
   }
 }
 
-bool  MessageBox::isSame() const
+bool  GameMessageBox::isSame() const
 {
   auto first1 = _vec.begin();
   auto first2 = _text.begin();

@@ -19,7 +19,7 @@
 # include "RtypeProtoHelper.hpp"
 # include "ListBox.hpp"
 # include "Room.hpp"
-# include "MessageBox.hpp"
+# include "GameMessageBox.hpp"
 # include "Game.hpp"
 
 # include "Packet/Handshake.hpp"

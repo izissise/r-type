@@ -1,16 +1,16 @@
-#ifndef _MESSAGEBOX_HPP_
-# define _MESSAGEBOX_HPP_
+#ifndef _GAMEMESSAGEBOX_HPP_
+# define _GAMEMESSAGEBOX_HPP_
 
 # include "ADrawable.hpp"
 # include "Text.hpp"
 # include "Room.hpp"
 # include "RessourceManager.hpp"
 
-class MessageBox: public ADrawable
+class GameMessageBox: public ADrawable
 {
 public:
-  MessageBox(const sf::FloatRect &pos, const std::vector<std::string> &vec, bool focus = false);
-  ~MessageBox();
+  GameMessageBox(const sf::FloatRect &pos, const std::vector<std::string> &vec, bool focus = false);
+  ~GameMessageBox();
 
   virtual void  update(const sf::Event &, float timeElapsed);
   virtual void  draw(sf::RenderWindow &);

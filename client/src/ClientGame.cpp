@@ -477,8 +477,8 @@ void  ClientGame::createRoomPanel()
       entry->setText("");
   });
 
-  std::shared_ptr<MessageBox> _chatBox(new MessageBox({0, 0, 1299, static_cast<float>(_win.getSize().y) - 61}, _chat, true));
-  std::shared_ptr<MessageBox> _playerBox(new MessageBox({1300, 0 , 300, 745}, _player));
+  std::shared_ptr<GameMessageBox> _chatBox(new GameMessageBox({0, 0, 1299, static_cast<float>(_win.getSize().y) - 61}, _chat, true));
+  std::shared_ptr<GameMessageBox> _playerBox(new GameMessageBox({1300, 0 , 300, 745}, _player));
 
   panel->add(back);
   panel->add(entry);
