@@ -55,7 +55,7 @@ if (UNIX)
 		FLAGS_DEBUG    "-DNDEBUG" "-g3"
 			   )
 elseif (MSVC)
-  COMPILER_FLAGS(FLAGS "/EHsc" "/MD" "/MT")
+  COMPILER_FLAGS(FLAGS "/EHsc")
 endif()
 
 # --- user options ---
