@@ -2,6 +2,7 @@
 # define _ROOM_HPP_
 
 # include <string>
+# include <cstdint>
 
 typedef struct  s_room
 {

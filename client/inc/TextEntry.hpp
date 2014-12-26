@@ -1,9 +1,12 @@
 #ifndef _TEXTENTRY_HPP_
 # define _TEXTENTRY_HPP_
 
-# include <SFML/Graphics.hpp>
+# include <functional>
 # include <iostream>
 # include <memory>
+
+# include <SFML/Graphics.hpp>
+
 # include "ADrawable.hpp"
 # include "Image.hpp"
 # include "Text.hpp"
