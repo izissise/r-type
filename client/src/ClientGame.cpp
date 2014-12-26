@@ -12,7 +12,7 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 
 ClientGame::ClientGame()
 : _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
-  _network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}))
+_network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game(sf::FloatRect( 0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y) )))
 {
   sf::Image icon;
 
@@ -197,7 +197,7 @@ size_t  ClientGame::netMessage(const Network::Buffer &data)
 
 void  ClientGame::createMenuPanel()
 {
-  std::shared_ptr<Panel> menuPanel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
+	std::shared_ptr<Panel> menuPanel(new Panel(sf::FloatRect( 0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y) )));
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/connectionBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
   auto font = RessourceManager::instance().getFont("../assets/font.ttf");
@@ -286,7 +286,8 @@ void  ClientGame::createMenuPanel()
 
 void  ClientGame::createListPanel()
 {
-  std::shared_ptr<Panel> listpanel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
+	std::shared_ptr<Panel> listpanel(new Panel(sf::FloatRect(0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)
+)));
 
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
@@ -341,7 +342,8 @@ void  ClientGame::createListPanel()
 
 void  ClientGame::createCreateRoomPanel()
 {
-  std::shared_ptr<Panel>  panel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
+	std::shared_ptr<Panel>  panel(new Panel(sf::FloatRect(0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)
+)));
 
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
@@ -417,7 +419,7 @@ void  ClientGame::createCreateRoomPanel()
 
 void  ClientGame::createRoomPanel()
 {
-  std::shared_ptr<Panel> panel(new Panel({0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
+  std::shared_ptr<Panel> panel(new Panel(sf::FloatRect(0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y))));
 
   auto backgroundTexture = RessourceManager::instance().getTexture("../assets/menuBackground.png");
   auto texture = RessourceManager::instance().getTexture("../assets/button.png");
