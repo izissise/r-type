@@ -42,7 +42,9 @@ public:
 
   void setUdpPortRange(const std::string& portRange);
   void setUdpPortRange(std::tuple<uint16_t, uint16_t> portRange) {std::swap(_udpPortRange, portRange);};
-  const std::tuple<uint16_t, uint16_t>& getUdpPortRang() const {return _udpPortRange;};
+  const std::tuple<uint16_t, uint16_t>& getUdpPortRange() const {return _udpPortRange;};
+
+  const DynamicLibrary::DLManager<AMonster>& getDynLibMonsterManager() const {return _dlMonsterManager;};
 
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);

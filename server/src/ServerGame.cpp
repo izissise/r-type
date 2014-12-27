@@ -8,11 +8,13 @@
 #include "Packet/GetListPlayer.hpp"
 #include "Packet/StartGame.hpp"
 #include "Packet/ShortResponse.hpp"
+#include "Packet/NewMonster.hpp"
 
 std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
-ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port)
-  : _runGame(true), _started(false),
+ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port,
+                       const DynamicLibrary::DLManager<AMonster>& dynlibMonsters)
+  : _monsterRessouces(dynlibMonsters), _runGame(true), _started(false),
     _net(Network::NetworkFactory::createNetwork())
 {
   _listeningPort = port;
@@ -65,7 +67,7 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
                           const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data)
 {
   auto listener = that.lock();
-  auto cg = std::make_shared<ClientGame>(id, that);
+  auto cg = std::make_shared<ClientGame>(id, that, *this);
   if (!_started)
     {
       cg->readData(data);
@@ -96,5 +98,12 @@ void ServerGame::broadcastPacketToOther(const Packet::APacket& pack, const std::
       if (i != sender)
         i->sendPacket(pack);
     }
+}
+
+void ServerGame::newMonster(size_t mNumber)
+{
+  auto monsters = _monsterRessouces.getLoadedModulesNames();
+  auto monster = _monsterRessouces.createModule(monsters.at(mNumber % monsters.size()));
+  broadcastPacket(Packet::NewMonster(monster->getName(), monster->getPower(), monster->getLife()));
 }
 

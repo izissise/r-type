@@ -52,7 +52,7 @@ public:
     return res;
   };
 
-  std::unique_ptr<MODULE> createModule(const std::string& moduleName)
+  std::unique_ptr<MODULE> createModule(const std::string& moduleName) const
   {
     try {
         return (_moduleMap.at(moduleName))->callSymbol();
@@ -63,7 +63,7 @@ public:
       }
   };
 
-  std::unique_ptr<MODULE> createModule(const std::string& moduleName, const std::string& symName)
+  std::unique_ptr<MODULE> createModule(const std::string& moduleName, const std::string& symName) const
   {
     std::string tmpDefault;
     try {

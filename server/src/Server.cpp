@@ -126,7 +126,7 @@ uint16_t Server::createNewGame(const ServerRoom& gameInfo)
   uint16_t maxPort = std::get<1>(_udpPortRange);
 
   std::string strPort = (minPort == 0) ? "" : toStr(minPort);
-  auto game = std::make_shared<ServerGame>(gameInfo, strPort);
+  auto game = std::make_shared<ServerGame>(gameInfo, strPort, _dlMonsterManager);
   minPort++;
   if (minPort > maxPort)
     setUdpPortRange(std::make_tuple(0, 0));

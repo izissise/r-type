@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <type_traits>
 
+#include "ServerGame.hpp"
 #include "Packet/Handshake.hpp"
 #include "Packet/ShortResponse.hpp"
 
@@ -13,8 +14,9 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 };
 
 ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
-                       const std::weak_ptr<Network::AListenSocket>& listener)
-  : IdentityClientHelper(id, listener)
+                       const std::weak_ptr<Network::AListenSocket>& listener,
+                       ServerGame& game)
+  : IdentityClientHelper(id, listener), _game(game)
 {
 }
 
@@ -61,6 +63,12 @@ void ClientGame::onRead()
           std::cerr << "Received Unknown Packet" << std::endl;
         }
     }
+}
+
+
+void ClientGame::sendToOther(const Packet::APacket& pack)
+{
+  _game.broadcastPacketToOther(pack, shared_from_this());
 }
 
 /*

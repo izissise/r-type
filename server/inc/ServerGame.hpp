@@ -6,6 +6,8 @@
 #include <thread>
 #include <memory>
 
+#include "DLManager.hpp"
+#include "AMonster.hpp"
 #include "ClientGame.hpp"
 #include "ServerRoom.hpp"
 #include "Packet/APacket.hpp"
@@ -14,13 +16,15 @@
 class ServerGame
 {
 private:
-	static std::chrono::duration<double> _timeBeforeStart;
+  static std::chrono::duration<double> _timeBeforeStart;
 
 public:
-  ServerGame(const ServerRoom& gameInfo, const std::string& port);
+  ServerGame(const ServerRoom& gameInfo, const std::string& port, const DynamicLibrary::DLManager<AMonster>& dynlibMonsters);
   virtual ~ServerGame() = default;
 
   void run();
+
+  void newMonster(size_t mNumber);
 
   const std::string& listeningPort() const {return _listeningPort;};
 
@@ -31,6 +35,7 @@ protected:
                 const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data);
 
 protected:
+  const	DynamicLibrary::DLManager<AMonster>&     	   _monsterRessouces;
   bool									               _runGame;
   bool												   _started;
   std::unique_ptr<Network::ANetwork>       			   _net;

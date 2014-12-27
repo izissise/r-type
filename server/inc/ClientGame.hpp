@@ -8,6 +8,8 @@
 #include "ClientHelper.hpp"
 #include "Packet/APacket.hpp"
 
+class ServerGame;
+
 class ClientGame : public Network::IdentityClientHelper, public std::enable_shared_from_this<ClientGame>
 {
 private:
@@ -15,7 +17,8 @@ private:
 
 public:
   ClientGame(const std::shared_ptr<Network::Identity>& id,
-             const std::weak_ptr<Network::AListenSocket>& listener);
+             const std::weak_ptr<Network::AListenSocket>& listener,
+             ServerGame& game);
   virtual ~ClientGame() = default;
 
   void sendPacket(const Packet::APacket& pack);
@@ -25,12 +28,14 @@ public:
 
 protected:
   void onRead() override;
+  void sendToOther(const Packet::APacket& pack);
 
 private:
   size_t netShortResponse(const Network::Buffer& data);
   size_t netHandshake(const Network::Buffer& data);
 
 private:
+  ServerGame& 	_game;
   std::string   _login;
   int			_protoVersion;
   size_t		_playerId;
