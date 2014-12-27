@@ -18,6 +18,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${MONSTERDIR}")
 # set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 
 INCLUDE(CheckIncludeFile)
+include (GenerateExportHeader)
 INCLUDE(CheckApplyCompilerFlags)
 
 # --- global compiler flags ---
@@ -50,4 +51,14 @@ add_library(
   ${libmonster_source_files}
   ${libmonster_include_files}
 )
+
+GENERATE_EXPORT_HEADER( ${NAME_LIB_MONSTER}
+             BASE_NAME ${NAME_LIB_MONSTER}
+             EXPORT_MACRO_NAME ${NAME_LIB_MONSTER}_EXPORT
+             EXPORT_FILE_NAME ${NAME_LIB_MONSTER}_Export.h
+             STATIC_DEFINE ${NAME_LIB_MONSTER}_BUILT_AS_STATIC
+)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 

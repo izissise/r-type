@@ -2,12 +2,13 @@
 # define EXAMPLEMONSTERS_HH_
 
 # include "RTypeConfig.h"
+# include "exampleMonster_Export.h"
 
 # include "AMonster.hpp"
 
 extern "C"
 {
-DLLAPI AMonster* createMonster();
+exampleMonster_EXPORT AMonster* createMonster();
 }
 
 class ExampleMonster : public AMonster
