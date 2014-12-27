@@ -25,7 +25,7 @@ std::list<std::string> FSHandler::listDir(const std::string& dir) const
 
   dfd = opendir(dir.c_str());
   if (dfd == nullptr)
-    throw FileSystemError(dir + strerror(errno));
+    throw FileSystemError(dir + ": " + strerror(errno));
   while ((file = readdir(dfd)) != nullptr)
     {
       list.push_back(file->d_name);

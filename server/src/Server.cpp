@@ -71,9 +71,13 @@ Server::Server(const std::vector<std::string>& args)
       addListen("::1", "8000");
     }
 
-  _dlMonsterManager.loadAllInDirectory("monsters");
-  auto l = _dlMonsterManager.createModule("exampleMonster");
- std::cout << l->getName() << std::endl;
+  try
+    {
+      _dlMonsterManager.loadAllInDirectory("monsters");
+    }
+  catch (std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
 }
 
 void Server::run()
