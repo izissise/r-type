@@ -31,11 +31,12 @@ public:
     std::string ext = getDynLibExtension();
     auto files = fs.listDir(path);
 
+    std::string tmpPath = path + (fs.isPathSlashTerminated(path) ? "" : fs.getPathSeparator());
     for (auto& i : files)
       {
         if (fs.fileExtension(i) == ext)
           {
-            loadLib(path + fs.filePath(i), fs.fileName(i));
+            loadLib(tmpPath + fs.filePath(i), fs.fileName(i));
           }
       }
   };
@@ -79,17 +80,21 @@ public:
 
   void loadLib(const std::string& path, const std::string& moduleName)
   {
+
+    std::string rModuleName = moduleName;
+    if (moduleName.find(getDynLibPrefix()) == 0)
+      rModuleName = moduleName.substr(getDynLibPrefix().size());
     try
       {
-        _moduleMap.at(moduleName);
-        std::cerr << moduleName << " already loaded." << std::endl;
+        _moduleMap.at(rModuleName);
+        std::cerr << rModuleName << " already loaded." << std::endl;
         return;
       }
     catch (std::out_of_range& e)
       {}
     try
       {
-        _moduleMap[moduleName] = DLLoaderFactory::createLoader<MODULE>(path + moduleName + getDynLibExtension(), _defaultSym);
+        _moduleMap[rModuleName] = DLLoaderFactory::createLoader<MODULE>(path + moduleName + getDynLibExtension(), _defaultSym);
       }
     catch (std::runtime_error& e)
       {
@@ -109,6 +114,20 @@ protected:
 #endif
 #ifdef WIN32
     return ".dll";
+#endif
+  };
+
+  static std::string getDynLibPrefix()
+  {
+#ifdef APPLE
+    return "";
+#else
+# ifdef UNIX
+    return "lib";
+# endif
+#endif
+#ifdef WIN32
+    return "";
 #endif
   };
 
