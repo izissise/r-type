@@ -26,7 +26,7 @@ std::list<std::string> FSHandler::listDir(const std::string &dir) const
   WIN32_FIND_DATA ffd;
   HANDLE hfind;
 
-  hfind = FindFirstFile(dir.c_str(), &ffd);
+  hfind = FindFirstFile((dir + "\\*").c_str(), &ffd);
   if (hfind == INVALID_HANDLE_VALUE)
     throw FileSystemError(dir + ": can't open directory");
   while (hfind != INVALID_HANDLE_VALUE)
