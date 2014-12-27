@@ -5,15 +5,9 @@
 
 # include "AMonster.hpp"
 
-# ifdef WIN32
-#  define EXPORT _declspec(dllexport)
-# else
-#  define EXPORT
-#endif
-
 extern "C"
 {
-EXPORT AMonster* createMonster();
+DLLAPI AMonster* createMonster();
 }
 
 class ExampleMonster : public AMonster

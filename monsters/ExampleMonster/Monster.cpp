@@ -17,8 +17,8 @@ int ExampleMonster::getLife() const
 
 extern "C"
 {
- 
-EXPORT AMonster* createMonster()
+
+DLLAPI AMonster* createMonster()
 {
   return new ExampleMonster();
 }
