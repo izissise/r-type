@@ -8,7 +8,6 @@
 #include "Packet/GetListPlayer.hpp"
 #include "Packet/StartGame.hpp"
 #include "Packet/ShortResponse.hpp"
-#include "Packet/NewMonster.hpp"
 
 std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
@@ -53,7 +52,7 @@ void ServerGame::run()
           std::chrono::duration<double> elapsedSeconds = end - start;
           if (elapsedSeconds > _timeBeforeStart)
             {
-              broadcastPacket(Packet::StartGame("", 0, 0));
+              broadcastPacket(Packet::StartGame(0, 0));
               _started = true;
             }
         }
@@ -104,6 +103,6 @@ void ServerGame::newMonster(size_t mNumber)
 {
   auto monsters = _monsterRessouces.getLoadedModulesNames();
   auto monster = _monsterRessouces.createModule(monsters.at(mNumber % monsters.size()));
-  broadcastPacket(Packet::NewMonster(monster->getName(), monster->getPower(), monster->getLife()));
+  //broadcastPacket(Packet::NewMonster(monster->getName(), monster->getPower(), monster->getLife()));
 }
 
