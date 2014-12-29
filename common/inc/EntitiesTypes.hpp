@@ -1,0 +1,11 @@
+#ifndef ENTITIESTYPES_HPP_INCLUDED
+# define ENTITIESTYPES_HPP_INCLUDED
+
+enum class EntitiesTypes
+{
+  PLAYER,
+  MONSTER,
+  BONUS
+};
+
+#endif // ENTITIESTYPES_HPP_INCLUDED

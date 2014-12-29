@@ -4,14 +4,14 @@
 # include "RTypeConfig.h"
 # include "exampleMonster_Export.h"
 
-# include "AMonster.hpp"
+# include "ILibMonster.hpp"
 
 extern "C"
 {
-exampleMonster_EXPORT AMonster* createMonster();
+exampleMonster_EXPORT ILibMonster* createMonster();
 }
 
-class ExampleMonster : public AMonster
+class ExampleMonster : public ILibMonster
 {
 public:
  ExampleMonster() = default;
