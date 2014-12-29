@@ -28,6 +28,11 @@ void AnimatedSprites::draw(sf::RenderWindow &win)
   }
 }
 
+uint8_t  AnimatedSprites::getCurrentAnim() const
+{
+  return _currentAnim;
+}
+
 void  AnimatedSprites::setCurrentAnim(uint8_t anim)
 {
   _currentAnim = anim;
