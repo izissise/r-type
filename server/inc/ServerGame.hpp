@@ -6,14 +6,16 @@
 #include <thread>
 #include <memory>
 
-#include "ILibMonster.hpp"
 #include "ClientGame.hpp"
 #include "ServerRoom.hpp"
 #include "Packet/APacket.hpp"
 #include "NetworkFactory.hpp"
 #include "DLManager.hpp"
+#include "ILibMonster.hpp"
 
 #include "AEntity.hpp"
+#include "Bonus.hpp"
+#include "Monster.hpp"
 
 class ServerGame
 {
@@ -38,7 +40,7 @@ protected:
                 const std::shared_ptr<Network::Identity>& id, const Network::Buffer& data);
 
 protected:
-  const	DynamicLibrary::DLManager<ILibMonster>&     	   _monsterRessouces;
+  const	DynamicLibrary::DLManager<ILibMonster>&        _monsterRessouces;
   bool									               _runGame;
   bool												   _started;
   std::unique_ptr<Network::ANetwork>       			   _net;

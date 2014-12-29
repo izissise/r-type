@@ -27,7 +27,8 @@ namespace Packet {
       GETLISTPLAYER = 10, //10
       NEWMONSTER = 11, //11
       MOVE = 12, // 12
-      PLAYERDIE = 13, //13
+      ENTITYDIE = 13, //13
+      NEWBONUS = 14, //14
       UNKNOW,
     };
 

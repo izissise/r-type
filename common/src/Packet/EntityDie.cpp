@@ -1,14 +1,14 @@
-#include "Packet/PlayerDie.hpp"
+#include "Packet/EntityDie.hpp"
 
 namespace Packet {
   EntityDie::EntityDie()
-  : APacket(APacket::PacketType::PLAYERDIE)
+  : APacket(APacket::PacketType::ENTITYDIE)
   {
 
   }
 
   EntityDie::EntityDie(size_t entityId)
-  : APacket(APacket::PacketType::PLAYERDIE), _entityId(entityId)
+  : APacket(APacket::PacketType::ENTITYDIE), _entityId(entityId)
   {
 
   }

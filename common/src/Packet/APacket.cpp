@@ -19,7 +19,9 @@ const Packet::APacket::PacketType enum_traits<Packet::APacket::PacketType>::enum
   Packet::APacket::PacketType::MESSAGE,
   Packet::APacket::PacketType::GETLISTPLAYER,
   Packet::APacket::PacketType::MOVE,
-  Packet::APacket::PacketType::PLAYERDIE,
+  Packet::APacket::PacketType::ENTITYDIE,
+  Packet::APacket::PacketType::NEWBONUS,
+  Packet::APacket::PacketType::NEWMONSTER,
   Packet::APacket::PacketType::UNKNOW
 };
 
