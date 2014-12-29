@@ -6,12 +6,12 @@
 #include <thread>
 #include <memory>
 
-#include "DLManager.hpp"
 #include "AMonster.hpp"
 #include "ClientGame.hpp"
 #include "ServerRoom.hpp"
 #include "Packet/APacket.hpp"
 #include "NetworkFactory.hpp"
+#include "DLManager.hpp"
 
 class ServerGame
 {
