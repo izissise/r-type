@@ -14,7 +14,7 @@ public:
   size_t getLife() const {return _ms->getLife();};
 
 protected:
-  const std::shared_ptr<ILibMonster>& _ms;
+   std::shared_ptr<ILibMonster> _ms;
 };
 
 #endif // MONSTER_H

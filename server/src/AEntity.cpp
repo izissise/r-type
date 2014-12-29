@@ -13,7 +13,7 @@ const EntitiesTypes enum_traits<EntitiesTypes>::enumerators[] = {
 };
 
 AEntity::AEntity(int networkId, EntitiesTypes type, int xPos)
-  : _networkId(networkId), _type(type), _x(xPos)
+  : _x(xPos), _networkId(networkId), _type(type)
 {
 }
 

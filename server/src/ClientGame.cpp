@@ -108,4 +108,3 @@ size_t ClientGame::netMovement(const Network::Buffer& data)
   sendToOther(movement);
   return nbUsed;
 }
-

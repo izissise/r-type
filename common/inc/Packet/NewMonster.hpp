@@ -10,13 +10,14 @@ namespace Packet {
   {
   public:
     NewMonster();
-    NewMonster(size_t id, const std::string& name, int life);
+    NewMonster(size_t id, int xpos, const std::string& name, int life);
 
     virtual ~NewMonster() = default;
 
     const std::string &getName() const {return _name;};
     int getLife() const {return _life;};
     uint16_t getId() const {return _Id;};
+    int	getXPos() const {return _xpos;};
 
     std::string to_bytesNoHeader() const override;
     size_t from_bytes(const std::string &bytes) override;
@@ -25,6 +26,7 @@ namespace Packet {
     std::string   _name;
     uint16_t	  _life;
     uint16_t	  _Id;
+    uint16_t	  _xpos;
   };
 };
 
