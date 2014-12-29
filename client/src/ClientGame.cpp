@@ -47,13 +47,13 @@ void ClientGame::run()
   std::chrono::duration<double, std::milli> t(0);
   while(!_done)
   {
-    auto t_start = std::chrono::high_resolution_clock::now();
+    auto t_start = std::chrono::steady_clock::now();
     double fps = 1000 / 60;
 
     if (!update(t.count()))
       _done = true;
     draw();
-    auto t_end = std::chrono::high_resolution_clock::now();
+    auto t_end = std::chrono::steady_clock::now();
     t = t_end - t_start;
     if (t.count() < fps)
       std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>(fps - t.count())) );

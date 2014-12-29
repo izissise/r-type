@@ -69,20 +69,22 @@ void Player::fire()
   _ammo.push_back(_weapon->fire({_pos.x + _sprite->getSize().x, _pos.y}));
 }
 
-void Player::update(const Input &, float)
+void Player::update(const Input &, float timeElaspsed)
 {
-  
+  for (auto &it : _ammo) {
+    it.pos.x += (it.speed.x * timeElaspsed);
+  }
 }
 
 void Player::draw(sf::RenderWindow &win)
 {
-  _sprite->setPosition(_pos);
-  _sprite->draw(win);
   for (auto &it : _ammo)
   {
     it.sprite->setPosition(sf::Vector2f(it.pos.x, it.pos.y));
     it.sprite->draw(win);
   }
+  _sprite->setPosition(_pos);
+  _sprite->draw(win);
 }
 
 
