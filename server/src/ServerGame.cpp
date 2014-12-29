@@ -74,6 +74,7 @@ void ServerGame::joinGame(const std::weak_ptr<Network::AListenSocket>& that,
       _clients.push_back(cg);
       std::cout << "New gameClient: " << id->ip << ":" << id->port << std::endl;
       std::vector<Packet::PlayerClient> tmpList;
+      _net->registerIdentity(id);
       for (auto& i : _clients)
         tmpList.push_back({i->getLogin(), static_cast<uint16_t>(i->getId())});
       broadcastPacket(Packet::GetListPlayer(tmpList));

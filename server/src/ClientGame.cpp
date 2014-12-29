@@ -103,9 +103,9 @@ size_t ClientGame::netMovement(const Network::Buffer& data)
 {
   Packet::MovePacket  movement;
   size_t              nbUsed;
-  
+
   nbUsed = movement.from_bytes(data);
-  _game.broadcastPacketToOther(movement, std::shared_ptr<ClientGame>(this));
-  return (nbUsed);
+  sendToOther(movement);
+  return nbUsed;
 }
 

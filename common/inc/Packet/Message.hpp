@@ -8,7 +8,7 @@ namespace Packet {
   {
   public:
     Message();
-    Message(const std::string &);
+    Message(const std::string &msg);
 
     virtual ~Message() = default;
 

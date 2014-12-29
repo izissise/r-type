@@ -1,5 +1,3 @@
-#include <panel.h>
-#include <term_entry.h>
 #include "ClientGame.hpp"
 
 template<>
