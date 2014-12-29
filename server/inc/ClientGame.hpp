@@ -7,6 +7,9 @@
 
 #include "ClientHelper.hpp"
 #include "Packet/APacket.hpp"
+#include "Packet/MovePacket.hpp"
+
+class ServerGame;
 
 class ServerGame;
 
@@ -33,6 +36,7 @@ protected:
 private:
   size_t netShortResponse(const Network::Buffer& data);
   size_t netHandshake(const Network::Buffer& data);
+  size_t netMovement(const Network::Buffer& data);
 
 private:
   ServerGame& 	_game;

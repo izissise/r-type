@@ -10,7 +10,8 @@
 std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> ClientGame::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
-  {Packet::APacket::PacketType::HANDSHAKE, &ClientGame::netHandshake}
+  {Packet::APacket::PacketType::HANDSHAKE, &ClientGame::netHandshake},
+  {Packet::APacket::PacketType::MOVE, &ClientGame::netMovement},
 };
 
 ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
@@ -97,3 +98,14 @@ size_t ClientGame::netHandshake(const Network::Buffer& data)
   _writeBuff.writeBuffer(rep);
   return nbUsed;
 }
+
+size_t ClientGame::netMovement(const Network::Buffer& data)
+{
+  Packet::MovePacket  movement;
+  size_t              nbUsed;
+  
+  nbUsed = movement.from_bytes(data);
+  _game.broadcastPacketToOther(movement, std::shared_ptr<ClientGame>(this));
+  return (nbUsed);
+}
+

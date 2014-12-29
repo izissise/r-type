@@ -1,5 +1,6 @@
 #include <Packet/StartGame.hpp>
 #include "UDPConnectionProblem.hpp"
+#include "BasicWeapon.hpp"
 #include "Game.hpp"
 
 template<>
@@ -7,7 +8,8 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
 {
   { Packet::APacket::PacketType::SHORTRESPONSE, &Game::netShortResponse },
   { Packet::APacket::PacketType::GETLISTPLAYER, &Game::netGetListPlayer },
-        { Packet::APacket::PacketType::STARTGAME, &Game::netStartGame }
+  { Packet::APacket::PacketType::STARTGAME, &Game::netStartGame },
+  { Packet::APacket::PacketType::MOVE, &Game::netMovePlayer },
 };
 
 Game::Game(const sf::FloatRect &rect)
@@ -15,20 +17,7 @@ Game::Game(const sf::FloatRect &rect)
 {
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
   _background = std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*background)),
-                                                {0, 0, static_cast<float>(background->getSize().x), 900}));
-}
-
-void  Game::movePlayer(int axis, float speed, uint16_t playerId)
-{
-  auto img = _players[playerId]->image;
-  auto pos = img->getPosition();
-
-  if (axis == 1)
-    pos.x += speed;
-  else
-    pos.y += speed;
-  if (!(pos.x < 0 || pos.x + img->getSize().x > 1600 || pos.y < 0 || pos.y + img->getSize().y > 900))
-    img->setPosition(pos);
+                                                 {0, 0, static_cast<float>(background->getSize().x), 900}));
 }
 
 void  Game::draw(sf::RenderWindow &win)
@@ -36,74 +25,56 @@ void  Game::draw(sf::RenderWindow &win)
   if (_background->getPosition().x + _background->getSize().x < 1600)
   {
     auto pos = _background->getPosition();
-
+    
     _background->setPosition({pos.x + _background->getSize().x, pos.y});
     _background->draw(win);
     _background->setPosition(pos);
   }
   _background->draw(win);
-  for (auto &it : _players) {
-    it.second->image->setCurrentAnim(static_cast<uint8_t >(it.second->player.getAnim()));
-    it.second->image->draw(win);
-  }
+  for (auto &it : _players)
+    it.second->draw(win);
 }
 
-void  Game::update(float timeElapsed)
+void  Game::update(const Input &event, float timeElapsed)
 {
-  if (_begin) {
+  bool move = false;
+  
+  if (isConnected())
+    _network->poll();
+  if (_begin)
+  {
+    if (event.getState("fire"))
+      _players[_playerId]->fire();
+    if (event.getState("up"))
+    {
+      move = true;
+      _players[_playerId]->move(0, -timeElapsed);
+      _writeBuff.writeBuffer(Packet::MovePacket(_playerId, 0, -timeElapsed).to_bytes());
+    }
+    if (event.getState("down"))
+    {
+      move = true;
+      _players[_playerId]->move(0, timeElapsed);
+      _writeBuff.writeBuffer(Packet::MovePacket(_playerId, 0, timeElapsed).to_bytes());
+    }
+    if (event.getState("left"))
+    {
+      move = true;
+      _players[_playerId]->move(1, -timeElapsed);
+      _writeBuff.writeBuffer(Packet::MovePacket(_playerId, 1, -timeElapsed).to_bytes());
+    }
+    if (event.getState("right"))
+    {
+      move = true;
+      _players[_playerId]->move(1, timeElapsed);
+      _writeBuff.writeBuffer(Packet::MovePacket(_playerId, 1, timeElapsed).to_bytes());
+    }
+    if (!move)
+      _players[_playerId]->setAnim(Player::Animation::NORMAL);
     auto pos = sf::Vector2f(_background->getPosition().x - (_scrollSpeed * timeElapsed), _background->getPosition().y);
     if (pos.x <= -_background->getSize().x)
       pos.x = 0;
     _background->setPosition(pos);
-  }
-}
-
-void  Game::update(const sf::Event &event, float timeElapsed)
-{
-  if (isConnected())
-    _network->poll();
-  if (_begin) {
-    float x = sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100;
-    float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100;
-
-    if (y != 0)
-      movePlayer(0, _players[_playerId]->player.getSpeed().y * y * timeElapsed, _playerId);
-    if (x != 0)
-      movePlayer(1, _players[_playerId]->player.getSpeed().x * x * timeElapsed, _playerId);
-    if ((event.type == sf::Event::JoystickButtonPressed && event.joystickButton.button == 11)
-            || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space))
-      std::cout << "Fire" << std::endl;
-    if (event.type == sf::Event::KeyPressed) {
-      switch (event.key.code) {
-        case sf::Keyboard::Up :
-          movePlayer(0, -_players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
-              if (_players[_playerId]->player.getAnim() == Player::Animation::NORMAL)
-                _players[_playerId]->player.setAnim(Player::Animation::MIDUP);
-              else if (_players[_playerId]->player.getAnim() == Player::Animation::MIDUP)
-                _players[_playerId]->player.setAnim(Player::Animation::UP);
-              break;
-        case sf::Keyboard::Down :
-          movePlayer(0, _players[_playerId]->player.getSpeed().y * timeElapsed, _playerId);
-              if (_players[_playerId]->player.getAnim() == Player::Animation::NORMAL)
-                _players[_playerId]->player.setAnim(Player::Animation::MIDDOWN);
-              else if (_players[_playerId]->player.getAnim() == Player::Animation::MIDDOWN)
-                _players[_playerId]->player.setAnim(Player::Animation::DOWN);
-              break;
-        case sf::Keyboard::Left :
-          movePlayer(1, -_players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
-              _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
-              break;
-        case sf::Keyboard::Right :
-          movePlayer(1, _players[_playerId]->player.getSpeed().x * timeElapsed, _playerId);
-              _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
-              break;
-        default:
-          _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
-              break;
-      }
-    }
-    else
-      _players[_playerId]->player.setAnim(Player::Animation::NORMAL);
   }
 }
 
@@ -170,24 +141,35 @@ std::size_t  Game::netStartGame(const Network::Buffer &data)
 {
   Packet::StartGame  rep;
   size_t  nbUsed;
-
+  
   nbUsed = rep.from_bytes(data);
   _begin = true;
+  return nbUsed;
+}
+
+std::size_t  Game::netMovePlayer(const Network::Buffer &data)
+{
+  Packet::MovePacket  rep;
+  size_t  nbUsed;
+  
+  nbUsed = rep.from_bytes(data);
+  _players[rep.getPlayerId()]->move(rep.getAxis(), rep.getSpeed());
   return nbUsed;
 }
 
 void  Game::createPlayer(uint16_t playerId)
 {
   std::shared_ptr<sf::Texture> playerTexture(new sf::Texture);
-  
+  auto weaponTexture = RessourceManager::instance().getTexture("../assets/missile.png");
+
   if (!playerTexture->loadFromFile("../assets/spaceShip.gif", {0, playerId * 16, 166, 16}))
     throw std::runtime_error("../assets/spaceShip.gif cannot be found");
-  std::shared_ptr<t_player>  ptr(new t_player({0, static_cast<float>(playerId * 32)}, {100, 100}));
+
+  std::shared_ptr<AnimatedSprites> sprite(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 99, 48), 5, playerTexture->getSize().y, playerTexture));
+  std::shared_ptr<AnimatedSprites> weaponSprite(new AnimatedSprites(sf::FloatRect(0, 0, 99, 48), 2, weaponTexture->getSize().y, weaponTexture));
+  std::shared_ptr<AWeapon> weapon(new BasicWeapon(weaponSprite));
+  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {100, 100}, sprite, weapon));
   
   RessourceManager::instance().save(playerTexture);
-  ptr->image = std::shared_ptr<AnimatedSprites>(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 66, 32), 5,
-                                                                    playerTexture->getSize().y, playerTexture));
-  ptr->image->setCurrentAnim(static_cast<uint8_t>(Player::Animation::NORMAL));
-  
   _players[playerId] = ptr;
 }
