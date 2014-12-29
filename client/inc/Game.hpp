@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <memory>
+# include <SFML/Audio.hpp>
 
 # include "Panel.hpp"
 # include "Image.hpp"
@@ -47,6 +48,8 @@ private:
   std::map<uint16_t, std::shared_ptr<Player>>          _players;
   float                               _scrollSpeed;
   std::shared_ptr<Image>              _background;
+  sf::Music							  _music;
+  sf::Music							  _fire;
 };
 
 #endif
