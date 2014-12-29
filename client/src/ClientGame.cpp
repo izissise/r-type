@@ -12,7 +12,8 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 
 ClientGame::ClientGame()
 : _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
-_network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game(sf::FloatRect( 0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y) )))
+_network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game(sf::FloatRect( 0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y) ))),
+_input()
 {
   sf::Image icon;
 
@@ -23,6 +24,10 @@ _network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game(s
     _music.play();
     _music.setLoop(true);
   }
+  _input.setAction("up", sf::Keyboard::Up);
+  _input.setAction("down", sf::Keyboard::Down);
+  _input.setAction("left", sf::Keyboard::Left);
+  _input.setAction("right", sf::Keyboard::Right);
   _currentPanel = Panel::PanelId::MENUPANEL;
   createMenuPanel();
   createListPanel();
@@ -70,15 +75,15 @@ bool  ClientGame::update(float timeElapsed)
 
   if (isConnected())
     _network->poll();
+  _input.update(event);
   while (_win.pollEvent(event))
   {
     if (event.type == sf::Event::Closed)
       return (false);
-    if (!_isLoading)
-      _panel[_currentPanel]->update(event, timeElapsed);
+    _input.update(event);
   }
-  if (_currentPanel == Panel::PanelId::GAMEPANEL)
-    std::dynamic_pointer_cast<Game>(_panel[_currentPanel])->update(timeElapsed);
+  if (!_isLoading)
+    _panel[_currentPanel]->update(_input, timeElapsed);
   return (true);
 }
 
@@ -269,11 +274,6 @@ void  ClientGame::createMenuPanel()
 
   exit->onClick([this]() { _done = true; });
   connect->onClick(func);
-  loginEntry->onKey(sf::Keyboard::Return, func);
-  ipEntry->onKey(sf::Keyboard::Return, func);
-
-  loginEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(false); ipEntry->setUse(true); });
-  ipEntry->onKey(sf::Keyboard::Tab, [loginEntry, ipEntry](){ loginEntry->setUse(true); ipEntry->setUse(false); });
 
   menuPanel->add(back);
   menuPanel->add(ipEntry);
@@ -403,7 +403,6 @@ void  ClientGame::createCreateRoomPanel()
 ;
 
   create->onClick(func);
-  entry->onKey(sf::Keyboard::Return, func);
   cancel->onClick([this]() {
     _isLoading = false;
     _currentPanel = Panel::PanelId::LISTPANEL;
@@ -436,26 +435,37 @@ void  ClientGame::createRoomPanel()
 
 
   std::shared_ptr<Text> ready(new Text({0, 0, 0, 0}, "Ready"));
+  std::shared_ptr<Text> send(new Text({0, 0, 0, 0}, "Send"));
   std::shared_ptr<Text> d(new Text({0, 0, 0, 0}, "Leave Room"));
 
   ready->setFont(*font);
   ready->setColor(sf::Color::White);
   ready->setCharacterSize(30);
 
+  send->setFont(*font);
+  send->setColor(sf::Color::White);
+  send->setCharacterSize(30);
+
   d->setFont(*font);
   d->setColor(sf::Color::White);
   d->setCharacterSize(30);
 
   std::shared_ptr<Button> r(new Button({ 1300, 745 , 300, 75 }, button, hover, click, ready));
+  std::shared_ptr<Button> sendButton(new Button({ 1000, 825 , 300, 75 }, button, hover, click, send));
   std::shared_ptr<Button> disconnect(new Button({ 1300, 825 , 300, 75 }, button, hover, click, d));
   std::shared_ptr<Image> back(new Image(background, {0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y)}));
   std::shared_ptr<TextEntry> entry(new TextEntry("", { 0, static_cast<float>(_win.getSize().y) - 60,
-                                                      static_cast<float>(_win.getSize().x) - disconnect->getSize().x, 60}, button));
+                                                      static_cast<float>(_win.getSize().x) - sendButton->getSize().x - disconnect->getSize().x, 60}, button));
 
   r->onClick([this]() {
     Network::Buffer msg;
     Packet::APacket::fill_bytes(msg, Packet::APacket::fromPacketType(Packet::APacket::PacketType::READYGAME));
     _writeBuff.writeBuffer(msg);
+  });
+
+  sendButton->onClick([this, entry]() {
+      _writeBuff.writeBuffer(Packet::Message(entry->getText()));
+      entry->setText("");
   });
 
   disconnect->onClick([this, entry]() {
@@ -471,11 +481,6 @@ void  ClientGame::createRoomPanel()
   entry->setFont(*font);
   entry->setTextColor(sf::Color::White);
   entry->setCharacterSize(30);
-  entry->onKey(sf::Keyboard::Return, [this, entry]() {
-    if (!entry->getText().empty())
-      _writeBuff.writeBuffer(Packet::Message(entry->getText()).to_bytes());
-      entry->setText("");
-  });
 
   std::shared_ptr<GameMessageBox> _chatBox(new GameMessageBox({0, 0, 1299, static_cast<float>(_win.getSize().y) - 61}, _chat, true));
   std::shared_ptr<GameMessageBox> _playerBox(new GameMessageBox({1300, 0 , 300, 745}, _player));
@@ -484,6 +489,7 @@ void  ClientGame::createRoomPanel()
   panel->add(entry);
   panel->add(_chatBox);
   panel->add(_playerBox);
+  panel->add(sendButton);
   panel->add(r);
   panel->add(disconnect);
 

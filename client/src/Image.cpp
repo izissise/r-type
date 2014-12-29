@@ -11,7 +11,7 @@ Image::~Image()
   
 }
 
-void Image::update(const sf::Event &, float )
+void Image::update(const Input &, float )
 {
   
 }

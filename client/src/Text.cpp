@@ -47,7 +47,7 @@ const sf::FloatRect Text::getLocalBounds() const
 }
 
 
-void Text::update(const sf::Event &, float)
+void Text::update(const Input &, float)
 {
   
 }

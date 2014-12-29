@@ -11,7 +11,7 @@ ListItem::~ListItem()
   
 }
 
-void ListItem::update(const sf::Event &event, float timeElapsed)
+void ListItem::update(const Input &event, float timeElapsed)
 {
   _entry->update(event, timeElapsed);
   _name->update(event, timeElapsed);

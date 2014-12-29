@@ -13,7 +13,7 @@ AnimatedSprites::AnimatedSprites(const sf::FloatRect &rect, uint8_t nbAnim, uint
   }
 }
 
-void AnimatedSprites::update(const sf::Event &, float)
+void AnimatedSprites::update(const Input &, float)
 {
   
 }

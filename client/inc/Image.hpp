@@ -11,7 +11,7 @@ public:
   Image(const std::shared_ptr<sf::Sprite> &image, const sf::FloatRect &pos);
   ~Image();
   
-  virtual void update(const sf::Event &, float );
+  virtual void update(const Input &, float );
   virtual void draw(sf::RenderWindow &win);
   
 private:

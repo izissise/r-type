@@ -37,16 +37,6 @@ void  TextEntry::setText(const std::string &text)
   _text = text;
 }
 
-void  TextEntry::onKey(sf::Keyboard::Key t, std::function<void ()> func)
-{
-  _keyBinding[t] = func;
-}
-
-void  TextEntry::setUse(bool b)
-{
-  _use = b;
-}
-
 TextEntry &TextEntry::operator+=(char c)
 {
   _text += c;
@@ -82,33 +72,34 @@ void  TextEntry::draw(sf::RenderWindow &win)
   win.setView(win.getDefaultView());
 }
 
-void  TextEntry::update(const sf::Event &event, float)
+void  TextEntry::update(const Input &event, float)
 {
+  auto mousePos = event.getMousePos();
   if (_use && _first)
     _first = false;
-  if (event.type == sf::Event::MouseMoved)
-  {
-    if (event.mouseMove.x >= _pos.x && event.mouseMove.x < _pos.x + _size.x
-        && event.mouseMove.y >= _pos.y && event.mouseMove.y < _pos.y + _size.y)
-      _isHover = true;
-    else
-      _isHover = false;
-  }
-  if (_isHover && event.type == sf::Event::MouseButtonReleased)
+  if (mousePos.x >= _pos.x && mousePos.x < _pos.x + _size.x
+        && mousePos.y >= _pos.y && mousePos.y < _pos.y + _size.y)
+    _isHover = true;
+  else
+    _isHover = false;
+  if (_isHover && event.isButtonPressed())
   {
     _use = true;
     _first = false;
   }
-  else if (!_isHover && event.type == sf::Event::MouseButtonReleased)
+  else if (event.isButtonPressed())
   {
     _use = false;
     if (_text.empty())
       _first = true;
   }
-  if (_use && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace && !_text.empty())
-      _text.pop_back();
-  if (_use && event.type == sf::Event::KeyPressed && _keyBinding.find(event.key.code) != _keyBinding.end())
-    _keyBinding[event.key.code]();
-  if (_use && event.type == sf::Event::TextEntered && event.text.unicode > 20 && event.text.unicode < 128)
-    _text += static_cast<char>(event.text.unicode);
+  if (_use) {
+    std::string tmp = event.getText();
+    for (auto &it : tmp) {
+      if (it == '\b' && !_text.empty())
+        _text.pop_back();
+      else
+        _text += it;
+    }
+  }
 }

@@ -26,39 +26,23 @@ Button::~Button()
   
 }
 
-void  Button::update(const sf::Event &event, float)
+void  Button::update(const Input &event, float)
 {
-  switch (event.type) {
-    case sf::Event::MouseButtonPressed:
-      if (isHover())
-        _isClicked = true;
-      break;
-    case sf::Event::MouseButtonReleased:
-      if (isClicked())
-      {
-        if (event.mouseButton.x >= _pos.x && event.mouseButton.x < _pos.x + _size.x
-            && event.mouseButton.y >= _pos.y && event.mouseButton.y < _pos.y + _size.y
-            && _onClick)
-          _onClick();
-        _isClicked = false;
-      }
-      break;
-    case sf::Event::MouseMoved:
-      if (!isHover())
-      {
-        if (event.mouseMove.x >= _pos.x && event.mouseMove.x < _pos.x + _size.x
-            && event.mouseMove.y >= _pos.y && event.mouseMove.y < _pos.y + _size.y)
-          _hover = true;
-      }
-      else
-      {
-        if (!(event.mouseMove.x >= _pos.x && event.mouseMove.x < _pos.x + _size.x
-            && event.mouseMove.y >= _pos.y && event.mouseMove.y < _pos.y + _size.y))
-          _hover = false;
-      }
-      break;
-    default:
-      break;
+  auto mousePos = event.getMousePos();
+
+  if (mousePos.x >= _pos.x && mousePos.x < _pos.x + _size.x
+          && mousePos.y >= _pos.y && mousePos.y < _pos.y + _size.y)
+    _hover = true;
+  else if (!(mousePos.x >= _pos.x && mousePos.x < _pos.x + _size.x
+          && mousePos.y >= _pos.y && mousePos.y < _pos.y + _size.y))
+    _hover = false;
+  if (event.isButtonPressed() && isHover())
+    _isClicked = true;
+  if (!event.isButtonPressed() && isClicked() && isHover())
+  {
+    if (_onClick)
+      _onClick();
+    _isClicked = false;
   }
 }
 

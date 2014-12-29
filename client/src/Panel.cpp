@@ -6,7 +6,7 @@ Panel::Panel(const sf::FloatRect &rect, bool hide)
   
 }
 
-void Panel::update(const sf::Event &event, float timeElapsed)
+void Panel::update(const Input &event, float timeElapsed)
 {
   for (auto it : _display)
     if (!it->isHidden())

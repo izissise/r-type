@@ -14,16 +14,17 @@ GameMessageBox::~GameMessageBox()
 
 }
 
-void  GameMessageBox::update(const sf::Event &event, float timeElapsed)
+void  GameMessageBox::update(const Input &event, float timeElapsed)
 {
+  auto mousePos = event.getMousePos();
   updateEntry();
   for (auto &it : _text)
     it.update(event, timeElapsed);
-  if (event.type == sf::Event::MouseWheelMoved
-      && event.mouseWheel.x >= _pos.x && event.mouseWheel.x < _pos.x + _size.x
-      && event.mouseWheel.y >= _pos.y && event.mouseWheel.y < _pos.y + _size.y)
+  if (event.isMouseWheeled()
+      && mousePos.x >= _pos.x && mousePos.x < _pos.x + _size.x
+      && mousePos.y >= _pos.y && mousePos.y < _pos.y + _size.y)
   {
-    float tmp = _cam + (event.mouseWheel.delta * 2);
+    float tmp = _cam + (event.getWheel() * 2);
 
     if (tmp <= _pos.y && tmp >= (_pos.y + _size.y) - (_text.size() * 40) - _pos.y)
       _cam = tmp;

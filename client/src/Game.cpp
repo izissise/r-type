@@ -133,7 +133,7 @@ std::size_t  Game::netShortResponse(const Network::Buffer &data)
 {
   Packet::ShortResponse  rep;
   size_t  nbUsed;
-
+  
   nbUsed = rep.from_bytes(data);
   if (rep.getResponse() == 1)
   {

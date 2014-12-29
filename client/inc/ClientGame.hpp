@@ -21,6 +21,7 @@
 # include "Room.hpp"
 # include "GameMessageBox.hpp"
 # include "Game.hpp"
+# include "Input.hpp"
 
 # include "Packet/Handshake.hpp"
 # include "Packet/ShortResponse.hpp"
@@ -76,6 +77,7 @@ private:
   std::string                                             _login;
   std::shared_ptr<Game>                                   _game;
   sf::Music                                               _music;
+  Input                                                   _input;
 };
 
 #endif
