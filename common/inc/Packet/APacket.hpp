@@ -26,6 +26,7 @@ namespace Packet {
       MESSAGE = 9, //9
       GETLISTPLAYER = 10, //10
       NEWMONSTER = 11, //11
+      MOVE = 12, // 12
       UNKNOW,
     };
 
