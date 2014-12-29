@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-project(ExampleMonster)
+project(BlorbMonster)
 
-set(NAME_LIB_MONSTER "exampleMonster")
+set(NAME_LIB_MONSTER "blorbMonster")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build")
 set(LIBRARY_OUTPUT_PATH ${MONSTERDIR})

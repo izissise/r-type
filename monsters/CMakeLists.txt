@@ -4,7 +4,8 @@ project(Monsters)
 
 set(MONSTERDIR ${PROJECT_BINARY_DIR})
 
-add_subdirectory("ExampleMonster")
+add_subdirectory("BlorbMonster")
+add_subdirectory("MegaBlorbMonster")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_BINARY_DIR}")

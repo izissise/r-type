@@ -2,26 +2,26 @@
 # define EXAMPLEMONSTERS_HH_
 
 # include "RTypeConfig.h"
-# include "exampleMonster_Export.h"
+# include "blorbMonster_Export.h"
 
 # include "ILibMonster.hpp"
 
 extern "C"
 {
-exampleMonster_EXPORT ILibMonster* createMonster();
+blorbMonster_EXPORT ILibMonster* createMonster();
 }
 
-class ExampleMonster : public ILibMonster
+class BlorbMonster : public ILibMonster
 {
 public:
- ExampleMonster() = default;
- virtual ~ExampleMonster() = default;
+ BlorbMonster() = default;
+ virtual ~BlorbMonster() = default;
  const std::string& getName() const;
  int getPower() const;
  int getLife() const;
 
 private:
- std::string _name = "Example";
+ std::string _name = "blorbMonster";
  int         _power = 10;
  int         _life = 10;
 };
