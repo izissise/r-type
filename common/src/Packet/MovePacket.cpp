@@ -1,3 +1,5 @@
+#include <sstream>
+#include <iostream>
 #include "Packet/MovePacket.hpp"
 
 namespace Packet {
@@ -18,7 +20,7 @@ namespace Packet {
     return (_axis);
   }
 
-  uint16_t MovePacket::getSpeed() const
+  float MovePacket::getSpeed() const
   {
     return (_speed);
   }
@@ -31,20 +33,31 @@ namespace Packet {
   std::string MovePacket::to_bytesNoHeader() const
   {
     std::string ret = "";
+	std::string tmp;
+	std::stringstream ss("");
     fill_bytes(ret, _playerId);
     fill_bytes(ret, _axis);
-    fill_bytes(ret, static_cast<uint32_t>(_speed));
+	ss << _speed;
+	tmp = ss.str();
+    fill_bytes(ret, static_cast<uint16_t>(tmp.size()));
+	ret += tmp;
     return (ret);
   }
 
   size_t MovePacket::from_bytes(const std::string &bytes)
   {
-    uint32_t tmp = 0;
+	  std::stringstream ss("");
+    std::string tmp = "";
+	uint16_t size;
     std::size_t pos = 0;
     get_bytes(bytes, pos, _playerId);
     get_bytes(bytes, pos, _axis);
-    get_bytes(bytes, pos, tmp);
-    _speed = static_cast<float>(tmp);
+    get_bytes(bytes, pos, size);
+	for (uint16_t i = 0; i < size && pos + i < bytes.size(); ++i)
+		tmp += bytes[pos + i];
+	pos += size;
+	ss << tmp;
+	ss >> _speed;
     return pos;
   }
 }

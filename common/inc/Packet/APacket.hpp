@@ -28,8 +28,9 @@ namespace Packet {
       NEWMONSTER = 11, //11
       MOVE = 12, // 12
       ENTITYDIE = 13, //13
-      NEWBONUS = 14, //14
-      UNKNOW,
+	  NEWBONUS = 14, //14
+	  LAUNCHMISSILE = 15, //15
+	  UNKNOW,
     };
 
   class PackerParsingError : public std::runtime_error

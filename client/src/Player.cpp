@@ -32,6 +32,18 @@ void Player::setWeapon(const std::shared_ptr<AWeapon> &weapon)
   _weapon = weapon;
 }
 
+void Player::hurt(int nb)
+{
+	if (isAlive())
+	{
+		if (nb > _life)
+			_life = 0;
+		else
+			_life -= nb;
+	}
+}
+
+
 void Player::move(uint8_t axis, float time)
 {
   sf::Vector2f tmp = _pos;

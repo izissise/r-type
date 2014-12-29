@@ -2,7 +2,7 @@
 #include "BasicWeapon.hpp"
 
 BasicWeapon::BasicWeapon(const std::shared_ptr<AnimatedSprites> &sprite)
-: AWeapon({0, 0}, {4, 4},  1, sprite)
+: AWeapon({0, 0}, {2, 2}, 1, sprite)
 {
 
 }

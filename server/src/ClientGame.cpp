@@ -6,12 +6,14 @@
 #include "ServerGame.hpp"
 #include "Packet/Handshake.hpp"
 #include "Packet/ShortResponse.hpp"
+#include "Packet/LaunchMissile.hpp"
 
 std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> ClientGame::_netWorkBinds =
 {
   {Packet::APacket::PacketType::SHORTRESPONSE, &ClientGame::netShortResponse},
   {Packet::APacket::PacketType::HANDSHAKE, &ClientGame::netHandshake},
-  {Packet::APacket::PacketType::MOVE, &ClientGame::netMovement},
+  { Packet::APacket::PacketType::MOVE, &ClientGame::netMovement },
+  { Packet::APacket::PacketType::LAUNCHMISSILE, &ClientGame::netMissile },
 };
 
 ClientGame::ClientGame(const std::shared_ptr<Network::Identity>& id,
@@ -107,4 +109,14 @@ size_t ClientGame::netMovement(const Network::Buffer& data)
   nbUsed = movement.from_bytes(data);
   sendToOther(movement);
   return nbUsed;
+}
+
+size_t ClientGame::netMissile(const Network::Buffer& data)
+{
+	Packet::LaunchMissile  m;
+	size_t              nbUsed;
+
+	nbUsed = m.from_bytes(data);
+	sendToOther(m);
+	return nbUsed;
 }

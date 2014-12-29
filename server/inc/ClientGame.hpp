@@ -37,6 +37,7 @@ private:
   size_t netShortResponse(const Network::Buffer& data);
   size_t netHandshake(const Network::Buffer& data);
   size_t netMovement(const Network::Buffer& data);
+  size_t netMissile(const Network::Buffer& data);
 
 private:
   ServerGame& 	_game;
