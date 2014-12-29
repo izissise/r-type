@@ -23,7 +23,7 @@ public:
 private:
  std::string _name = "megaBlorbMonster";
  int         _power = 10;
- int         _life = 10;
+ int         _life = 20;
 };
 
 #endif // IMONSTERS_HH_

@@ -323,7 +323,7 @@ void  Game::createPlayer(uint16_t playerId)
   std::shared_ptr<AnimatedSprites> sprite(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 99, 48), 5, playerTexture->getSize().y, playerTexture));
   std::shared_ptr<AnimatedSprites> weaponSprite(new AnimatedSprites(sf::FloatRect(0, 0, 99, 48), 2, weaponTexture->getSize().y, weaponTexture));
   std::shared_ptr<AWeapon> weapon(new BasicWeapon(weaponSprite));
-  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {1, 1}, sprite, weapon));
+  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48) + 70}, {1, 1}, sprite, weapon));
   
   RessourceManager::instance().save(playerTexture);
   _players[playerId] = ptr;
