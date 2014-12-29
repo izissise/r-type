@@ -59,6 +59,10 @@ void Player::move(uint8_t axis, float time)
           _sprite->setCurrentAnim(Player::Animation::DOWN);
       }
     }
+	else
+	{
+		_sprite->setCurrentAnim(Player::Animation::NORMAL);
+	}
     _pos = tmp;
   }
 }
@@ -71,9 +75,14 @@ void Player::fire()
 
 void Player::update(const Input &, float timeElaspsed)
 {
-  for (auto &it : _ammo) {
-    it.pos.x += (it.speed.x * timeElaspsed);
-  }
+	for (auto it = _ammo.begin(); it != _ammo.end(); it++) {
+	    (*it).pos.x += ((*it).speed.x * timeElaspsed);
+	}
+	_ammo.erase(std::remove_if(_ammo.begin(), _ammo.end(),
+		[](const t_ammo &ammo) -> bool {
+		return (ammo.pos.x > 1600);
+	}), _ammo.end());
+
 }
 
 void Player::draw(sf::RenderWindow &win)
