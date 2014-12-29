@@ -40,9 +40,10 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port,
 
 void ServerGame::run()
 {
+  size_t op = 0;
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
-  while (_runGame)
+  while (_runGame && op < 9547)
     {
       _net->poll();
       std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -56,6 +57,8 @@ void ServerGame::run()
               _started = true;
             }
         }
+
+      op++;
     }
   end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsedSeconds = end - start;
