@@ -17,6 +17,7 @@ namespace Packet {
     const std::string &getName() const {return _name;};
     int getLife() const {return _life;};
     uint16_t getId() const {return _Id;};
+    int	getXPos() const {return _xpos;};
 
     std::string to_bytesNoHeader() const override;
     size_t from_bytes(const std::string &bytes) override;

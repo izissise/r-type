@@ -61,7 +61,7 @@ void ServerGame::run()
               _started = true;
             }
         }
-      if ((random() % 500) == 0)
+      if ((random() % 50) == 0)
         {
           std::shared_ptr<AEntity> newEnt;
           if (random() % 10)

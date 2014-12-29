@@ -1,5 +1,8 @@
 #include "ClientGame.hpp"
 
+#include "Packet/NewBonus.hpp"
+#include "Packet/NewMonster.hpp"
+
 template<>
 std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buffer&)> RtypeProtoHelper<ClientGame>::_netWorkBinds =
 {
@@ -8,6 +11,8 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
   {Packet::APacket::PacketType::GETLISTPLAYER, &ClientGame::netGetListPlayer},
   {Packet::APacket::PacketType::STARTGAME, &ClientGame::netStartGame},
   {Packet::APacket::PacketType::MESSAGE, &ClientGame::netMessage},
+  {Packet::APacket::PacketType::NEWBONUS, &ClientGame::netNewBonus},
+  {Packet::APacket::PacketType::NEWMONSTER, &ClientGame::netNewMonster},
 };
 
 ClientGame::ClientGame()
@@ -48,7 +53,7 @@ void ClientGame::run()
   while(!_done)
   {
     auto t_start = std::chrono::steady_clock::now();
-    double fps = 1000 / 60;
+   // double fps = 1000 / 60;
 
     if (!update(t.count()))
       _done = true;
@@ -494,4 +499,34 @@ void  ClientGame::createRoomPanel()
   panel->add(disconnect);
 
   _panel[Panel::PanelId::ROOMPANEL] = panel;
+}
+
+size_t ClientGame::netNewBonus(const Network::Buffer& data)
+{
+  Packet::NewBonus    bn;
+  size_t              nbUsed;
+  int				  pos;
+  int				  id;
+
+  nbUsed = bn.from_bytes(data);
+  id = bn.getId();
+  pos = bn.getXPos();
+  std::cout << "NewBonus" << std::endl;
+  return nbUsed;
+}
+
+size_t ClientGame::netNewMonster(const Network::Buffer& data)
+{
+  Packet::NewMonster  mt;
+  size_t              nbUsed;
+  int				  pos;
+  int				  id;
+  std::string 		  name;
+
+  nbUsed = mt.from_bytes(data);
+  id = mt.getId();
+  pos = mt.getXPos();
+  name = mt.getName();
+  std::cout << "NewMonster" << std::endl;
+  return nbUsed;
 }
