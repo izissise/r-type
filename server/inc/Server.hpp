@@ -16,7 +16,7 @@
 #include "ThreadPool.hpp"
 #include "DLLoaderFactory.hpp"
 #include "DLManager.hpp"
-#include "AMonster.hpp"
+#include "ILibMonster.hpp"
 
 #include "ClientLobby.hpp"
 #include "Lobby.hpp"
@@ -44,7 +44,7 @@ public:
   void setUdpPortRange(std::tuple<uint16_t, uint16_t> portRange) {std::swap(_udpPortRange, portRange);};
   const std::tuple<uint16_t, uint16_t>& getUdpPortRange() const {return _udpPortRange;};
 
-  const DynamicLibrary::DLManager<AMonster>& getDynLibMonsterManager() const {return _dlMonsterManager;};
+  const DynamicLibrary::DLManager<ILibMonster>& getDynLibMonsterManager() const {return _dlMonsterManager;};
 
 protected:
   void acceptNewClient(const std::weak_ptr<Network::AListenSocket>& that);
@@ -57,7 +57,7 @@ protected:
   std::deque<std::shared_ptr<ClientLobby>> 				_clients;
   ThreadPool							  				_threadPool;
   std::deque<std::shared_ptr<ServerGame>>				_games;
-  DynamicLibrary::DLManager<AMonster>					_dlMonsterManager;
+  DynamicLibrary::DLManager<ILibMonster>				_dlMonsterManager;
 };
 
 #endif

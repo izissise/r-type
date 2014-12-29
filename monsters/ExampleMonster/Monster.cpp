@@ -18,7 +18,7 @@ int ExampleMonster::getLife() const
 extern "C"
 {
 
-exampleMonster_EXPORT AMonster* createMonster()
+exampleMonster_EXPORT ILibMonster* createMonster()
 {
   return new ExampleMonster();
 }

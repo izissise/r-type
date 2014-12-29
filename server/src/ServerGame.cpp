@@ -12,7 +12,7 @@
 std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port,
-                       const DynamicLibrary::DLManager<AMonster>& dynlibMonsters)
+                       const DynamicLibrary::DLManager<ILibMonster>& dynlibMonsters)
   : _monsterRessouces(dynlibMonsters), _runGame(true), _started(false),
     _net(Network::NetworkFactory::createNetwork()), _entityId(100)
 {
@@ -45,7 +45,7 @@ void ServerGame::run()
   while (_runGame)
     {
       _net->poll();
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      std::this_thread::sleep_for(std::chrono::milliseconds(16));
       if (!_started)
         {
           end = std::chrono::system_clock::now();
@@ -100,14 +100,15 @@ void ServerGame::broadcastPacketToOther(const Packet::APacket& pack, const std::
     }
 }
 
-std::unique_ptr<AMonster> ServerGame::createMonsterNumberX(size_t x) const
+std::unique_ptr<ILibMonster> ServerGame::createMonsterNumberX(size_t x) const
 {
   auto monsters = _monsterRessouces.getLoadedModulesNames();
   return _monsterRessouces.createModule(monsters.at(x % monsters.size()));
 }
 
-void ServerGame::newEntity()
+void ServerGame::newEntity(const std::shared_ptr<AEntity>& ent)
 {
   _entityId += 1;
+  _entitiesList.push_back(ent);
 }
 

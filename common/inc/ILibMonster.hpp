@@ -3,7 +3,7 @@
 
 # include <string>
 
-class AMonster
+class ILibMonster
 {
 public:
  virtual const std::string& getName() const = 0;
