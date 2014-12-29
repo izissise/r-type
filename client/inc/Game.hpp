@@ -18,6 +18,17 @@
 # include "Packet/ShortResponse.hpp"
 # include "Packet/GetListPlayer.hpp"
 # include "Packet/MovePacket.hpp"
+# include "Packet/NewBonus.hpp"
+# include "Packet/NewMonster.hpp"
+
+struct t_netEntity
+{
+	t_netEntity(const Vector<float> &p, const Vector<float> &s, const std::shared_ptr<Image> &sp)
+		: pos(p), speed(s), sprite(sp) {};
+	Vector<float>	pos;
+	Vector<float>	speed;
+	std::shared_ptr<Image> sprite;
+};
 
 class Game : public Panel, public RtypeProtoHelper<Game>
 {
@@ -38,6 +49,10 @@ private:
   std::size_t netGetListPlayer(const Network::Buffer &data);
   std::size_t netStartGame(const Network::Buffer &data);
   std::size_t netMovePlayer(const Network::Buffer &data);
+  std::size_t netMissile(const Network::Buffer &data);
+  size_t  netNewBonus(const Network::Buffer &data);
+  size_t  netNewMonster(const Network::Buffer &data);
+
 
   void  createPlayer(uint16_t playerId);
   void  createMissile(uint16_t playerId);
@@ -46,6 +61,8 @@ private:
   bool                                _begin;
   uint16_t                            _playerId;
   std::map<uint16_t, std::shared_ptr<Player>>          _players;
+  std::vector<t_netEntity> _monster;
+  std::vector<t_netEntity> _bonus;
   float                               _scrollSpeed;
   std::shared_ptr<Image>              _background;
   sf::Music							  _music;

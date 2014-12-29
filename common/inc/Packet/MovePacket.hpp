@@ -13,7 +13,7 @@ namespace Packet {
         virtual ~MovePacket() = default;
 
         uint8_t getAxis() const;
-        uint16_t getSpeed() const;
+        float getSpeed() const;
         uint16_t getPlayerId() const;
 
         virtual std::string to_bytesNoHeader() const override;

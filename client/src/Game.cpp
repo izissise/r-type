@@ -1,4 +1,5 @@
 #include <Packet/StartGame.hpp>
+#include <Packet/LaunchMissile.hpp>
 #include "UDPConnectionProblem.hpp"
 #include "BasicWeapon.hpp"
 #include "Game.hpp"
@@ -10,6 +11,10 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
   { Packet::APacket::PacketType::GETLISTPLAYER, &Game::netGetListPlayer },
   { Packet::APacket::PacketType::STARTGAME, &Game::netStartGame },
   { Packet::APacket::PacketType::MOVE, &Game::netMovePlayer },
+  { Packet::APacket::PacketType::NEWBONUS, &Game::netNewBonus },
+  { Packet::APacket::PacketType::NEWMONSTER, &Game::netNewMonster },
+  { Packet::APacket::PacketType::LAUNCHMISSILE, &Game::netMissile },
+
 };
 
 Game::Game(const sf::FloatRect &rect)
@@ -35,6 +40,16 @@ void  Game::draw(sf::RenderWindow &win)
   _background->draw(win);
   for (auto &it : _players)
     it.second->draw(win);
+  for (auto &it : _monster)
+  {
+	  it.sprite->setPosition({ it.pos.x, it.pos.y });
+	  it.sprite->draw(win);
+  }
+  for (auto &it : _bonus)
+  {
+	  it.sprite->setPosition({ it.pos.x, it.pos.y });
+	  it.sprite->draw(win);
+  }
 }
 
 void  Game::update(const Input &event, float timeElapsed)
@@ -51,6 +66,7 @@ void  Game::update(const Input &event, float timeElapsed)
 		  {
 			  _players[_playerId]->fire();
 			  _fire.play();
+			  _writeBuff.writeBuffer(Packet::LaunchMissile(_playerId));
 		  }
 		  catch (std::runtime_error &e)
 		  {
@@ -84,11 +100,15 @@ void  Game::update(const Input &event, float timeElapsed)
     if (!move)
       _players[_playerId]->setAnim(Player::Animation::NORMAL);
     for (auto &it : _players)
-      it.second->update(event, 1);
+      it.second->update(event, timeElapsed);
     auto pos = sf::Vector2f(_background->getPosition().x - (_scrollSpeed * timeElapsed), _background->getPosition().y);
     if (pos.x <= -_background->getSize().x)
       pos.x = 0;
     _background->setPosition(pos);
+	for (auto &it : _monster)
+		it.pos.x += (it.speed.x * timeElapsed);
+	for (auto &it : _bonus)
+		it.pos.x += (it.speed.x * timeElapsed);
   }
 }
 
@@ -166,12 +186,67 @@ std::size_t  Game::netStartGame(const Network::Buffer &data)
 
 std::size_t  Game::netMovePlayer(const Network::Buffer &data)
 {
-  Packet::MovePacket  rep;
-  size_t  nbUsed;
-  
-  nbUsed = rep.from_bytes(data);
-  _players[rep.getPlayerId()]->move(rep.getAxis(), rep.getSpeed());
-  return nbUsed;
+	Packet::MovePacket  rep;
+	size_t  nbUsed;
+
+	nbUsed = rep.from_bytes(data);
+	_players[rep.getPlayerId()]->move(rep.getAxis(), rep.getSpeed());
+	return nbUsed;
+}
+
+std::size_t  Game::netMissile(const Network::Buffer &data)
+{
+	Packet::LaunchMissile  m;
+	size_t  nbUsed;
+
+	nbUsed = m.from_bytes(data);
+	try
+	{
+		_players.at(m.getPlayerId())->fire();
+		_fire.play();
+	}
+	catch (std::runtime_error &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return nbUsed;
+}
+
+size_t Game::netNewBonus(const Network::Buffer& data)
+{
+	Packet::NewBonus    bn;
+	size_t              nbUsed;
+	int				  pos;
+	int				  id;
+
+	nbUsed = bn.from_bytes(data);
+	id = bn.getId();
+	pos = bn.getXPos();
+	std::cout << "NewBonus" << std::endl;
+	auto texture = RessourceManager::instance().getTexture("../assets/bonus.png");
+	_bonus.push_back(t_netEntity(Vector<float>(1600, bn.getXPos() * 900 / 100), Vector<float>(-0.5, 1),
+	std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*texture)), { 0, 0, 30 * 2, 30 * 2 }))));
+	return nbUsed;
+}
+
+size_t Game::netNewMonster(const Network::Buffer& data)
+{
+	Packet::NewMonster  mt;
+	size_t              nbUsed;
+	int				  pos;
+	int				  id;
+	std::string 		  name;
+
+	nbUsed = mt.from_bytes(data);
+	id = mt.getId();
+	pos = mt.getXPos();
+	name = mt.getName();
+	std::cout << "NewMonster" << std::endl;
+
+	auto texture = RessourceManager::instance().getTexture("../assets/" + name + ".png");
+	_monster.push_back(t_netEntity(Vector<float>(1600, mt.getXPos() * 900 / 100), Vector<float>(-0.5, 1 ),
+	std::shared_ptr<Image>( new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*texture)), { 0, 0, static_cast<float>(texture->getSize().x) * 2, static_cast<float>(texture->getSize().y) * 2 }) )));
+	return nbUsed;
 }
 
 void  Game::createPlayer(uint16_t playerId)

@@ -61,10 +61,10 @@ void ServerGame::run()
               _started = true;
             }
         }
-      if ((random() % 50) == 0)
+      if ((random() % 50) == 0 && _started)
         {
           std::shared_ptr<AEntity> newEnt;
-          if (random() % 10)
+          if (random() % 10 == 0)
             {
               Bonus* b(new Bonus(_entityId, random() % 100, BonusTypes::LIFE));
               newEnt = std::shared_ptr<AEntity>(b);

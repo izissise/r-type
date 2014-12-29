@@ -56,8 +56,6 @@ private:
   size_t  netGetListPlayer(const Network::Buffer &data);
   size_t  netStartGame(const Network::Buffer &data);
   size_t  netMessage(const Network::Buffer &data);
-  size_t  netNewBonus(const Network::Buffer &data);
-  size_t  netNewMonster(const Network::Buffer &data);
 
   void  checkReponse(uint8_t rep);
 
