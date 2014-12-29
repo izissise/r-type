@@ -18,6 +18,8 @@ Game::Game(const sf::FloatRect &rect)
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
   _background = std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*background)),
                                                  {0, 0, static_cast<float>(background->getSize().x), 900}));
+  _music.openFromFile("../assets/ingame.ogg");
+  _fire.openFromFile("../assets/fire.ogg");
 }
 
 void  Game::draw(sf::RenderWindow &win)
@@ -48,6 +50,7 @@ void  Game::update(const Input &event, float timeElapsed)
 		  try
 		  {
 			  _players[_playerId]->fire();
+			  _fire.play();
 		  }
 		  catch (std::runtime_error &e)
 		  {
@@ -99,6 +102,8 @@ bool  Game::connect(const std::string &ip, const std::string &port, const std::s
     _writeBuff.writeBuffer(Packet::Handshake(login, _playerId));
     _playerId = playerId;
     createPlayer(_playerId);
+	_music.play();
+	_music.setLoop(true);
     return true;
   }
   catch (Network::Error &e) {
