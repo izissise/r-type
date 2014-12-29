@@ -53,10 +53,7 @@ void ClientGame::run()
     if (!update(t.count()))
       _done = true;
     draw();
-    auto t_end = std::chrono::steady_clock::now();
-    t = t_end - t_start;
-    if (t.count() < fps)
-      std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>(fps - t.count())) );
+	t = std::chrono::steady_clock::now() - t_start;
   }
 }
 
