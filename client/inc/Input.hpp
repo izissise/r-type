@@ -41,10 +41,10 @@ protected:
 
     bool _isMouseWheeled;
     int _delta;
-    std::chrono::high_resolution_clock::time_point _chronoWheel;
+    std::chrono::steady_clock::time_point _chronoWheel;
 
     std::string _text;
-    std::chrono::high_resolution_clock::time_point _chronoText;
+    std::chrono::steady_clock::time_point _chronoText;
 };
 
 #endif

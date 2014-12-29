@@ -54,7 +54,7 @@ void Input::setAction(const std::string &action, sf::Keyboard::Key key)
 
 void Input::update(const sf::Event &event)
 {
-    if (_isMouseWheeled && (std::chrono::high_resolution_clock::now() - _chronoWheel).count() >= 0.3)
+    if (_isMouseWheeled && (std::chrono::steady_clock::now() - _chronoWheel).count() >= 0.3)
         _isMouseWheeled = false;
     _text = "";
     switch (event.type)
@@ -67,7 +67,7 @@ void Input::update(const sf::Event &event)
             break;
         case sf::Event::TextEntered:
             _text += event.text.unicode;
-            _chronoText = std::chrono::high_resolution_clock::now();
+            _chronoText = std::chrono::steady_clock::now();
             break;
         case sf::Event::MouseButtonPressed:
             _isButtonPressed = true;
@@ -89,7 +89,7 @@ void Input::update(const sf::Event &event)
         case sf::Event::MouseWheelMoved:
             _isMouseWheeled = true;
             _delta = event.mouseWheel.delta;
-            _chronoWheel = std::chrono::high_resolution_clock::now();
+            _chronoWheel = std::chrono::steady_clock::now();
         default:
             break;
     }
