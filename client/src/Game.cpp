@@ -51,7 +51,10 @@ void  Game::draw(sf::RenderWindow &win)
   _life->draw(win);
   _score->draw(win);
   for (auto &it : _players)
-    it.second->draw(win);
+  {
+	  if (it.second->isAlive())
+		  it.second->draw(win);
+  }
   for (auto &it : _monster)
   {
 	  it.sprite->setPosition({ it.pos.x, it.pos.y });
@@ -70,7 +73,7 @@ void  Game::update(const Input &event, float timeElapsed)
   
   if (isConnected())
     _network->poll();
-  if (_begin)
+  if (_begin && _players[_playerId]->isAlive())
   {
 	  if (event.getState("fire"))
 	  {
