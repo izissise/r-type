@@ -54,8 +54,6 @@ void ClientGame::run()
       _done = true;
     draw();
 	t = std::chrono::steady_clock::now() - t_start;
-    if (t.count() < fps)
-      std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>(fps - t.count())) );
   }
 }
 

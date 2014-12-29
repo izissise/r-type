@@ -13,7 +13,6 @@ struct t_ammo
   Vector<float> pos;
   Vector<float> speed;
   int			damage;
-  int			anim;
   std::shared_ptr<AnimatedSprites> sprite;
 };
 
@@ -22,7 +21,7 @@ class AWeapon : public AEntity
 public:
   AWeapon(const Vector<float> &pos, const Vector<float> &speed, int damage, const std::shared_ptr<AnimatedSprites> &sprite)
 	  : AEntity(pos, Vector<float>(sprite->getSize().x, sprite->getSize().y), 0, 0, sprite),
-	  _damage(damage), _reload(std::chrono::steady_clock::now()), _speed(speed) { };
+	  _damage(damage), _reload(std::chrono::steady_clock::now()), _speed(speed) { sprite->setCurrentAnim(0); };
   virtual ~AWeapon() {};
   
   uint16_t getDamage() const { return _damage; };

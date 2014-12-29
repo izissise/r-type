@@ -13,7 +13,7 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
 };
 
 Game::Game(const sf::FloatRect &rect)
-: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _scrollSpeed(2)
+: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _scrollSpeed(0.25)
 {
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
   _background = std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*background)),
@@ -174,13 +174,13 @@ void  Game::createPlayer(uint16_t playerId)
   std::shared_ptr<sf::Texture> playerTexture(new sf::Texture);
   auto weaponTexture = RessourceManager::instance().getTexture("../assets/missile.png");
 
-  if (!playerTexture->loadFromFile("../assets/spaceShip.gif", {0, playerId * 16, 166, 16}))
+  if (!playerTexture->loadFromFile("../assets/spaceShip.gif", {0, playerId * 17, 166, 16}))
     throw std::runtime_error("../assets/spaceShip.gif cannot be found");
 
   std::shared_ptr<AnimatedSprites> sprite(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 99, 48), 5, playerTexture->getSize().y, playerTexture));
   std::shared_ptr<AnimatedSprites> weaponSprite(new AnimatedSprites(sf::FloatRect(0, 0, 99, 48), 2, weaponTexture->getSize().y, weaponTexture));
   std::shared_ptr<AWeapon> weapon(new BasicWeapon(weaponSprite));
-  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {2, 2}, sprite, weapon));
+  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {1, 1}, sprite, weapon));
   
   RessourceManager::instance().save(playerTexture);
   _players[playerId] = ptr;
