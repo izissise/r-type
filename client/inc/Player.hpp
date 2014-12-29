@@ -31,6 +31,11 @@ public:
   const std::shared_ptr<AWeapon> &getWeapon() const;
   void setWeapon(const std::shared_ptr<AWeapon> &weapon);
   
+  const std::vector<t_ammo> &getAmmo() const { return _ammo; };
+
+  void hurt(int nb);
+  bool isAlive() const { return _life > 0; };
+
   void move(uint8_t axis, float time);
   void fire();
   

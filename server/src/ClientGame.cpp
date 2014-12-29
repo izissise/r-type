@@ -106,7 +106,6 @@ size_t ClientGame::netMovement(const Network::Buffer& data)
   Packet::MovePacket  movement;
   size_t              nbUsed;
 
-  std::cout << "Move = " << movement.getSpeed() << std::endl;
   nbUsed = movement.from_bytes(data);
   sendToOther(movement);
   return nbUsed;

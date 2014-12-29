@@ -6,6 +6,7 @@
 # include <SFML/Audio.hpp>
 
 # include "Panel.hpp"
+# include "Text.hpp"
 # include "Image.hpp"
 # include "RtypeProtoHelper.hpp"
 # include "NetworkFactory.hpp"
@@ -23,10 +24,11 @@
 
 struct t_netEntity
 {
-	t_netEntity(const Vector<float> &p, const Vector<float> &s, const std::shared_ptr<Image> &sp)
-		: pos(p), speed(s), sprite(sp) {};
+	t_netEntity(const Vector<float> &p, const Vector<float> &s, int v, const std::shared_ptr<Image> &sp)
+		: pos(p), speed(s), value(v), sprite(sp) {};
 	Vector<float>	pos;
 	Vector<float>	speed;
+	int				value;
 	std::shared_ptr<Image> sprite;
 };
 
@@ -67,6 +69,8 @@ private:
   std::shared_ptr<Image>              _background;
   sf::Music							  _music;
   sf::Music							  _fire;
+  std::shared_ptr<Text>				  _life;
+  std::shared_ptr<Text>				  _score;
 };
 
 #endif
