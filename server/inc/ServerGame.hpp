@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <memory>
+#include <random>
 
 #include "ClientGame.hpp"
 #include "ServerRoom.hpp"

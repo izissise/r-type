@@ -8,6 +8,8 @@
 #include "Packet/GetListPlayer.hpp"
 #include "Packet/StartGame.hpp"
 #include "Packet/ShortResponse.hpp"
+#include "Packet/NewBonus.hpp"
+#include "Packet/NewMonster.hpp"
 
 std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
@@ -40,6 +42,8 @@ ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port,
 
 void ServerGame::run()
 {
+  unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine random(seed);
   size_t op = 0;
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
@@ -57,7 +61,23 @@ void ServerGame::run()
               _started = true;
             }
         }
-
+      if ((random() % 500) == 0)
+        {
+          std::shared_ptr<AEntity> newEnt;
+          if (random() % 10)
+            {
+              Bonus* b(new Bonus(_entityId, random() % 100, BonusTypes::LIFE));
+              newEnt = std::shared_ptr<AEntity>(b);
+              broadcastPacket(Packet::NewBonus(b->getNetId(), b->getXPos(), BonusTypes::LIFE));
+            }
+          else
+            {
+              Monster* b(new Monster(_entityId, random() % 100, createMonsterNumberX(random())));
+              newEnt = std::shared_ptr<AEntity>(b);
+              broadcastPacket(Packet::NewMonster(b->getNetId(), b->getXPos(), b->getName(), b->getLife()));
+            }
+          newEntity(newEnt);
+        }
       op++;
     }
   end = std::chrono::system_clock::now();

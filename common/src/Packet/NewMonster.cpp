@@ -7,8 +7,8 @@ namespace Packet {
 
   }
 
-  NewMonster::NewMonster(size_t id, const std::string& name, int life)
-  : APacket(PacketType::NEWMONSTER), _name(name), _life(life), _Id(id)
+  NewMonster::NewMonster(size_t id, int xpos, const std::string& name, int life)
+  : APacket(PacketType::NEWMONSTER), _name(name), _life(life), _Id(id), _xpos(xpos)
   {
 
   }
@@ -20,6 +20,7 @@ namespace Packet {
     ret += _name;
     fill_bytes(ret, _life);
     fill_bytes(ret, _Id);
+    fill_bytes(ret, _xpos);
     return (ret);
   }
 
@@ -35,6 +36,7 @@ namespace Packet {
       throw (APacket::PackerParsingError("Parse Failed: the name size is wrong"));
 	get_bytes(bytes, pos, _life);
 	get_bytes(bytes, pos, _Id);
+	get_bytes(bytes, pos, _xpos);
     return pos;
   }
 

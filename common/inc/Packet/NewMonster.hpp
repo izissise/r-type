@@ -10,7 +10,7 @@ namespace Packet {
   {
   public:
     NewMonster();
-    NewMonster(size_t id, const std::string& name, int life);
+    NewMonster(size_t id, int xpos, const std::string& name, int life);
 
     virtual ~NewMonster() = default;
 
@@ -25,6 +25,7 @@ namespace Packet {
     std::string   _name;
     uint16_t	  _life;
     uint16_t	  _Id;
+    uint16_t	  _xpos;
   };
 };
 
