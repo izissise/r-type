@@ -13,7 +13,7 @@ std::map<Packet::APacket::PacketType, size_t (Game::*)(const Network::Buffer&)> 
 };
 
 Game::Game(const sf::FloatRect &rect)
-: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _scrollSpeed(5)
+: Panel(rect), _network(Network::NetworkFactory::createNetwork()), _begin(false), _scrollSpeed(2)
 {
   auto background = RessourceManager::instance().getTexture("../assets/gameBackground.png");
   _background = std::shared_ptr<Image>(new Image(std::shared_ptr<sf::Sprite>(new sf::Sprite(*background)),
@@ -81,10 +81,11 @@ void  Game::update(const Input &event, float timeElapsed)
 bool  Game::connect(const std::string &ip, const std::string &port, const std::string &login, uint16_t playerId)
 {
   try {
+    _playerId = playerId;
     std::shared_ptr<Network::ABasicSocket> socket = Network::NetworkFactory::createConnectSocket(ip, port, Network::ASocket::SockType::UDP);
     _network->registerClient(socket);
     setSocket(socket);
-    _writeBuff.writeBuffer(Packet::Handshake(login, _playerId).to_bytes());
+    _writeBuff.writeBuffer(Packet::Handshake(login, _playerId));
     _playerId = playerId;
     createPlayer(_playerId);
     return true;
@@ -168,7 +169,7 @@ void  Game::createPlayer(uint16_t playerId)
   std::shared_ptr<AnimatedSprites> sprite(new AnimatedSprites(sf::FloatRect(0, static_cast<float>(playerId * 32), 99, 48), 5, playerTexture->getSize().y, playerTexture));
   std::shared_ptr<AnimatedSprites> weaponSprite(new AnimatedSprites(sf::FloatRect(0, 0, 99, 48), 2, weaponTexture->getSize().y, weaponTexture));
   std::shared_ptr<AWeapon> weapon(new BasicWeapon(weaponSprite));
-  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {100, 100}, sprite, weapon));
+  std::shared_ptr<Player>  ptr(new Player({0, static_cast<float>(playerId * 48)}, {10, 10}, sprite, weapon));
   
   RessourceManager::instance().save(playerTexture);
   _players[playerId] = ptr;

@@ -24,6 +24,7 @@ _input()
     _music.play();
     _music.setLoop(true);
   }
+  _input.setAction("fire", sf::Keyboard::Space);
   _input.setAction("up", sf::Keyboard::Up);
   _input.setAction("down", sf::Keyboard::Down);
   _input.setAction("left", sf::Keyboard::Left);
