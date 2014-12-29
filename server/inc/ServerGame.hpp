@@ -24,7 +24,8 @@ public:
 
   void run();
 
-  void newMonster(size_t mNumber);
+  void newEntity();
+  std::unique_ptr<AMonster> createMonsterNumberX(size_t x) const;
 
   const std::string& listeningPort() const {return _listeningPort;};
 
@@ -42,6 +43,7 @@ protected:
   std::vector<std::shared_ptr<Network::AListenSocket>> _udpListener;
   std::vector<std::shared_ptr<ClientGame>>             _clients;
   std::string 										   _listeningPort;
+  size_t											   _entityId;
 };
 
 #endif // SERVERGAME_H

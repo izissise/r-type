@@ -13,7 +13,7 @@ std::map<Packet::APacket::PacketType, size_t (ClientGame::*)(const Network::Buff
 };
 
 ClientGame::ClientGame()
-: _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
+: _ip(""), _win({1600, 900}, "R-Type"), _done(false), _isLoading(false),
 _network(Network::NetworkFactory::createNetwork()), _login(""), _game(new Game(sf::FloatRect( 0, 0, static_cast<float>(_win.getSize().x), static_cast<float>(_win.getSize().y) ))),
 _input()
 {
@@ -182,9 +182,9 @@ size_t  ClientGame::netStartGame(const Network::Buffer &data)
   std::stringstream ss("");
 
   nbUsed = rep.from_bytes(data);
-  std::cout << "Ip = " << rep.getIp() << " | Port = " << rep.getPort() << " | Id = " << rep.getPlayerId() << std::endl;
+  std::cout << "Ip = " << _ip << " | Port = " << rep.getPort() << " | Id = " << rep.getPlayerId() << std::endl;
   ss << rep.getPort();
-  if (_game->connect(rep.getIp(), ss.str(), _login, rep.getPlayerId()))
+  if (_game->connect(_ip, ss.str(), _login, rep.getPlayerId()))
     _currentPanel = Panel::PanelId::GAMEPANEL;
   if (_music.getStatus() == sf::SoundSource::Playing)
     _music.stop();
@@ -254,10 +254,11 @@ void  ClientGame::createMenuPanel()
 
     if (!login.empty() && !ip.empty())
     {
-      int nbColon = std::count(ip.begin(), ip.end(), ':');
+      size_t nbColon = std::count(ip.begin(), ip.end(), ':');
+      std::string realIp = (nbColon % 2 == 0 ? ip : ip.substr(0, ip.find_last_of(':')));
+      std::string realPort = (nbColon % 2 == 1 ? ip.substr(ip.find_last_of(':') + 1) : DEFAULTPORT);
       try {
-        std::shared_ptr<Network::ABasicSocket> socket = Network::NetworkFactory::createConnectSocket((nbColon % 2 == 0 ? ip : ip.substr(0, ip.find_last_of(':'))),
-                                                                                                     (nbColon % 2 == 1 ? ip.substr(ip.find_last_of(':') + 1) : DEFAULTPORT ));
+        std::shared_ptr<Network::ABasicSocket> socket = Network::NetworkFactory::createConnectSocket(realIp, realPort);
         Packet::Handshake packet(login);
         _network->registerClient(socket);
         setSocket(socket);
@@ -265,6 +266,7 @@ void  ClientGame::createMenuPanel()
         _isLoading = true;
         _login = login;
         _list.clear();
+        _ip = ip;
       }
       catch (Network::Error &e) {
         std::cerr << e.what() << std::endl;

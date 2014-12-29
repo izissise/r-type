@@ -65,6 +65,7 @@ private:
   void  createRoomPanel();
   void  createGamePanel();
 
+  std::string											  _ip;
   sf::RenderWindow                                        _win;
   bool                                                    _done;
   bool                                                    _isLoading;

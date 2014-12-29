@@ -8,14 +8,13 @@
 #include "Packet/GetListPlayer.hpp"
 #include "Packet/StartGame.hpp"
 #include "Packet/ShortResponse.hpp"
-#include "Packet/NewMonster.hpp"
 
 std::chrono::duration<double> ServerGame::_timeBeforeStart(5);
 
 ServerGame::ServerGame(const ServerRoom& gameInfo, const std::string& port,
                        const DynamicLibrary::DLManager<AMonster>& dynlibMonsters)
   : _monsterRessouces(dynlibMonsters), _runGame(true), _started(false),
-    _net(Network::NetworkFactory::createNetwork())
+    _net(Network::NetworkFactory::createNetwork()), _entityId(100)
 {
   _listeningPort = port;
   std::cout << "New game on: ";
@@ -53,7 +52,7 @@ void ServerGame::run()
           std::chrono::duration<double> elapsedSeconds = end - start;
           if (elapsedSeconds > _timeBeforeStart)
             {
-              broadcastPacket(Packet::StartGame("", 0, 0));
+              broadcastPacket(Packet::StartGame(0, 0));
               _started = true;
             }
         }
@@ -100,10 +99,14 @@ void ServerGame::broadcastPacketToOther(const Packet::APacket& pack, const std::
     }
 }
 
-void ServerGame::newMonster(size_t mNumber)
+std::unique_ptr<AMonster> ServerGame::createMonsterNumberX(size_t x) const
 {
   auto monsters = _monsterRessouces.getLoadedModulesNames();
-  auto monster = _monsterRessouces.createModule(monsters.at(mNumber % monsters.size()));
-  broadcastPacket(Packet::NewMonster(monster->getName(), monster->getPower(), monster->getLife()));
+  return _monsterRessouces.createModule(monsters.at(x % monsters.size()));
+}
+
+void ServerGame::newEntity()
+{
+  _entityId += 1;
 }
 

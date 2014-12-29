@@ -50,7 +50,7 @@ void ClientLobby::sendPacket(const Packet::APacket& pack)
 
 void ClientLobby::startGame(uint16_t port, size_t id)
 {
-  sendPacket(Packet::StartGame(_socket->getIpAddr(), port, id));
+  sendPacket(Packet::StartGame(port, id));
 }
 
 
